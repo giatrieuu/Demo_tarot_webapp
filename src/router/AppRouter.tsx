@@ -11,8 +11,10 @@ const AppRouter: React.FC = () => {
         <Router>
             <Suspense>
                 <Routes>
+                    {/* Routes without MainLayout */}
                     <Route path={ADMIN.ADMIN_DASHBOARD} element={<AdminDashboard />} />
-                    {/* Admin Routes with MainLayout */}
+                    
+                    {/* Routes with MainLayout */}
                     <Route element={<LayoutRoute />}>
                         <Route path="/" element={<HomePage />} />
                     </Route>
