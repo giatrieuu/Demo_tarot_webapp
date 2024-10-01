@@ -1,14 +1,23 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import AdminDashboard from '../pages/Admin/AdminDashboard';
-// Import các component hoặc page cần sử dụng
+import LayoutRoute from '../layout/LayoutRoute';
+import { ADMIN } from '../config/constants';
+import HomePage from '../pages/HomePage';
+
+const AdminDashboard = lazy(() => import('../pages/Admin/AdminDashboard'));
 
 const AppRouter: React.FC = () => {
     return (
         <Router>
-            <Routes>
-                <Route path="/" element={<AdminDashboard />} />
-            </Routes>
+            <Suspense>
+                <Routes>
+                    <Route path={ADMIN.ADMIN_DASHBOARD} element={<AdminDashboard />} />
+                    {/* Admin Routes with MainLayout */}
+                    <Route element={<LayoutRoute />}>
+                        <Route path="/" element={<HomePage />} />
+                    </Route>
+                </Routes>
+            </Suspense>
         </Router>
     );
 };
