@@ -1,7 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LayoutRoute from '../layout/LayoutRoute';
-import { ADMIN } from '../config/constants';
+import { ADMIN } from '../constants';
 import HomePage from '../pages/HomePage';
 
 const AdminDashboard = lazy(() => import('../pages/Admin/AdminDashboard'));
