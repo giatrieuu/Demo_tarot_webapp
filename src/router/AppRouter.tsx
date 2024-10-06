@@ -1,10 +1,13 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LayoutRoute from '../layout/LayoutRoute';
-import { ADMIN } from '../constants';
+import { ADMIN, PUBLIC } from '../constants';
 import HomePage from '../pages/HomePage';
+import Register from '../pages/Register';
 
 const AdminDashboard = lazy(() => import('../pages/Admin/AdminDashboard'));
+const Login = lazy(() => import('../pages/Login'));
+const ForgotPassword = lazy(() => import('../pages/ForgotPassword'));
 
 const AppRouter: React.FC = () => {
     return (
@@ -16,6 +19,9 @@ const AppRouter: React.FC = () => {
                     <Route element={<LayoutRoute />}>
                         <Route path="/" element={<HomePage />} />
                     </Route>
+                    <Route path={PUBLIC.LOGIN} element={<Login />} />
+                    <Route path={PUBLIC.REGISTER} element={<Register />} />
+                    <Route path={PUBLIC.FORGOT_PASSWORD} element={<ForgotPassword />} />
                 </Routes>
             </Suspense>
         </Router>

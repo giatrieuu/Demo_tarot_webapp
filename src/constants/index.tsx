@@ -17,6 +17,9 @@ export const TAROT_READER = {
 };
 export const PUBLIC = {
     HOME: '/homepage',
+    LOGIN: '/login',
+    FORGOT_PASSWORD: '/forgot-password',
+    REGISTER: '/register'
 };
 
 export const AdminSidebarData = {
