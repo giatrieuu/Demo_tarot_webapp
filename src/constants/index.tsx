@@ -19,7 +19,9 @@ export const PUBLIC = {
     HOME: '/homepage',
     LOGIN: '/login',
     FORGOT_PASSWORD: '/forgot-password',
-    REGISTER: '/register'
+    REGISTER: '/register',
+    LIST_READERS: '/list-tarot-reader',
+    BLOG: '/blog'
 };
 
 export const AdminSidebarData = {

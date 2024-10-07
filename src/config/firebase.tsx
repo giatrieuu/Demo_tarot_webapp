@@ -4,13 +4,13 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getAnalytics } from "firebase/analytics";
 //Thay firebase bằng apikey của mình
 const firebaseConfig = {
-  apiKey: "AIzaSyBvczJhODXC1XOweFDDqkwvZuKcUqPNp9A",
-  authDomain: "clonesera.firebaseapp.com",
-  projectId: "clonesera",
-  storageBucket: "clonesera.appspot.com",
-  messagingSenderId: "275060669998",
-  appId: "1:275060669998:web:594890b79df54757db69bf",
-  measurementId: "G-9DY231DPQL",
+  apiKey: "AIzaSyC958iSG7dbufpFz3I0rKZGgTOjgvWoj3c",
+  authDomain: "tarot-booking-20882.firebaseapp.com",
+  projectId: "tarot-booking-20882",
+  storageBucket: "tarot-booking-20882.appspot.com",
+  messagingSenderId: "783136267537",
+  appId: "1:783136267537:web:dc3d6d70e3a187d44d80b0",
+  measurementId: "G-RQZPJPW2H3"
 };
 
 // Initialize Firebase
