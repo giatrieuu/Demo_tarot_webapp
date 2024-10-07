@@ -1,39 +1,30 @@
-import { Layout, Menu, Input, Avatar, Dropdown } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import { Layout, Input, Button } from 'antd';
 import { Link } from 'react-router-dom';
+import Logo from './Logo';
 
 const { Header } = Layout;
 const { Search } = Input;
 
-const userMenu = (
-  <Menu>
-    <Menu.Item>
-      <Link to="/dashboard">My Dashboard</Link>
-    </Menu.Item>
-    <Menu.Item>
-      <Link to="/logout">Sign Out</Link>
-    </Menu.Item>
-  </Menu>
-);
-
 const AppHeader: React.FC = () => {
   return (
-    <Header className="flex justify-between items-center bg-white shadow-md p-4">
-      <div className="flex space-x-4">
-        <Link to="/about-us">About Us</Link>
-        <Link to="/tarot-readers">Tarot Reader</Link>
-        <Link to="/blogs">Blogs</Link>
-      </div>
-      
-      <div className="flex-1 text-center">
+    <Header className="flex justify-between items-center bg-[#2C4551] shadow-md p-4">
+      <Logo />
+
+      <div className="flex-1 text-center mt-8">
         <Search placeholder="Search..." className="max-w-md" />
       </div>
 
-      <div className="flex items-center">
-        <Link to="/" className="text-xl font-bold mr-4">Logo</Link>
-        <Dropdown overlay={userMenu} trigger={['hover']}>
-          <Avatar size="large" icon={<UserOutlined />} className="cursor-pointer" />
-        </Dropdown>
+      <div className="flex space-x-4">
+        <Link to="/blogs" className="text-white">Blog</Link>
+        <Link to="/tarot-readers" className="text-white">Booking</Link>
+
+        <Button type="primary" className="bg-[#5F8D8D] text-white mt-4">
+          <Link to="/login">Log in</Link>
+        </Button>
+
+        <Button className="bg-[#DDE6E6] text-[#243642] mt-4">
+          <Link to="/signup">Sign up</Link>
+        </Button>
       </div>
     </Header>
   );
