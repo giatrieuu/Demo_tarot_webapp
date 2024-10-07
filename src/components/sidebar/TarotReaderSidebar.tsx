@@ -10,7 +10,7 @@ import {
     ToolOutlined,
     LogoutOutlined
 } from '@ant-design/icons';
-import { TarotReaderSidebarData } from '../../config/constants';
+import { TarotReaderSidebarData } from '../../constants';
 
 
 interface SidebarProps {

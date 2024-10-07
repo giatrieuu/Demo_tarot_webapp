@@ -20,5 +20,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "src/config/constants/.jsx"]
+  "include": ["src", "src/constants/.jsx"]
 }

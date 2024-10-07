@@ -10,7 +10,7 @@ import {
     ToolOutlined,
     LogoutOutlined
 } from '@ant-design/icons';
-import { CustomerSidebarData } from '../../config/constants';
+import { CustomerSidebarData } from '../../constants';
 
 
 interface SidebarProps {
