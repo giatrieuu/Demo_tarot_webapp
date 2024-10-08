@@ -4,17 +4,23 @@ import { Input, Select, Checkbox, Divider, Card, Rate, Button } from "antd";
 const { Option } = Select;
 
 interface InforReaderDrawerProps {
-  visible: boolean;
-  onClose: () => void;
+  visible?: boolean; // Xóa bỏ hoặc thêm ? để làm cho visible không bắt buộc
+  onClose?: () => void; // Xóa bỏ hoặc thêm ? để làm cho onClose không bắt buộc
   reader: any;
   onNext: () => void; // Hàm chuyển đến bước tiếp theo
   handleDataChange: (field: string, value: any) => void; // Hàm cập nhật dữ liệu booking
   bookingData: any; // Dữ liệu booking hiện tại
 }
 
+// Khai báo kiểu dữ liệu cho costs để khắc phục lỗi TS7053
+const costs: { [key: string]: number } = {
+  "More time (Max 15 mins)": 5,
+  "Send results back to email": 5,
+  "Ask another topic": 10,
+  "Add a viewer": 15,
+};
+
 const InforReaderDrawer: React.FC<InforReaderDrawerProps> = ({
-  visible,
-  onClose,
   reader,
   onNext,
   handleDataChange,
@@ -22,25 +28,17 @@ const InforReaderDrawer: React.FC<InforReaderDrawerProps> = ({
 }) => {
   // Cập nhật các state từ bookingData được truyền từ props
   const [selectedTopic, setSelectedTopic] = useState<string>(bookingData.topic);
-  const [selectedDeck, setSelectedDeck] = useState<string>(
-    bookingData.cardDeck
-  );
+  const [selectedDeck, setSelectedDeck] = useState<string>(bookingData.cardDeck);
   const [date, setDate] = useState<string>(bookingData.date);
   const [time, setTime] = useState<string>(bookingData.time);
   const [services, setServices] = useState<string[]>(bookingData.services);
   const [totalCost, setTotalCost] = useState<number>(bookingData.totalCost);
 
   // Cập nhật tổng chi phí dựa trên các dịch vụ đã chọn
-  const handleServiceChange = (checkedValues: any) => {
+  const handleServiceChange = (checkedValues: string[]) => {
     setServices(checkedValues);
-    const costs = {
-      "More time (Max 15 mins)": 5,
-      "Send results back to email": 5,
-      "Ask another topic": 10,
-      "Add a viewer": 15,
-    };
     const newTotalCost = checkedValues.reduce(
-      (acc: number, service: string) => acc + costs[service],
+      (acc: number, service: string) => acc + (costs[service] || 0),
       0
     );
     setTotalCost(newTotalCost);
@@ -72,8 +70,6 @@ const InforReaderDrawer: React.FC<InforReaderDrawerProps> = ({
 
   return (
     <div className="p-4 bg-[#91a089]">
-      {" "}
-      {/* Thay thế Drawer bằng div thông thường */}
       {/* Reader Information */}
       <Card bordered={false} className="mb-6 bg-[#d9e6dc] rounded-lg shadow-sm">
         <div className="flex items-center">
@@ -91,16 +87,15 @@ const InforReaderDrawer: React.FC<InforReaderDrawerProps> = ({
         <Divider className="my-4" />
         <p className="text-sm text-gray-600">{reader?.description}</p>
       </Card>
+
       {/* Booking Form */}
-      <h3 className="text-md font-semibold mb-4 text-white">
-        Book this person?
-      </h3>
+      <h3 className="text-md font-semibold mb-4 text-white">Book this person?</h3>
       <div className="space-y-4">
         {/* Topic and Card Deck Select */}
         <div className="flex space-x-4">
           <Select
             placeholder="Choose topic"
-            className="w-1/2 h-12 rounded-lg" // Cập nhật chiều cao và làm tròn góc
+            className="w-1/2 h-12 rounded-lg"
             value={selectedTopic}
             onChange={handleTopicChange}
           >
@@ -112,7 +107,7 @@ const InforReaderDrawer: React.FC<InforReaderDrawerProps> = ({
           </Select>
           <Select
             placeholder="Choose card deck"
-            className="w-1/2 h-12 rounded-lg" // Cập nhật chiều cao và làm tròn góc
+            className="w-1/2 h-12 rounded-lg"
             value={selectedDeck}
             onChange={handleDeckChange}
           >
@@ -130,19 +125,19 @@ const InforReaderDrawer: React.FC<InforReaderDrawerProps> = ({
             placeholder="Date"
             value={date}
             onChange={handleDateChange}
-            className="w-1/2 h-12 p-3 rounded-lg bg-[#dde5db] text-[#7a7a7a]" // Cập nhật chiều cao, padding và làm tròn góc
+            className="w-1/2 h-12 p-3 rounded-lg bg-[#dde5db] text-[#7a7a7a]"
           />
           <Input
             placeholder="Time"
             value={time}
             onChange={handleTimeChange}
-            className="w-1/2 h-12 p-3 rounded-lg bg-[#dde5db] text-[#7a7a7a]" // Cập nhật chiều cao, padding và làm tròn góc
+            className="w-1/2 h-12 p-3 rounded-lg bg-[#dde5db] text-[#7a7a7a]"
           />
         </div>
 
         {/* Services Checkboxes */}
         <Checkbox.Group
-          className="flex flex-col space-y-2 bg-[#d9e6dc] p-4 rounded-lg" // Thêm nền, padding và bo góc cho checkbox group
+          className="flex flex-col space-y-2 bg-[#d9e6dc] p-4 rounded-lg"
           value={services}
           onChange={handleServiceChange}
         >
@@ -168,12 +163,10 @@ const InforReaderDrawer: React.FC<InforReaderDrawerProps> = ({
 
         {/* Next Button */}
         <div className="mt-6 flex justify-end">
-          {" "}
-          {/* Thêm flex justify-end để căn nút về bên phải */}
           <Button
             type="primary"
             className="h-10 w-24 rounded-md bg-[#72876e] hover:bg-[#5b6958] text-white text-md"
-            onClick={onNext} // Chuyển đến bước tiếp theo khi nhấn Next
+            onClick={onNext}
           >
             Next
           </Button>

@@ -8,8 +8,6 @@ const ListReaders: React.FC = () => {
   const [priceRange, setPriceRange] = useState<[number, number]>([2, 20]);
   const [selectedTopics, setSelectedTopics] = useState<string[]>(['Love', 'Study', 'Health', 'Money', 'Family']);
   const [selectedDecks, setSelectedDecks] = useState<string[]>(['Card deck 1', 'Card deck 2', 'Card deck 3', 'Card deck 4', 'Card deck 5']);
-  const [visible, setVisible] = useState<boolean>(false);
-  const [selectedReader, setSelectedReader] = useState<any>(null);
   const navigate = useNavigate(); // Khai báo useNavigate
 
   const handleTopicChange = (checkedValues: any) => {
@@ -32,19 +30,9 @@ const ListReaders: React.FC = () => {
     setPriceRange([2, 20]);
   };
 
-  const showDrawer = (reader: any) => {
-    setSelectedReader(reader);
-    setVisible(true);
-  };
-
-  const onClose = () => {
-    setVisible(false);
-  };
-
   const handleCardClick = (reader: any) => {
     navigate(`/reader-detail/${reader.readerId}`); // Chuyển hướng sang trang chi tiết Reader dựa trên id
   };
-  
 
   return (
     <div className="min-h-screen bg-[#edf3e8] flex p-6 space-x-6">
@@ -110,7 +98,12 @@ const ListReaders: React.FC = () => {
 
         {/* Readers List */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[{ name: 'Gia Triều - Victor', topics: 'Love - Study - Money', price: 10, reviews: 102, rating: 4 }, { name: 'Thảo - Shy', topics: 'Love - Study', price: 10, reviews: 170, rating: 5 }, { name: 'Huy - Glucozo', topics: 'Love - Study', price: 8, reviews: 90, rating: 4 }, { name: 'Capybara - Sucksick', topics: 'Family - Study', price: 2, reviews: 10, rating: 3 },].map((reader, index) => (
+          {[
+            { name: 'Gia Triều - Victor', topics: 'Love - Study - Money', price: 10, reviews: 102, rating: 4 }, 
+            { name: 'Thảo - Shy', topics: 'Love - Study', price: 10, reviews: 170, rating: 5 }, 
+            { name: 'Huy - Glucozo', topics: 'Love - Study', price: 8, reviews: 90, rating: 4 }, 
+            { name: 'Capybara - Sucksick', topics: 'Family - Study', price: 2, reviews: 10, rating: 3 },
+          ].map((reader, index) => (
             <Card key={index} className="rounded-lg overflow-hidden shadow-lg bg-[#d9e6dc]" onClick={() => handleCardClick(reader)}>
               <img src="https://via.placeholder.com/300x180" alt="Reader" className="w-full h-32 object-cover" />
               <div className="p-4">

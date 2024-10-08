@@ -68,7 +68,7 @@ const BookingProcess: React.FC<BookingProcessProps> = ({
         );
       case 1:
         return (
-          <UserInformationDrawer
+            <UserInformationDrawer
             visible={true}
             onClose={onClose}
             onNext={nextStep}
@@ -76,6 +76,7 @@ const BookingProcess: React.FC<BookingProcessProps> = ({
             bookingData={bookingData}
             handleDataChange={handleDataChange}
             reader={reader}
+            totalCost={bookingData.totalCost} // Thêm `totalCost` từ `bookingData`
           />
         );
       case 2:

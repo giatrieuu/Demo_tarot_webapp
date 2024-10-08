@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 
 import BookingProcess from "../components/popup-booking/BookingProcess";
 
-const { Title, Paragraph, Text  } = Typography;
+const { Title, Paragraph, Text } = Typography;
 
 // Dữ liệu giả lập
 const readerDetails = {
@@ -66,7 +66,7 @@ const reviews = [
 
 const ReaderDetail: React.FC = () => {
   const { readerId } = useParams(); // Lấy readerId từ URL
-  const reader = readerDetails[readerId || ""]; // Tìm reader theo Id
+  const reader = readerDetails[readerId as keyof typeof readerDetails]; // Tìm reader theo Id và ép kiểu readerId
   const [visible, setVisible] = useState(false);
 
   const showDrawer = () => {
@@ -108,7 +108,7 @@ const ReaderDetail: React.FC = () => {
                   Status: <Tag color="green">{reader.status}</Tag>
                 </Paragraph>
                 <div className="flex space-x-2 mb-4">
-                  {reader.tags.map((tag, index) => (
+                  {reader.tags.map((tag: string, index: number) => (
                     <Tag
                       key={index}
                       color="blue"
