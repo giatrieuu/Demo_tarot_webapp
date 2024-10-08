@@ -99,10 +99,10 @@ const ListReaders: React.FC = () => {
         {/* Readers List */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {[
-            { name: 'Gia Triều - Victor', topics: 'Love - Study - Money', price: 10, reviews: 102, rating: 4 }, 
-            { name: 'Thảo - Shy', topics: 'Love - Study', price: 10, reviews: 170, rating: 5 }, 
-            { name: 'Huy - Glucozo', topics: 'Love - Study', price: 8, reviews: 90, rating: 4 }, 
-            { name: 'Capybara - Sucksick', topics: 'Family - Study', price: 2, reviews: 10, rating: 3 },
+            { readerId: '1', name: 'Gia Triều - Victor', topics: 'Love - Study - Money', price: 10, reviews: 102, rating: 4 }, 
+            { readerId: '2', name: 'Thảo - Shy', topics: 'Love - Study', price: 10, reviews: 170, rating: 5 }, 
+            { readerId: '3', name: 'Huy - Glucozo', topics: 'Love - Study', price: 8, reviews: 90, rating: 4 }, 
+            { readerId: '4', name: 'Capybara - Sucksick', topics: 'Family - Study', price: 2, reviews: 10, rating: 3 },
           ].map((reader, index) => (
             <Card key={index} className="rounded-lg overflow-hidden shadow-lg bg-[#d9e6dc]" onClick={() => handleCardClick(reader)}>
               <img src="https://via.placeholder.com/300x180" alt="Reader" className="w-full h-32 object-cover" />

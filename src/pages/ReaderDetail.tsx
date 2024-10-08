@@ -10,7 +10,7 @@ const { Title, Paragraph, Text } = Typography;
 // Dữ liệu giả lập
 const readerDetails = {
   "1": {
-    id: "1",
+    readerId: "1",
     name: "Lê Gia Triều - Victor",
     price: 10,
     rating: 4,
