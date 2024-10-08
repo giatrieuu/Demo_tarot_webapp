@@ -4,11 +4,13 @@ import LayoutRoute from "../layout/LayoutRoute";
 import { ADMIN, PUBLIC } from "../constants";
 import HomePage from "../pages/HomePage";
 
+
 const AdminDashboard = lazy(() => import("../pages/Admin/AdminDashboard"));
 const Login = lazy(() => import("../pages/Login"));
 const Register = lazy(() => import("../pages/Register"));
 const ForgotPassword = lazy(() => import("../pages/ForgotPassword"));
 const ListReaders = lazy(() => import("../pages/ListTarotReader"));
+const ReaderDetail = lazy(() => import("../pages/ReaderDetail"));
 const BlogPage = lazy(() => import("../pages/Blog"));
 const AppRouter: React.FC = () => {
   return (
@@ -21,6 +23,7 @@ const AppRouter: React.FC = () => {
             <Route path="/" element={<HomePage />} />
             <Route path={PUBLIC.LIST_READERS} element={<ListReaders />} />
             <Route path={PUBLIC.BLOG} element={<BlogPage />} />
+            <Route path={PUBLIC.READER_DETAIL} element={<ReaderDetail />} />
           </Route>
           <Route path={PUBLIC.LOGIN} element={<Login />} />
           <Route path={PUBLIC.REGISTER} element={<Register />} />
