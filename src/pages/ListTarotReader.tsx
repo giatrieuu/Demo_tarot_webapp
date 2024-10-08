@@ -20,8 +20,11 @@ const ListReaders: React.FC = () => {
     setSelectedDecks(checkedValues);
   };
 
-  const handlePriceChange = (values: [number, number]) => {
-    setPriceRange(values);
+  // Cập nhật lại kiểu hàm onChange của Slider
+  const handlePriceChange = (values: number[]) => {
+    if (Array.isArray(values)) {
+      setPriceRange([values[0], values[1]]);
+    }
   };
 
   const handleResetAll = () => {

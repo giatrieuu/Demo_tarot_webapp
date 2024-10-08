@@ -9,6 +9,14 @@ interface InforReaderDrawerProps {
   reader: any;
 }
 
+// Định nghĩa rõ ràng kiểu cho các dịch vụ và chi phí của chúng
+const costs: Record<string, number> = {
+  'More time (Max 15 mins)': 5,
+  'Send results back to email': 5,
+  'Ask another topic': 10,
+  'Add a viewer': 15,
+};
+
 const InforReaderDrawer: React.FC<InforReaderDrawerProps> = ({ visible, onClose, reader }) => {
   const [selectedTopic, setSelectedTopic] = useState<string>('');
   const [selectedDeck, setSelectedDeck] = useState<string>('');
@@ -20,13 +28,12 @@ const InforReaderDrawer: React.FC<InforReaderDrawerProps> = ({ visible, onClose,
   // Cập nhật tổng chi phí dựa trên các dịch vụ đã chọn
   const handleServiceChange = (checkedValues: any) => {
     setServices(checkedValues);
-    const costs = {
-      'More time (Max 15 mins)': 5,
-      'Send results back to email': 5,
-      'Ask another topic': 10,
-      'Add a viewer': 15,
-    };
-    const newTotalCost = checkedValues.reduce((acc: number, service: string) => acc + costs[service], 0);
+
+    // Sử dụng `keyof typeof costs` để xác định rõ kiểu của `service`
+    const newTotalCost = checkedValues.reduce(
+      (acc: number, service: keyof typeof costs) => acc + costs[service],
+      0
+    );
     setTotalCost(newTotalCost);
   };
 
