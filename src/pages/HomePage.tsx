@@ -109,7 +109,7 @@ const HomePage = () => {
             </p>
             <Button
               type="primary"
-              size="medium"
+              size="middle" // Sửa "medium" thành "middle"
               className="bg-[#FFD700] text-[#1E213A] hover:bg-[#FFC107] mt-6"
               onClick={() => navigate("/about")}
             >
