@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import { Checkbox, Input, Button, Slider, Select, Card, Rate } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import InforReaderDrawer from '../components/popup-booking/BookingReaderInfo'; // Import component
-
+import { useNavigate } from 'react-router-dom';
 const { Option } = Select;
 
 const ListReaders: React.FC = () => {
   const [priceRange, setPriceRange] = useState<[number, number]>([2, 20]);
   const [selectedTopics, setSelectedTopics] = useState<string[]>(['Love', 'Study', 'Health', 'Money', 'Family']);
   const [selectedDecks, setSelectedDecks] = useState<string[]>(['Card deck 1', 'Card deck 2', 'Card deck 3', 'Card deck 4', 'Card deck 5']);
-  const [visible, setVisible] = useState<boolean>(false);
-  const [selectedReader, setSelectedReader] = useState<any>(null);
+  const navigate = useNavigate(); // Khai báo useNavigate
 
   const handleTopicChange = (checkedValues: any) => {
     setSelectedTopics(checkedValues);
@@ -20,8 +18,10 @@ const ListReaders: React.FC = () => {
     setSelectedDecks(checkedValues);
   };
 
-  const handlePriceChange = (values: [number, number]) => {
-    setPriceRange(values);
+  const handlePriceChange = (values: number[]) => {
+    if (Array.isArray(values)) {
+      setPriceRange([values[0], values[1]]);
+    }
   };
 
   const handleResetAll = () => {
@@ -30,13 +30,8 @@ const ListReaders: React.FC = () => {
     setPriceRange([2, 20]);
   };
 
-  const showDrawer = (reader: any) => {
-    setSelectedReader(reader);
-    setVisible(true);
-  };
-
-  const onClose = () => {
-    setVisible(false);
+  const handleCardClick = (reader: any) => {
+    navigate(`/reader-detail/${reader.readerId}`); // Chuyển hướng sang trang chi tiết Reader dựa trên id
   };
 
   return (
@@ -103,14 +98,13 @@ const ListReaders: React.FC = () => {
 
         {/* Readers List */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Example Reader Cards */}
           {[
-            { name: 'Gia Triều - Victor', topics: 'Love - Study - Money', price: 10, reviews: 102, rating: 4 },
-            { name: 'Thảo - Shy', topics: 'Love - Study', price: 10, reviews: 170, rating: 5 },
-            { name: 'Huy - Glucozo', topics: 'Love - Study', price: 8, reviews: 90, rating: 4 },
-            { name: 'Capybara - Sucksick', topics: 'Family - Study', price: 2, reviews: 10, rating: 3 },
+            { readerId: '1', name: 'Gia Triều - Victor', topics: 'Love - Study - Money', price: 10, reviews: 102, rating: 4 }, 
+            { readerId: '2', name: 'Thảo - Shy', topics: 'Love - Study', price: 10, reviews: 170, rating: 5 }, 
+            { readerId: '3', name: 'Huy - Glucozo', topics: 'Love - Study', price: 8, reviews: 90, rating: 4 }, 
+            { readerId: '4', name: 'Capybara - Sucksick', topics: 'Family - Study', price: 2, reviews: 10, rating: 3 },
           ].map((reader, index) => (
-            <Card key={index} className="rounded-lg overflow-hidden shadow-lg bg-[#d9e6dc]" onClick={() => showDrawer(reader)}>
+            <Card key={index} className="rounded-lg overflow-hidden shadow-lg bg-[#d9e6dc]" onClick={() => handleCardClick(reader)}>
               <img src="https://via.placeholder.com/300x180" alt="Reader" className="w-full h-32 object-cover" />
               <div className="p-4">
                 <h3 className="text-lg font-semibold mb-2">{reader.name}</h3>
@@ -125,11 +119,6 @@ const ListReaders: React.FC = () => {
           ))}
         </div>
       </div>
-
-      {/* Drawer for Reader Information */}
-      {selectedReader && (
-        <InforReaderDrawer visible={visible} onClose={onClose} reader={selectedReader} />
-      )}
     </div>
   );
 };

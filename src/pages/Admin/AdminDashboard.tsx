@@ -6,7 +6,7 @@ import AdminSidebar from '../../components/sidebar/AdminSidebar';
 const { Content } = Layout;
 
 const AdminDashboard: React.FC = () => {
-  const [showMenu, setShowMenu] = useState(true); 
+  const [showMenu] = useState(true);
 
   return (
     <Layout style={{ minHeight: '100vh' }}>

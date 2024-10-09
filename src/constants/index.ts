@@ -21,7 +21,8 @@ export const PUBLIC = {
     FORGOT_PASSWORD: '/forgot-password',
     REGISTER: '/register',
     LIST_READERS: '/list-tarot-reader',
-    BLOG: '/blog'
+    BLOG: '/blog',
+    READER_DETAIL: '/reader-detail/:readerId'
 };
 
 export const AdminSidebarData = {
