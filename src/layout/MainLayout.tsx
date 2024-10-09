@@ -8,7 +8,7 @@ const MainLayout: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
     return (
         <Layout>
             <Header />
-            <Content className="p-4 min-h-screen">
+            <Content className="min-h-screen">
                 {children}
             </Content>
             <Footer />

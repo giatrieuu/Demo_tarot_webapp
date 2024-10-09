@@ -72,21 +72,50 @@ const HomePage = () => {
       </section>
 
       {/* About Section */}
-      <section className="py-20 bg-[#1E213A] text-center text-gray-300">
-        <h2 className="text-3xl font-semibold text-[#FFD700]">Giới Thiệu</h2>
-        <div className="max-w-4xl mx-auto mt-6">
-          <p className="text-lg">
-            Tarot là một công cụ mạnh mẽ để chuyển hóa, cung cấp cho chúng ta
-            cái nhìn sâu sắc về cuộc sống...
-          </p>
-          <Button
-            type="primary"
-            size="large"
-            className="bg-[#FFD700] text-[#1E213A] hover:bg-[#FFC107] mt-8"
-            onClick={() => navigate("/about")}
-          >
-            Bói Tarot Online
-          </Button>
+      <section className="py-10 bg-[#1E213A] text-white flex justify-center items-center">
+        {/* Container */}
+        <div className="flex max-w-6xl mx-auto items-center px-4 lg:flex-row flex-col lg:space-x-12 space-y-8 lg:space-y-0">
+          {/* Image Section - Left Side */}
+          <div className="flex-shrink-0 lg:w-1/3 w-full flex justify-center lg:justify-start">
+            <img
+              src="src/assets/fool.jpg"
+              alt="Tarot Hand"
+              className="w-72 h-auto shadow-lg rounded-lg animate-float" // Apply animation class here
+            />
+          </div>
+
+          {/* Text Section - Right Side */}
+          <div className="lg:w-2/3 w-full text-left lg:pl-8">
+            {" "}
+            {/* Thêm class "lg:pl-8" để đẩy phần text sang phải */}
+            <h2 className="text-3xl font-semibold text-[#FFD700] mb-4">
+              Giới Thiệu
+            </h2>
+            <p className="text-md leading-relaxed text-gray-300">
+              Tarot là một công cụ mạnh mẽ để chuyển hóa, cung cấp cho chúng ta
+              cái nhìn sâu sắc về cuộc sống và giúp chúng ta hiểu rõ hơn về bản
+              thân cũng như những vấn đề xung quanh. Thông qua việc đọc các lá
+              bài, chúng ta có thể tìm thấy sự hướng dẫn, truyền cảm hứng và lời
+              khuyên quý giá để đưa ra những quyết định đúng đắn, giúp vượt qua
+              những thách thức và đạt được mục tiêu mà bản thân đề ra.
+            </p>
+            <p className="text-md leading-relaxed text-gray-300 mt-4">
+              Tarot không chỉ là một công cụ tiên tri, mà còn là một phương tiện
+              để khám phá bản thân, phát triển trí tuệ và tâm linh. Nó giúp
+              chúng ta tìm ra những mẫu số chung trong cuộc sống, từ đó đưa ra
+              những giải pháp sáng tạo và hiệu quả hơn. Với sự kết hợp giữa trực
+              giác và lý trí, Tarot trở thành một công cụ vô cùng hữu ích trong
+              cuộc hành trình tự khám phá và thực hiện những mục tiêu của mình.
+            </p>
+            <Button
+              type="primary"
+              size="medium"
+              className="bg-[#FFD700] text-[#1E213A] hover:bg-[#FFC107] mt-6"
+              onClick={() => navigate("/about")}
+            >
+              Bói Tarot Online
+            </Button>
+          </div>
         </div>
       </section>
 
