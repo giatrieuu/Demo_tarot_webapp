@@ -97,7 +97,7 @@ const Footer = () => {
         <Divider className="border-gray-600" />
         {/* Bottom Section */}
         <div className="flex flex-col sm:flex-row justify-between items-center text-center sm:text-left">
-          <span className="text-gray-400 mb-4 sm:mb-0">© 2024 Tarot.</span>
+          <span className="text-gray-400 mb-4 sm:mb-0">© 2024 TarotF.</span>
           <div className="flex space-x-4">
             <a href="#" className="text-gray-400 hover:text-gray-200">
               Terms of Service

@@ -15,14 +15,14 @@ const AppHeader: React.FC = () => {
       </div>
 
       <div className="flex space-x-4">
-        <Link to="/blogs" className="text-white">Blog</Link>
-        <Link to="/tarot-readers" className="text-white">Booking</Link>
+        <Link to="/blogs" className="text-white font-bold">Blog</Link>
+        <Link to="/tarot-readers" className="text-white font-bold">Booking</Link>
 
-        <Button type="primary" className="bg-[#5F8D8D] text-white mt-4">
+        <Button type="primary" className="bg-[#5F8D8D] text-white font-bold mt-4">
           <Link to="/login">Log in</Link>
         </Button>
 
-        <Button className="bg-[#DDE6E6] text-[#243642] mt-4">
+        <Button className="bg-[#DDE6E6] text-[#243642] font-bold mt-4">
           <Link to="/signup">Sign up</Link>
         </Button>
       </div>

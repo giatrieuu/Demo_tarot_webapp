@@ -32,7 +32,6 @@ export const AdminSidebarData = {
         { text: "Bookings", icon: "CalendarOutlined", url: "/manage-bookings" },
         { text: "Blogs", icon: "FileTextOutlined", url: "/manage-blogs" },
         { text: "Settings", icon: "ToolOutlined", url: "/settings" },
-        { text: "Sign Out", icon: "LogoutOutlined", url: "/signout" },
     ]
 };
 
