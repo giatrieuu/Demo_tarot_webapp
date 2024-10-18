@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Layout } from 'antd';
-import AppHeader from '../../components/Header';
+import AppHeader from '../../components/header/Header';
 import AdminSidebar from '../../components/sidebar/AdminSidebar';
 
 const { Content } = Layout;

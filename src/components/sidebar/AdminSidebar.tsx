@@ -8,7 +8,6 @@ import {
     CalendarOutlined,
     FileTextOutlined,
     ToolOutlined,
-    LogoutOutlined
 } from '@ant-design/icons';
 import { AdminSidebarData } from '../../constants';
 
@@ -24,7 +23,6 @@ const iconComponents: { [key: string]: JSX.Element } = {
     CalendarOutlined: <CalendarOutlined />,
     FileTextOutlined: <FileTextOutlined />,
     ToolOutlined: <ToolOutlined />,
-    LogoutOutlined: <LogoutOutlined />
 };
 
 const AdminSidebar: React.FC<SidebarProps> = ({ showMenu }) => {

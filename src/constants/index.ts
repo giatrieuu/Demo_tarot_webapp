@@ -10,7 +10,8 @@ export const ERROR = {
     ERROR404: '/404',
 };
 export const ADMIN = {
-    ADMIN_DASHBOARD: '/admin-dashboard'
+    ADMIN_DASHBOARD: '/admin-dashboard',
+    USER_MANAGEMENT: '/manage-users',
 }
 export const TAROT_READER = {
     TAROT_READER_DASHBOARD: '/tarot-reader-dashboard'

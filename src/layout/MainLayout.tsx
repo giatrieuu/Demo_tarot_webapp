@@ -1,5 +1,5 @@
 import { Layout } from 'antd';
-import Header from '../components/Header';
+import HeaderLogged from '../components/header/HeaderLogged';
 import Footer from '../components/Footer';
 
 const { Content } = Layout;
@@ -7,7 +7,7 @@ const { Content } = Layout;
 const MainLayout: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
     return (
         <Layout>
-            <Header />
+            <HeaderLogged />
             <Content className="min-h-screen">
                 {children}
             </Content>

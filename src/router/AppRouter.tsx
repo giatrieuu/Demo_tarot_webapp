@@ -6,6 +6,7 @@ import HomePage from "../pages/HomePage";
 
 
 const AdminDashboard = lazy(() => import("../pages/Admin/AdminDashboard"));
+const UserManagement = lazy(() => import("../pages/Admin/UserManagement"));
 const Login = lazy(() => import("../pages/Login"));
 const Register = lazy(() => import("../pages/Register"));
 const ForgotPassword = lazy(() => import("../pages/ForgotPassword"));
@@ -18,6 +19,7 @@ const AppRouter: React.FC = () => {
       <Suspense>
         <Routes>
           <Route path={ADMIN.ADMIN_DASHBOARD} element={<AdminDashboard />} />
+          <Route path={ADMIN.USER_MANAGEMENT} element={<UserManagement />} />
           {/* Admin Routes with MainLayout */}
           <Route element={<LayoutRoute />}>
             <Route path="/" element={<HomePage />} />

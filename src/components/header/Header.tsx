@@ -1,6 +1,6 @@
 import { Layout, Input, Button } from 'antd';
 import { Link } from 'react-router-dom';
-import Logo from './Logo';
+import Logo from '../Logo';
 
 const { Header } = Layout;
 const { Search } = Input;
