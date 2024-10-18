@@ -1,34 +1,39 @@
 import { Button, Card } from "antd";
 import { useNavigate } from "react-router-dom";
 import "antd/dist/reset.css";
-
+import { Player } from "@lottiefiles/react-lottie-player";
 const HomePage = () => {
   const navigate = useNavigate();
 
   return (
     <div className="bg-[#1E213A] min-h-screen">
       {/* Header Section */}
-      <header className="text-center py-16 bg-[#1E213A]">
-        <h1 className="text-4xl font-bold text-[#FFD700]">
-          Giải Mã Cuộc Sống Với Tarot
-        </h1>
-        <h2 className="text-2xl text-[#FFFAF0] mt-4">
-          Bói bài Tarot online miễn phí và chính xác nhất - BoiTarot.vn
-        </h2>
-        <p className="mt-6 text-lg text-gray-300 max-w-3xl mx-auto">
-          Tarot là phương pháp sử dụng những lá bài Tarot để xem bói và dự đoán
-          về tương lai, tình yêu, công việc, tiền tài và sức khỏe...
-        </p>
-        <Button
-          type="primary"
-          size="large"
-          className="bg-[#FFD700] text-[#1E213A] hover:bg-[#FFC107] mt-8"
-          onClick={() => navigate("/booking")}
-        >
-          Bói Tarot Online
-        </Button>
-      </header>
+      <header className="relative flex items-center justify-between px-16 py-20 bg-[#E9F4F2]">
+        {/* Left Content Section */}
+        <div className="flex-1 pr-12">
+          <h1 className="text-6xl font-bold text-black leading-tight">
+            Unlock the Mysteries <br />
+            <span className="font-light">One Card at a Time</span>
+          </h1>
+          <p className="mt-6 text-xl text-gray-700">
+            Gain clarity, find your path, and explore the depths of your destiny
+            with our expert readings.
+          </p>
+          <button className="bg-[#CBDAD5] hover:bg-[#B5C8C3] text-black px-8 py-4 mt-10 text-lg rounded-md">
+            You want to try?
+          </button>
+        </div>
 
+        {/* Right Animation Section */}
+        <div className="flex-1 flex justify-end">
+          <Player
+            autoplay
+            loop
+            src="/zodiac-animation.json" // Make sure the path is correct
+            style={{ height: "450px", width: "450px" }} // Increased size
+          />
+        </div>
+      </header>
       {/* Feature Section */}
       <section className="py-20 bg-[#282C44]">
         <h2 className="text-3xl font-semibold text-center text-[#FFD700] mb-12">
@@ -70,7 +75,6 @@ const HomePage = () => {
           ))}
         </div>
       </section>
-
       {/* About Section */}
       <section className="py-10 bg-[#1E213A] text-white flex justify-center items-center">
         {/* Container */}
@@ -118,47 +122,82 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+      {/* Tarot Reader Highlight Section */}
+      <section className="flex items-center justify-between px-16 py-20 bg-[#E9F4F2]">
+        {/* Left Content Section */}
+        <div className="flex-1 pr-12">
+          <h1 className="text-4xl font-bold text-black leading-tight">
+            Who will be the one to uncover <br />
+            the mysteries of the cards?
+          </h1>
+          <p className="mt-6 text-lg text-gray-700 max-w-lg">
+            Tarot Reader sections provide insight and guidance on the journey of
+            self-discovery, helping clients better understand their current
+            situation, identify opportunities and challenges, and seek paths to
+            spiritual healing through cards filled with mystery and meaning.
+          </p>
+          <button className="bg-[#CBDAD5] hover:bg-[#B5C8C3] text-black px-8 py-3 mt-8 rounded-md text-lg">
+            Book now
+          </button>
+        </div>
 
-      {/* Services Section */}
-      <section className="py-20 bg-[#282C44]">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-7xl mx-auto px-4">
-          {/* Tarot Service Cards */}
-          {[
-            {
-              title: "Phát Triển Bản Thân",
-              desc: "Khám phá và hiểu rõ điểm mạnh...",
-              icon: "/icons/self.png",
-            },
-            {
-              title: "Giải Quyết Thắc Mắc",
-              desc: "Giải đáp những thắc mắc, phân tích...",
-              icon: "/icons/questions.png",
-            },
-            {
-              title: "Nâng Cao Trực Giác",
-              desc: "Tăng cường khả năng sáng tạo...",
-              icon: "/icons/intuition.png",
-            },
-            {
-              title: "Cân Bằng Cảm Xúc",
-              desc: "Đưa ra lời khuyên hỗ trợ thư giãn...",
-              icon: "/icons/balance.png",
-            },
-          ].map((service, index) => (
-            <Card
-              key={index}
-              hoverable
-              className="bg-[#393E59] text-white p-6 shadow-lg rounded-lg transform hover:scale-105 transition-transform"
-            >
+        {/* Right Content Section - Reader Profile Card */}
+        <div className="flex-1 flex flex-col items-center">
+          {/* Navigation Arrows */}
+          <div className="flex items-center space-x-4">
+            <button className="p-2 bg-white rounded-full shadow-md">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </button>
+
+            {/* Reader Image */}
+            <div className="flex flex-col items-center">
               <img
-                src={service.icon}
-                alt={service.title}
-                className="w-16 mx-auto"
+                src="/reader-image.jpg" // Replace with your reader image path
+                alt="Tarot Reader"
+                className="rounded-lg w-48 h-48 object-cover"
               />
-              <h3 className="text-xl font-semibold mt-4">{service.title}</h3>
-              <p className="mt-4 text-gray-400">{service.desc}</p>
-            </Card>
-          ))}
+              <p className="mt-4 font-semibold">Reader: Shyneat Showka</p>
+              <p className="text-gray-500">300 reviews</p>
+            </div>
+
+            <button className="p-2 bg-white rounded-full shadow-md">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+          </div>
+
+          {/* Pagination Dots */}
+          <div className="flex space-x-2 mt-4">
+            <span className="w-3 h-3 bg-gray-400 rounded-full"></span>
+            <span className="w-3 h-3 bg-green-500 rounded-full"></span>
+            <span className="w-3 h-3 bg-gray-400 rounded-full"></span>
+            <span className="w-3 h-3 bg-gray-400 rounded-full"></span>
+          </div>
         </div>
       </section>
 

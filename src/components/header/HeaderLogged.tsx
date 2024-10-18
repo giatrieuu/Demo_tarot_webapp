@@ -14,7 +14,7 @@ const menuItems = [
     },
     {
         key: 'profile',
-        label: <Link to="/profile">My Profile</Link>,
+        label: <Link to="/my-profile">My Profile</Link>,
     },
     {
         key: 'logout',
