@@ -1,8 +1,10 @@
 import React, { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import LayoutRoute from "../layout/LayoutRoute";
-import { ADMIN, PUBLIC } from "../constants";
+import { ADMIN, PUBLIC, TAROT_READER } from "../constants";
 import HomePage from "../pages/HomePage";
+import TarotReaderDashboard from "../pages/Tarot-Reader/TarotReaderDashboard";
+
 
 
 const AdminDashboard = lazy(() => import("../pages/Admin/AdminDashboard"));
@@ -12,18 +14,29 @@ const ForgotPassword = lazy(() => import("../pages/ForgotPassword"));
 const ListReaders = lazy(() => import("../pages/ListTarotReader"));
 const ReaderDetail = lazy(() => import("../pages/ReaderDetail"));
 const BlogPage = lazy(() => import("../pages/Blog"));
+const CalendarPage = lazy(() => import("../pages/Tarot-Reader/CalendarPage"));
+const PostManager = lazy(() => import("../pages/Tarot-Reader/PostManager"));
+const ProfileEdit = lazy(() => import("../pages/Profile"));
 const AppRouter: React.FC = () => {
   return (
     <Router>
       <Suspense>
         <Routes>
           <Route path={ADMIN.ADMIN_DASHBOARD} element={<AdminDashboard />} />
+
+          <Route element={<LayoutRoute />}>
+            <Route path={TAROT_READER.TAROT_READER_DASHBOARD} element={<TarotReaderDashboard />}/>
+            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CALENDAR} element={<CalendarPage />}/>
+            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_POST} element={<PostManager />}/>
+           
+          </Route>
           {/* Admin Routes with MainLayout */}
           <Route element={<LayoutRoute />}>
             <Route path="/" element={<HomePage />} />
             <Route path={PUBLIC.LIST_READERS} element={<ListReaders />} />
             <Route path={PUBLIC.BLOG} element={<BlogPage />} />
             <Route path={PUBLIC.READER_DETAIL} element={<ReaderDetail />} />
+            <Route path={PUBLIC.PROFILE} element={<ProfileEdit />} />
           </Route>
           <Route path={PUBLIC.LOGIN} element={<Login />} />
           <Route path={PUBLIC.REGISTER} element={<Register />} />

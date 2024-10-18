@@ -13,7 +13,9 @@ export const ADMIN = {
     ADMIN_DASHBOARD: '/admin-dashboard'
 }
 export const TAROT_READER = {
-    TAROT_READER_DASHBOARD: '/tarot-reader-dashboard'
+    TAROT_READER_DASHBOARD: '/tarot-reader-dashboard',
+    TAROT_READER_DASHBOARD_CALENDAR: '/calendar',
+    TAROT_READER_DASHBOARD_POST: '/post-manager'
 };
 export const PUBLIC = {
     HOME: '/homepage',
@@ -22,7 +24,9 @@ export const PUBLIC = {
     REGISTER: '/register',
     LIST_READERS: '/list-tarot-reader',
     BLOG: '/blog',
-    READER_DETAIL: '/reader-detail/:readerId'
+    READER_DETAIL: '/reader-detail/:readerId',
+    PROFILE: '/me'
+   
 };
 
 export const AdminSidebarData = {
@@ -33,6 +37,7 @@ export const AdminSidebarData = {
         { text: "Bookings", icon: "CalendarOutlined", url: "/manage-bookings" },
         { text: "Blogs", icon: "FileTextOutlined", url: "/manage-blogs" },
         { text: "Settings", icon: "ToolOutlined", url: "/settings" },
+        { text: "Sign Out", icon: "LogoutOutlined", url: "/signout" },
     ]
 };
 
