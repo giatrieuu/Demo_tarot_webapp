@@ -18,6 +18,9 @@ const BlogPage = lazy(() => import("../pages/Blog"));
 const CalendarPage = lazy(() => import("../pages/Tarot-Reader/CalendarPage"));
 const PostManager = lazy(() => import("../pages/Tarot-Reader/PostManager"));
 const Profile = lazy(() => import("../pages/Profile"));
+const CardDrawGuide = lazy(() => import("../pages/CardDrawGuide/CardDrawGuide"));
+
+
 const AppRouter: React.FC = () => {
   return (
     <Router>
@@ -39,6 +42,7 @@ const AppRouter: React.FC = () => {
             <Route path={PUBLIC.BLOG} element={<BlogPage />} />
             <Route path={PUBLIC.READER_DETAIL} element={<ReaderDetail />} />
             <Route path={PUBLIC.PROFILE} element={<Profile />} />
+            <Route path={PUBLIC.CARD_DRAW_GUIDE} element={<CardDrawGuide />} />
           </Route>
           <Route path={PUBLIC.LOGIN} element={<Login />} />
           <Route path={PUBLIC.REGISTER} element={<Register />} />

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // React Router hook
+import { useNavigate } from "react-router-dom";
 import { UserOutlined, HeartFilled, LeftOutlined } from "@ant-design/icons";
 
 interface FollowUser {
@@ -8,7 +8,7 @@ interface FollowUser {
 }
 
 const Profile: React.FC = () => {
-    const navigate = useNavigate(); // Hook để điều hướng
+    const navigate = useNavigate();
 
     const [fullName, setFullName] = useState<string>("Nguyễn Quang Huy");
     const [email, setEmail] = useState<string>("");
@@ -23,7 +23,7 @@ const Profile: React.FC = () => {
     ];
 
     const handleBack = () => {
-        navigate(-1); // Quay về trang trước đó
+        navigate(-1);
     };
 
     const handleSave = () => {

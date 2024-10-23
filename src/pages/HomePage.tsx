@@ -33,7 +33,7 @@ const HomePage = () => {
             style={{ height: "450px", width: "450px" }} // Increased size
           />
         </div>
-      </header>
+      </header> 
       {/* Feature Section */}
       <section className="py-20 bg-[#282C44]">
         <h2 className="text-3xl font-semibold text-center text-[#FFD700] mb-12">

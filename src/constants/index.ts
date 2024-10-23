@@ -26,7 +26,8 @@ export const PUBLIC = {
     LIST_READERS: '/list-tarot-reader',
     BLOG: '/blog',
     READER_DETAIL: '/reader-detail/:readerId',
-    PROFILE: '/my-profile'
+    PROFILE: '/my-profile',
+    CARD_DRAW_GUIDE: '/card-draw-guide',
 
 };
 
