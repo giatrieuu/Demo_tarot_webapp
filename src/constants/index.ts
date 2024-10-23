@@ -16,7 +16,8 @@ export const ADMIN = {
 export const TAROT_READER = {
     TAROT_READER_DASHBOARD: '/tarot-reader-dashboard',
     TAROT_READER_DASHBOARD_CALENDAR: '/calendar',
-    TAROT_READER_DASHBOARD_POST: '/post-manager'
+    TAROT_READER_DASHBOARD_POST: '/post-manager',
+    TAROT_READER_DASHBOARD_ADD_POST: '/add-post'
 };
 export const PUBLIC = {
     HOME: '/homepage',

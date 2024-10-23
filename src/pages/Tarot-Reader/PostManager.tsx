@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button, Input, Table, Checkbox } from "antd";
 import { PlusCircleOutlined, DeleteOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 interface Post {
   id: string;
@@ -29,6 +30,7 @@ const posts: Post[] = [
 
 const PostManager: React.FC = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
+  const navigate = useNavigate();
 
   const columns = [
     {
@@ -106,6 +108,7 @@ const PostManager: React.FC = () => {
           type="primary"
           shape="circle"
           icon={<PlusCircleOutlined />}
+          onClick={() => navigate("/new-post")} // Điều hướng sang trang new-post
         />
       </div>
 
