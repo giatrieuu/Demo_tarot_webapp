@@ -7,6 +7,7 @@ import TarotReaderDashboard from "../pages/Tarot-Reader/TarotReaderDashboard";
 
 
 
+
 const AdminDashboard = lazy(() => import("../pages/Admin/AdminDashboard"));
 const UserManagement = lazy(() => import("../pages/Admin/UserManagement"));
 const Login = lazy(() => import("../pages/Login"));
@@ -18,6 +19,8 @@ const BlogPage = lazy(() => import("../pages/Blog"));
 const CalendarPage = lazy(() => import("../pages/Tarot-Reader/CalendarPage"));
 const PostManager = lazy(() => import("../pages/Tarot-Reader/PostManager"));
 const Profile = lazy(() => import("../pages/Profile"));
+const NewPost = lazy(() => import("../pages/Tarot-Reader/NewPost"));
+
 const AppRouter: React.FC = () => {
   return (
     <Router>
@@ -30,6 +33,8 @@ const AppRouter: React.FC = () => {
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD} element={<TarotReaderDashboard />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CALENDAR} element={<CalendarPage />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_POST} element={<PostManager />} />
+            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_ADD_POST} element={<NewPost />} />
+
 
           </Route>
           {/* Admin Routes with MainLayout */}
