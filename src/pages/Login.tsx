@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "antd";
 import { authRedirect } from "../services/Api"; // Import the API for redirecting to Google
 import bgImage from "../assets/bg.jpg"; // Ensure the correct path to your image
 import { toast } from 'react-toastify';
 
 const Login: React.FC = () => {
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+ 
 
   // Function to handle Google Redirect
   const handleGoogleRedirect = async () => {

@@ -4,7 +4,7 @@ import { SearchOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 
 const PostList: React.FC = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+
 
   const dataSource = [
     {
@@ -24,7 +24,7 @@ const PostList: React.FC = () => {
       title: 'St',
       dataIndex: 'st',
       key: 'st',
-      align: 'center',
+      align: 'center' as 'center', // align set to 'center'
       width: '5%',
     },
     {
