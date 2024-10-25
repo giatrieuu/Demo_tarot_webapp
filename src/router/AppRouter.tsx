@@ -19,6 +19,7 @@ const CalendarPage = lazy(() => import("../pages/Tarot-Reader/CalendarPage"));
 const PostManager = lazy(() => import("../pages/Tarot-Reader/PostManager"));
 const Profile = lazy(() => import("../pages/Profile"));
 const NewPost = lazy(() => import("../pages/Tarot-Reader/NewPost"));
+const TopicManagement = lazy(() => import("../pages/Admin/TopicManagement"));
 const CardDrawGuide = lazy(() => import("../pages/CardDrawGuide/CardDrawGuide"));
 
 const AppRouter: React.FC = () => {
@@ -28,7 +29,7 @@ const AppRouter: React.FC = () => {
         <Routes>
           <Route path={ADMIN.ADMIN_DASHBOARD} element={<AdminDashboard />} />
           <Route path={ADMIN.USER_MANAGEMENT} element={<UserManagement />} />
-
+          <Route path={ADMIN.TOPIC_MANAGEMENT} element={<TopicManagement />} />
           <Route element={<LayoutRoute />}>
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD} element={<TarotReaderDashboard />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CALENDAR} element={<CalendarPage />} />
