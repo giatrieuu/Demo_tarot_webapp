@@ -2,6 +2,11 @@ import React, { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import LayoutRoute from "../layout/LayoutRoute";
 import { ADMIN, PUBLIC, TAROT_READER } from "../constants";
+import HomePage from "../pages/HomePage";
+import TarotReaderDashboard from "../pages/Tarot-Reader/TarotReaderDashboard";
+
+
+
 
 
 const AdminDashboard = lazy(() => import("../pages/Admin/AdminDashboard"));
@@ -17,10 +22,10 @@ const PostManager = lazy(() => import("../pages/Tarot-Reader/PostManager"));
 const Profile = lazy(() => import("../pages/Profile"));
 const NewPost = lazy(() => import("../pages/Tarot-Reader/NewPost"));
 const TopicManagement = lazy(() => import("../pages/Admin/TopicManagement"));
-const ShuffleCard = lazy(() => import("../pages/CardDrawGuide/ShuffleCard"));
-const CardMeaning = lazy(() => import("../pages/CardDrawGuide/CardMeaning"));
-const HomePage = lazy(() => import("../pages/HomePage"));
-const TarotReaderDashboard = lazy(() => import("../pages/Tarot-Reader/TarotReaderDashboard"));
+const CardDrawGuide = lazy(() => import("../pages/CardDrawGuide/CardDrawGuide"));
+const CardDeckManager = lazy(() => import("../pages/Tarot-Reader/CardDeckManager"));
+const CardDeckUpload = lazy(() => import("../pages/Tarot-Reader/CardDeckUpload"));
+const CardDeckList = lazy(() => import("../pages/Tarot-Reader/CardDeckList"));
 
 const AppRouter: React.FC = () => {
   return (
@@ -35,7 +40,9 @@ const AppRouter: React.FC = () => {
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CALENDAR} element={<CalendarPage />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_POST} element={<PostManager />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_ADD_POST} element={<NewPost />} />
-
+            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_DECK} element={<CardDeckManager />} />
+            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_DECK_UPLOAD} element={<CardDeckUpload />} />
+            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_LIST} element={<CardDeckList />} />
 
           </Route>
           {/* Admin Routes with MainLayout */}
