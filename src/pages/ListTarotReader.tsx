@@ -31,7 +31,7 @@ const ListReaders: React.FC = () => {
   };
 
   const handleCardClick = (reader: any) => {
-    navigate(`/reader-detail/${reader.readerId}`); // Chuyển hướng sang trang chi tiết Reader dựa trên id
+    navigate(`/reader-detail/${reader.readerId}`);
   };
 
   return (
@@ -99,9 +99,9 @@ const ListReaders: React.FC = () => {
         {/* Readers List */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {[
-            { readerId: '1', name: 'Gia Triều - Victor', topics: 'Love - Study - Money', price: 10, reviews: 102, rating: 4 }, 
-            { readerId: '2', name: 'Thảo - Shy', topics: 'Love - Study', price: 10, reviews: 170, rating: 5 }, 
-            { readerId: '3', name: 'Huy - Glucozo', topics: 'Love - Study', price: 8, reviews: 90, rating: 4 }, 
+            { readerId: '1', name: 'Gia Triều - Victor', topics: 'Love - Study - Money', price: 10, reviews: 102, rating: 4 },
+            { readerId: '2', name: 'Thảo - Shy', topics: 'Love - Study', price: 10, reviews: 170, rating: 5 },
+            { readerId: '3', name: 'Huy - Glucozo', topics: 'Love - Study', price: 8, reviews: 90, rating: 4 },
             { readerId: '4', name: 'Capybara - Sucksick', topics: 'Family - Study', price: 2, reviews: 10, rating: 3 },
           ].map((reader, index) => (
             <Card key={index} className="rounded-lg overflow-hidden shadow-lg bg-[#d9e6dc]" onClick={() => handleCardClick(reader)}>

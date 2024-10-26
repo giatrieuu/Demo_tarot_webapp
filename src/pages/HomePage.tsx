@@ -19,8 +19,10 @@ const HomePage = () => {
             Gain clarity, find your path, and explore the depths of your destiny
             with our expert readings.
           </p>
-          <button className="bg-[#CBDAD5] hover:bg-[#B5C8C3] text-black px-8 py-4 mt-10 text-lg rounded-md">
-            You want to try?
+          <button
+            onClick={() => navigate("/card-draw")}
+            className="bg-[#CBDAD5] hover:bg-[#B5C8C3] text-black px-8 py-4 mt-10 text-lg rounded-md">
+            Free Tarot Reading
           </button>
         </div>
 
@@ -33,7 +35,7 @@ const HomePage = () => {
             style={{ height: "450px", width: "450px" }} // Increased size
           />
         </div>
-      </header> 
+      </header>
       {/* Feature Section */}
       <section className="py-20 bg-[#282C44]">
         <h2 className="text-3xl font-semibold text-center text-[#FFD700] mb-12">

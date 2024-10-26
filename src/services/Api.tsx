@@ -18,5 +18,11 @@ export const authRedirect = async () => {
 
 export const fetchReadersList = async () => {
   const response = await defaultAxiosInstance.get('/api/ReaderWeb/readers-list');
-  return response.data;
+  return response;
 };
+
+export const getReaderDetail = async (readerId: string) => {
+  const response = await defaultAxiosInstance.get(`/api/ReaderWeb/reader-with-images/${readerId}`);
+  return response;
+};
+

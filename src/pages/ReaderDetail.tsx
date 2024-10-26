@@ -3,7 +3,6 @@ import { Card, Button, Tag, Rate, Typography, List } from "antd";
 import { HeartOutlined, ShareAltOutlined } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
 
-import BookingProcess from "../components/popup-booking/BookingProcess";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -39,43 +38,9 @@ const readerDetails = {
   },
 };
 
-// Dữ liệu đánh giá giả lập
-const reviews = [
-  {
-    id: 1,
-    author: "Nguyễn Quang Huy",
-    content: "Thằng này bói ngu quá...",
-    date: "10/10/2024",
-    rating: 4,
-  },
-  {
-    id: 2,
-    author: "Nguyễn Quang Huy",
-    content: "Thằng này bói ngu quá...",
-    date: "10/10/2024",
-    rating: 4,
-  },
-  {
-    id: 3,
-    author: "Nguyễn Quang Huy",
-    content: "Thằng này bói ngu quá...",
-    date: "10/10/2024",
-    rating: 4,
-  },
-];
-
 const ReaderDetail: React.FC = () => {
   const { readerId } = useParams(); // Lấy readerId từ URL
   const reader = readerDetails[readerId as keyof typeof readerDetails]; // Tìm reader theo Id và ép kiểu readerId
-  const [visible, setVisible] = useState(false);
-
-  const showDrawer = () => {
-    setVisible(true);
-  };
-
-  const onClose = () => {
-    setVisible(false);
-  };
 
   if (!reader) {
     return <div>Reader not found</div>;
@@ -140,7 +105,6 @@ const ReaderDetail: React.FC = () => {
             <Button
               type="primary"
               size="large"
-              onClick={showDrawer}
               className="bg-[#72876e] hover:bg-[#91a089]"
             >
               Book Now
@@ -156,37 +120,8 @@ const ReaderDetail: React.FC = () => {
           <Paragraph>{reader.about}</Paragraph>
         </Card>
 
-        {/* Reviews Section */}
-        <Card className="bg-[#d9e6dc] rounded-lg shadow-sm p-4">
-          <Title level={5}>Reviews</Title>
-          <List
-            dataSource={reviews}
-            renderItem={(item) => (
-              <List.Item className="mb-4 bg-[#dde5db] rounded-lg p-4">
-                <Rate
-                  disabled
-                  defaultValue={item.rating}
-                  className="text-yellow-500"
-                />
-                <div className="ml-4 flex-1">
-                  <Paragraph className="font-semibold">{item.author}</Paragraph>
-                  <Paragraph>{item.content}</Paragraph>
-                </div>
-                <span className="text-sm text-gray-500">{item.date}</span>
-              </List.Item>
-            )}
-          />
-          <Button type="link" className="text-[#72876e]">
-            + More
-          </Button>
-        </Card>
 
-        {/* Hiển thị Drawer popup cho đặt lịch */}
-        <BookingProcess 
-          visible={visible}
-          onClose={onClose}
-          reader={reader}
-        />
+
       </div>
     </div>
   );

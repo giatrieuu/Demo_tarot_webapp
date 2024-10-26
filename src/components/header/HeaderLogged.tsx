@@ -34,14 +34,13 @@ const AppHeader: React.FC = () => {
             </div>
 
             <div className="flex space-x-4 mr-8">
-                <Link to="/blog" className="text-white">
-                    Blog
-                </Link>
-                <Link to="/list-tarot-reader" className="text-white">
+                <Link to="/list-tarot-reader" className="text-white font-bold">
                     Booking
                 </Link>
+                <Link to="/blog" className="text-white font-bold">
+                    Blog
+                </Link>
             </div>
-
             <div>
                 <Dropdown overlay={menu} placement="bottomRight" arrow trigger={['hover']}>
                     <Avatar
