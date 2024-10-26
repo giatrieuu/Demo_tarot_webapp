@@ -2,8 +2,6 @@ import React, { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import LayoutRoute from "../layout/LayoutRoute";
 import { ADMIN, PUBLIC, TAROT_READER } from "../constants";
-import HomePage from "../pages/HomePage";
-import TarotReaderDashboard from "../pages/Tarot-Reader/TarotReaderDashboard";
 
 
 const AdminDashboard = lazy(() => import("../pages/Admin/AdminDashboard"));
@@ -19,7 +17,10 @@ const PostManager = lazy(() => import("../pages/Tarot-Reader/PostManager"));
 const Profile = lazy(() => import("../pages/Profile"));
 const NewPost = lazy(() => import("../pages/Tarot-Reader/NewPost"));
 const TopicManagement = lazy(() => import("../pages/Admin/TopicManagement"));
-const CardDrawGuide = lazy(() => import("../pages/CardDrawGuide/CardDrawGuide"));
+const ShuffleCard = lazy(() => import("../pages/CardDrawGuide/ShuffleCard"));
+const CardMeaning = lazy(() => import("../pages/CardDrawGuide/CardMeaning"));
+const HomePage = lazy(() => import("../pages/HomePage"));
+const TarotReaderDashboard = lazy(() => import("../pages/Tarot-Reader/TarotReaderDashboard"));
 
 const AppRouter: React.FC = () => {
   return (
