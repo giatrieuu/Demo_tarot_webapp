@@ -18,7 +18,10 @@ export const TAROT_READER = {
     TAROT_READER_DASHBOARD: '/tarot-reader-dashboard',
     TAROT_READER_DASHBOARD_CALENDAR: '/calendar',
     TAROT_READER_DASHBOARD_POST: '/post-manager',
-    TAROT_READER_DASHBOARD_ADD_POST: '/add-post'
+    TAROT_READER_DASHBOARD_ADD_POST: '/add-post',
+    TAROT_READER_DASHBOARD_CARD_DECK: '/card-deck-manager',
+    TAROT_READER_DASHBOARD_CARD_DECK_UPLOAD:'/card-deck-upload',
+    TAROT_READER_DASHBOARD_CARD_LIST: '/card-list'
 };
 export const PUBLIC = {
     HOME: '/homepage',
