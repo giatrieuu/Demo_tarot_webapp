@@ -12,6 +12,7 @@ export const ERROR = {
 export const ADMIN = {
     ADMIN_DASHBOARD: '/admin-dashboard',
     USER_MANAGEMENT: '/manage-users',
+    TOPIC_MANAGEMENT: '/manage-topic',
 }
 export const TAROT_READER = {
     TAROT_READER_DASHBOARD: '/tarot-reader-dashboard',
@@ -34,9 +35,9 @@ export const PUBLIC = {
 
 export const AdminSidebarData = {
     MenuAdminItems: [
-        { text: "Dashboard", icon: "AppstoreOutlined", url: "/admin_dashboard" },
+        { text: "Dashboard", icon: "AppstoreOutlined", url: "/admin-dashboard" },
         { text: "Users", icon: "UserOutlined", url: "/manage-users" },
-        { text: "Transactions", icon: "DollarOutlined", url: "/manage-transactions" },
+        { text: "Topic", icon: "DollarOutlined", url: "/manage-topic" },
         { text: "Bookings", icon: "CalendarOutlined", url: "/manage-bookings" },
         { text: "Blogs", icon: "FileTextOutlined", url: "/manage-blogs" },
         { text: "Settings", icon: "ToolOutlined", url: "/settings" },

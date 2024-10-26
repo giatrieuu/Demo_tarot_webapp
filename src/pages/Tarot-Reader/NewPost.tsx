@@ -55,7 +55,7 @@ const NewPost: React.FC = () => {
             className="space-y-4 overflow-y-auto"
             style={{ maxHeight: "350px", width: "100%" }} // Tăng chiều cao và chiều rộng của phần cuộn
           >
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((comment, index) => (
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((index) => (
               <div
                 key={index}
                 className="bg-[#d9e6dc] p-2 rounded-md"

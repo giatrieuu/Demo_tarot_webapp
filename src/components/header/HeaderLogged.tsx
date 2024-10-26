@@ -18,7 +18,7 @@ const menuItems = [
     },
     {
         key: 'logout',
-        label: <Link to="/logout">Logout</Link>,
+        label: <Link to="/login">Logout</Link>,
     },
 ];
 
