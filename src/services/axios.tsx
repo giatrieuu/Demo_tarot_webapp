@@ -102,6 +102,20 @@ const ApiService = {
       throw error;
     }
   },
+  // Function to fetch the list of blog posts
+  fetchBlogList: async (pageNumber = 1, pageSize = 10) => {
+    try {
+      const response = await api.get(`/api/PostWeb/GetPagedPosts`, {
+        params: { pageNumber, pageSize },
+      });
+      return response.data; // Return the list of blog posts from the API
+    } catch (error) {
+      console.error("Error fetching blog list", error);
+      throw error;
+    }
+  }
 };
+
+
 
 export default ApiService;
