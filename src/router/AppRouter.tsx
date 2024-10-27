@@ -7,6 +7,8 @@ import TarotReaderDashboard from "../pages/Tarot-Reader/TarotReaderDashboard";
 
 
 
+
+
 const AdminDashboard = lazy(() => import("../pages/Admin/AdminDashboard"));
 const UserManagement = lazy(() => import("../pages/Admin/UserManagement"));
 const Login = lazy(() => import("../pages/Login"));
@@ -20,7 +22,11 @@ const PostManager = lazy(() => import("../pages/Tarot-Reader/PostManager"));
 const Profile = lazy(() => import("../pages/Profile"));
 const NewPost = lazy(() => import("../pages/Tarot-Reader/NewPost"));
 const TopicManagement = lazy(() => import("../pages/Admin/TopicManagement"));
-const CardDrawGuide = lazy(() => import("../pages/CardDrawGuide/CardDrawGuide"));
+const ShuffleCard = lazy(() => import("../pages/CardDrawGuide/ShuffleCard"));
+const CardMeaning = lazy(() => import("../pages/CardDrawGuide/CardMeaning"));
+const CardDeckManager = lazy(() => import("../pages/Tarot-Reader/CardDeckManager"));
+const CardDeckUpload = lazy(() => import("../pages/Tarot-Reader/CardDeckUpload"));
+const CardDeckList = lazy(() => import("../pages/Tarot-Reader/CardDeckList"));
 
 const AppRouter: React.FC = () => {
   return (
@@ -35,7 +41,9 @@ const AppRouter: React.FC = () => {
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CALENDAR} element={<CalendarPage />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_POST} element={<PostManager />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_ADD_POST} element={<NewPost />} />
-
+            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_DECK} element={<CardDeckManager />} />
+            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_DECK_UPLOAD} element={<CardDeckUpload />} />
+            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_LIST} element={<CardDeckList />} />
 
           </Route>
           {/* Admin Routes with MainLayout */}
@@ -45,7 +53,8 @@ const AppRouter: React.FC = () => {
             <Route path={PUBLIC.BLOG} element={<BlogPage />} />
             <Route path={PUBLIC.READER_DETAIL} element={<ReaderDetail />} />
             <Route path={PUBLIC.PROFILE} element={<Profile />} />
-            <Route path={PUBLIC.CARD_DRAW_GUIDE} element={<CardDrawGuide />} />
+            <Route path={PUBLIC.CARD_DRAW} element={<ShuffleCard />} />
+            <Route path={PUBLIC.CARD_MEANING} element={<CardMeaning />} />
           </Route>
           <Route path={PUBLIC.LOGIN} element={<Login />} />
           <Route path={PUBLIC.REGISTER} element={<Register />} />

@@ -45,58 +45,8 @@ const ListReaders: React.FC = () => {
     setSortOrder('High to low'); // Reset sort order
   };
 
-  const handleCardClick = (reader: Reader) => {
-    navigate(`/reader-detail/${reader.readerId}`);
-  };
-
-  // Fetch readers and topics data from API
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const readersResponse = await axios.get('https://www.bookingtarot.somee.com/api/ReaderWeb/readers-list');
-        const readersData: Reader[] = readersResponse.data.map((reader: any) => ({
-          ...reader,
-          price: (reader.price / 23000).toFixed(2)
-        }));
-        setReaders(readersData);
-
-        const topicsResponse = await axios.get('https://www.bookingtarot.somee.com/api/TopicWeb/topics-list');
-        const topicsData: Topic[] = topicsResponse.data;
-        setTopics(topicsData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const handleSearch = async () => {
-    try {
-      const response = await axios.get(`https://www.bookingtarot.somee.com/api/ReaderWeb/GetPagedReaders?pageNumber=1&pageSize=10&searchTerm=${searchTerm}`);
-      const newReaders: Reader[] = response.data.map((reader: any) => ({
-        ...reader,
-        price: (reader.price / 23000).toFixed(2)
-      }));
-      setReaders(newReaders);
-    } catch (error) {
-      console.error('Error fetching searched readers:', error);
-    }
-  };
-
-  // Function to sort readers based on price
-  const sortReaders = (order: string) => {
-    const sortedReaders = [...readers].sort((a, b) => {
-      const priceA = parseFloat(a.price);
-      const priceB = parseFloat(b.price);
-      return order === 'Low to high' ? priceA - priceB : priceB - priceA;
-    });
-    setReaders(sortedReaders);
-  };
-
-  const handleSortChange = (value: string) => {
-    setSortOrder(value); // Update sort order state
-    sortReaders(value); // Call sorting function
+  const handleCardClick = (reader: any) => {
+    navigate(`/reader-detail/${reader.readerId}`); // Chuyển hướng sang trang chi tiết Reader dựa trên id
   };
 
   return (
@@ -157,8 +107,13 @@ const ListReaders: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {readers.map((reader) => (
-            <Card key={reader.readerId} className="rounded-lg overflow-hidden shadow-lg bg-[#d9e6dc]" onClick={() => handleCardClick(reader)}>
+          {[
+            { readerId: '1', name: 'Gia Triều - Victor', topics: 'Love - Study - Money', price: 10, reviews: 102, rating: 4 },
+            { readerId: '2', name: 'Thảo - Shy', topics: 'Love - Study', price: 10, reviews: 170, rating: 5 },
+            { readerId: '3', name: 'Huy - Glucozo', topics: 'Love - Study', price: 8, reviews: 90, rating: 4 },
+            { readerId: '4', name: 'Capybara - Sucksick', topics: 'Family - Study', price: 2, reviews: 10, rating: 3 },
+          ].map((reader, index) => (
+            <Card key={index} className="rounded-lg overflow-hidden shadow-lg bg-[#d9e6dc]" onClick={() => handleCardClick(reader)}>
               <img src="https://via.placeholder.com/300x180" alt="Reader" className="w-full h-32 object-cover" />
               <div className="p-4">
                 <h3 className="text-lg font-semibold mb-2">{reader.name}</h3>

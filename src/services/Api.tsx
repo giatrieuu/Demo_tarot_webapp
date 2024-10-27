@@ -24,14 +24,15 @@ export const authRedirect = async () => {
   }
 };
 
-
 export const fetchReadersList = async () => {
   const response = await defaultAxiosInstance.get(
     "/api/ReaderWeb/readers-list"
   );
   return response.data;
 };
+
 export const fetchTopicsList = async () => {
   const response = await tokenAxiosInstance.get("/api/TopicWeb/topics-list");
   return response.data;
 };
+

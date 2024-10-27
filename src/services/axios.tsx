@@ -10,10 +10,23 @@ const api = axios.create({
 });
 
 const ApiService = {
+  // Function to login a Tarot Reader
+  loginTarotReader: async (email: string, password: string) => {
+    try {
+      const response = await api.post("/Auth/login", {
+        email: email,
+        password: password,
+      });
+      return response.data; // Return the response with the token
+    } catch (error) {
+      console.error("Error logging in Tarot Reader", error);
+      throw error;
+    }
+  },
   getToken: async () => {
     try {
       const response = await api.get("/Auth/token", {
-        withCredentials: true,  // Include credentials (cookies) in the request
+        withCredentials: true, // Include credentials (cookies) in the request
       });
       return response.data; // Return the token response
     } catch (error) {
@@ -89,6 +102,20 @@ const ApiService = {
       throw error;
     }
   },
+  // Function to fetch the list of blog posts
+  fetchBlogList: async (pageNumber = 1, pageSize = 10) => {
+    try {
+      const response = await api.get(`/api/PostWeb/GetPagedPosts`, {
+        params: { pageNumber, pageSize },
+      });
+      return response.data; // Return the list of blog posts from the API
+    } catch (error) {
+      console.error("Error fetching blog list", error);
+      throw error;
+    }
+  }
 };
+
+
 
 export default ApiService;
