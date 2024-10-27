@@ -15,8 +15,8 @@ const AppHeader: React.FC = () => {
       </div>
 
       <div className="flex space-x-4">
-        <Link to="/blog" className="text-white">Blog</Link>
         <Link to="/list-tarot-reader" className="text-white">Booking</Link>
+        <Link to="/blog" className="text-white">Blog</Link>
 
         <Button type="primary" className="bg-[#5F8D8D] text-white font-bold mt-4">
           <Link to="/login">Log in</Link>

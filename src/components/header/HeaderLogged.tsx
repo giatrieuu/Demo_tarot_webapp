@@ -56,6 +56,7 @@ const AppHeader: React.FC = () => {
         </Link>
       </div>
 
+<<<<<<< HEAD
       <div>
         <Dropdown
           overlay={menu}
@@ -72,6 +73,27 @@ const AppHeader: React.FC = () => {
       </div>
     </Header>
   );
+=======
+            <div className="flex space-x-4 mr-8">
+                <Link to="/list-tarot-reader" className="text-white font-bold">
+                    Booking
+                </Link>
+                <Link to="/blog" className="text-white font-bold">
+                    Blog
+                </Link>
+            </div>
+            <div>
+                <Dropdown overlay={menu} placement="bottomRight" arrow trigger={['hover']}>
+                    <Avatar
+                        size="large"
+                        icon={<UserOutlined />}
+                        className="cursor-pointer bg-[#5F8D8D]"
+                    />
+                </Dropdown>
+            </div>
+        </Header>
+    );
+>>>>>>> 66d750cda7341ec1cb4109eefb9e16caa75eb063
 };
 
 export default AppHeader;

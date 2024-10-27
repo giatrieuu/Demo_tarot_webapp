@@ -32,8 +32,8 @@ export const PUBLIC = {
     BLOG: '/blog',
     READER_DETAIL: '/reader-detail/:readerId',
     PROFILE: '/my-profile',
-    CARD_DRAW_GUIDE: '/card-draw-guide',
-
+    CARD_DRAW: '/card-draw',
+    CARD_MEANING: '/card-meaning',
 };
 
 export const AdminSidebarData = {

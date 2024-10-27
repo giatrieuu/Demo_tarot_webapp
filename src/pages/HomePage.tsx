@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ApiService from "../services/axios"; // Assuming ApiService is correctly implemented
 import { Player } from "@lottiefiles/react-lottie-player";
 
 const HomePage = () => {
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchToken = async () => {
       try {
@@ -45,8 +46,10 @@ const HomePage = () => {
             Gain clarity, find your path, and explore the depths of your destiny
             with our expert readings.
           </p>
-          <button className="bg-[#CBDAD5] hover:bg-[#B5C8C3] text-black px-8 py-4 mt-10 text-lg rounded-md">
-            You want to try?
+          <button
+            onClick={() => navigate("/card-draw")}
+            className="bg-[#CBDAD5] hover:bg-[#B5C8C3] text-black px-8 py-4 mt-10 text-lg rounded-md">
+            Free Tarot Reading
           </button>
         </div>
 

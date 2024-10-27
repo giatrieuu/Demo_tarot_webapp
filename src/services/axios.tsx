@@ -102,6 +102,7 @@ const ApiService = {
       throw error;
     }
   },
+<<<<<<< HEAD
   // **Newly added function to fetch the list of group cards**
   fetchGroupCardsList: async () => {
     try {
@@ -199,6 +200,22 @@ const ApiService = {
       throw error;
     }
   },
+=======
+  // Function to fetch the list of blog posts
+  fetchBlogList: async (pageNumber = 1, pageSize = 10) => {
+    try {
+      const response = await api.get(`/api/PostWeb/GetPagedPosts`, {
+        params: { pageNumber, pageSize },
+      });
+      return response.data; // Return the list of blog posts from the API
+    } catch (error) {
+      console.error("Error fetching blog list", error);
+      throw error;
+    }
+  }
+>>>>>>> 66d750cda7341ec1cb4109eefb9e16caa75eb063
 };
+
+
 
 export default ApiService;
