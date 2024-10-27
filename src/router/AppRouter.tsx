@@ -5,10 +5,6 @@ import { ADMIN, PUBLIC, TAROT_READER } from "../constants";
 import HomePage from "../pages/HomePage";
 import TarotReaderDashboard from "../pages/Tarot-Reader/TarotReaderDashboard";
 
-
-
-
-
 const AdminDashboard = lazy(() => import("../pages/Admin/AdminDashboard"));
 const UserManagement = lazy(() => import("../pages/Admin/UserManagement"));
 const Login = lazy(() => import("../pages/Login"));
@@ -17,14 +13,20 @@ const ForgotPassword = lazy(() => import("../pages/ForgotPassword"));
 const ListReaders = lazy(() => import("../pages/ListTarotReader"));
 const ReaderDetail = lazy(() => import("../pages/ReaderDetail"));
 const BlogPage = lazy(() => import("../pages/Blog"));
-const CalendarPage = lazy(() => import("../pages/Tarot-Reader/CalendarPage"));
+const ManagerBooking = lazy(() => import("../pages/Tarot-Reader/CalendarPage"));
 const PostManager = lazy(() => import("../pages/Tarot-Reader/PostManager"));
 const Profile = lazy(() => import("../pages/Profile"));
 const NewPost = lazy(() => import("../pages/Tarot-Reader/NewPost"));
 const TopicManagement = lazy(() => import("../pages/Admin/TopicManagement"));
-const CardDrawGuide = lazy(() => import("../pages/CardDrawGuide/CardDrawGuide"));
-const CardDeckManager = lazy(() => import("../pages/Tarot-Reader/CardDeckManager"));
-const CardDeckUpload = lazy(() => import("../pages/Tarot-Reader/CardDeckUpload"));
+const CardDrawGuide = lazy(
+  () => import("../pages/CardDrawGuide/CardDrawGuide")
+);
+const CardDeckManager = lazy(
+  () => import("../pages/Tarot-Reader/CardDeckManager")
+);
+const CardDeckUpload = lazy(
+  () => import("../pages/Tarot-Reader/CardDeckUpload")
+);
 const CardDeckList = lazy(() => import("../pages/Tarot-Reader/CardDeckList"));
 
 const AppRouter: React.FC = () => {
@@ -35,16 +37,36 @@ const AppRouter: React.FC = () => {
           <Route path={ADMIN.ADMIN_DASHBOARD} element={<AdminDashboard />} />
           <Route path={ADMIN.USER_MANAGEMENT} element={<UserManagement />} />
           <Route path={ADMIN.TOPIC_MANAGEMENT} element={<TopicManagement />} />
-          <Route element={<LayoutRoute />}>
-            <Route path={TAROT_READER.TAROT_READER_DASHBOARD} element={<TarotReaderDashboard />} />
-            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CALENDAR} element={<CalendarPage />} />
-            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_POST} element={<PostManager />} />
-            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_ADD_POST} element={<NewPost />} />
-            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_DECK} element={<CardDeckManager />} />
-            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_DECK_UPLOAD} element={<CardDeckUpload />} />
-            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_LIST} element={<CardDeckList />} />
 
-          </Route>
+          <Route
+            path={TAROT_READER.TAROT_READER_DASHBOARD}
+            element={<TarotReaderDashboard />}
+          />
+          <Route
+            path={TAROT_READER.TAROT_READER_DASHBOARD_CALENDAR}
+            element={<ManagerBooking />}
+          />
+          <Route
+            path={TAROT_READER.TAROT_READER_DASHBOARD_POST}
+            element={<PostManager />}
+          />
+          <Route
+            path={TAROT_READER.TAROT_READER_DASHBOARD_ADD_POST}
+            element={<NewPost />}
+          />
+          <Route
+            path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_DECK}
+            element={<CardDeckManager />}
+          />
+          <Route
+            path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_DECK_UPLOAD}
+            element={<CardDeckUpload />}
+          />
+          <Route
+            path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_LIST}
+            element={<CardDeckList />}
+          />
+
           {/* Admin Routes with MainLayout */}
           <Route element={<LayoutRoute />}>
             <Route path="/" element={<HomePage />} />

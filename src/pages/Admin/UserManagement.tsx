@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { Layout, Table, Button, Dropdown, Menu, Modal, Form, Input } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Layout, Table, Button, Dropdown, Menu, Modal, Form, Input, message } from 'antd';
 import { MoreOutlined, UserAddOutlined } from '@ant-design/icons';
 import AppHeader from '../../components/header/Header';
 import AdminSidebar from '../../components/sidebar/AdminSidebar';
+import ApiService from '../../services/axios'; // Import the ApiService
 
 const { Content } = Layout;
 
@@ -11,29 +12,28 @@ const UserManagement: React.FC = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedUser, setSelectedUser] = useState<any>(null);
     const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
+    const [users, setUsers] = useState([]); // State to store users
+    const [loading, setLoading] = useState(false); // State to manage loading
 
-    // Sample user data for the table
-    const [users, setUsers] = useState([
-        {
-            key: '1',
-            name: 'John Doe',
-            email: 'johndoe@example.com',
-            role: 'Tarot Reader',
-            createdDate: '10-10-2024',
-        },
-        {
-            key: '2',
-            name: 'Jane Smith',
-            email: 'janesmith@example.com',
-            role: 'User',
-            createdDate: '12-10-2024',
-        },
-    ]);
+    // Fetch users from the API
+    useEffect(() => {
+        const fetchUsers = async () => {
+            setLoading(true);
+            try {
+                const response = await ApiService.fetchUsersList();
+                setUsers(response); // Update state with fetched users
+            } catch (error) {
+                message.error('Failed to load users');
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchUsers();
+    }, []);
 
     // Handle menu actions for users
     const handleMenuClick = (key: string, record: any) => {
         if (key === 'assign') {
-            // Open modal for assigning email and password to the selected user
             setSelectedUser(record);
             setIsModalVisible(true);
         }
@@ -64,8 +64,8 @@ const UserManagement: React.FC = () => {
     const columns = [
         {
             title: 'ID',
-            dataIndex: 'key',
-            key: 'key',
+            dataIndex: 'id',
+            key: 'id',
         },
         {
             title: 'Name',
@@ -79,13 +79,14 @@ const UserManagement: React.FC = () => {
         },
         {
             title: 'Role',
-            dataIndex: 'role',
-            key: 'role',
+            dataIndex: 'roleId',
+            key: 'roleId',
+            render: (roleId: string) => (roleId === 'user' ? 'User' : 'Tarot Reader'),
         },
         {
-            title: 'Created Date',
-            dataIndex: 'createdDate',
-            key: 'createdDate',
+            title: 'Phone',
+            dataIndex: 'phone',
+            key: 'phone',
         },
         {
             title: '',
@@ -108,21 +109,17 @@ const UserManagement: React.FC = () => {
 
     return (
         <Layout style={{ minHeight: '100vh' }}>
-            {/* Header Section */}
             <AppHeader />
 
             <Layout>
-                {/* Sidebar Section */}
                 <AdminSidebar showMenu={showMenu} />
 
-                {/* Content Section */}
                 <Layout className={`transition-all duration-300 ${showMenu ? 'ml-56' : 'ml-0'}`}>
                     <Content style={{ padding: '24px' }}>
                         <div>
                             <h1 className="text-xl font-bold">User Management</h1>
                             <p>Manage all your users from this panel.</p>
 
-                            {/* Button to create a Tarot Reader account */}
                             <div className="mb-4">
                                 <Button
                                     type="primary"
@@ -139,6 +136,7 @@ const UserManagement: React.FC = () => {
                                 dataSource={users}
                                 columns={columns}
                                 pagination={false}
+                                loading={loading}
                                 className="bg-white shadow-sm rounded-lg"
                             />
                         </div>

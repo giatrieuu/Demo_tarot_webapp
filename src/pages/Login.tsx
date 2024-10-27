@@ -1,41 +1,36 @@
 import React, { useState } from "react";
 import { Button, Input, Form } from "antd";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
-import { useDispatch } from "react-redux"; // Import useDispatch from react-redux
-import { login } from "../redux/authSlice"; // Import the login action from your auth slice
-import ApiService from "../services/axios"; // Import the ApiService
-import { jwtDecode } from 'jwt-decode';
-
+import { useNavigate } from "react-router-dom"; 
+import { useDispatch } from "react-redux"; 
+import { login } from "../redux/authSlice"; 
+import {jwtDecode} from 'jwt-decode'; // Corrected import
+import ApiService from "../services/axios"; 
 
 const Login: React.FC = () => {
-  const [isReaderLogin, setIsReaderLogin] = useState(false); // State to toggle Tarot Reader login form
-  const navigate = useNavigate(); // Initialize the useNavigate hook
-  const dispatch = useDispatch(); // Initialize the useDispatch hook
+  const [isReaderLogin, setIsReaderLogin] = useState(false); 
+  const navigate = useNavigate(); 
+  const dispatch = useDispatch(); 
 
-  // Function to handle Google login redirect
   const handleGoogleLogin = () => {
     try {
-      // Redirect to Google login page
       window.location.href = "https://www.bookingtarot.somee.com/Auth/redirect";
     } catch (error) {
       console.error("Google login failed", error);
       toast.error("Failed to initiate Google login. Please try again.");
     }
   };
-  // Function to decode the token and get the user ID
+
   const decodeToken = (token: string) => {
     try {
-      const decodedToken: any = jwtDecode(token); // decode the token
-      const userId = decodedToken.Id; // Access the 'Id' claim
-      return userId; // or you can extract other fields like email, role, etc.
+      const decodedToken: any = jwtDecode(token);
+      return decodedToken.Id; // Extract user ID
     } catch (error) {
       console.error("Failed to decode token", error);
       return null;
     }
   };
 
-  // Example of using the function after logging in
   const handleReaderLogin = async (values: any) => {
     const { email, password } = values;
     try {
@@ -45,12 +40,12 @@ const Login: React.FC = () => {
         const token = response.token;
         localStorage.setItem("authToken", token);
 
-        // Decode the token to get the user ID
         const userId = decodeToken(token);
-        console.log("Decoded User ID:", userId);
-
-        // Use navigate to go to the dashboard and replace the current entry in the history
-        navigate("/", { replace: true });
+        if (userId) {
+          // Dispatch login action with token and userId
+          dispatch(login({ token, userId }));
+          navigate("/", { replace: true });
+        }
       } else {
         toast.error("Failed to log in as Tarot Reader. Please try again.");
       }
@@ -75,7 +70,6 @@ const Login: React.FC = () => {
             Welcome, please login with Google or as a Tarot Reader
           </h2>
 
-          {/* Google login button */}
           <div className="flex flex-col gap-4 mb-6">
             <Button
               type="primary"
@@ -86,7 +80,6 @@ const Login: React.FC = () => {
             </Button>
           </div>
 
-          {/* Button to toggle Tarot Reader login form */}
           <div className="text-center">
             <Button
               type="default"
@@ -99,25 +92,20 @@ const Login: React.FC = () => {
             </Button>
           </div>
 
-          {/* Tarot Reader login form */}
           {isReaderLogin && (
             <div className="mt-6">
               <Form layout="vertical" onFinish={handleReaderLogin}>
                 <Form.Item
                   label="Email"
                   name="email"
-                  rules={[
-                    { required: true, message: "Please enter your email!" },
-                  ]}
+                  rules={[{ required: true, message: "Please enter your email!" }]}
                 >
                   <Input placeholder="Enter email" />
                 </Form.Item>
                 <Form.Item
                   label="Password"
                   name="password"
-                  rules={[
-                    { required: true, message: "Please enter your password!" },
-                  ]}
+                  rules={[{ required: true, message: "Please enter your password!" }]}
                 >
                   <Input.Password placeholder="Enter password" />
                 </Form.Item>

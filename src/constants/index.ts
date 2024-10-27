@@ -16,7 +16,7 @@ export const ADMIN = {
 }
 export const TAROT_READER = {
     TAROT_READER_DASHBOARD: '/tarot-reader-dashboard',
-    TAROT_READER_DASHBOARD_CALENDAR: '/calendar',
+    TAROT_READER_DASHBOARD_CALENDAR: '/manage-bookings',
     TAROT_READER_DASHBOARD_POST: '/post-manager',
     TAROT_READER_DASHBOARD_ADD_POST: '/add-post',
     TAROT_READER_DASHBOARD_CARD_DECK: '/card-deck-manager',
@@ -51,6 +51,12 @@ export const AdminSidebarData = {
 export const TarotReaderSidebarData = {
     MenuTarotReaderItems: [
         { text: "Dashboard", icon: "AppstoreOutlined", url: "/tarot-reader-dashboard" },
+        { text: "Booking", icon: "UserOutlined", url: "/manage-booking" },
+        { text: "Topic", icon: "DollarOutlined", url: "/manage-topic" },
+        { text: "Bookings", icon: "CalendarOutlined", url: "/manage-bookings" },
+        { text: "Blogs", icon: "FileTextOutlined", url: "/manage-blogs" },
+        { text: "Settings", icon: "ToolOutlined", url: "/settings" },
+        { text: "Sign Out", icon: "LogoutOutlined", url: "/signout" },
     ]
 };
 

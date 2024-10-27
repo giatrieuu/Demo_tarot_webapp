@@ -102,6 +102,103 @@ const ApiService = {
       throw error;
     }
   },
+  // **Newly added function to fetch the list of group cards**
+  fetchGroupCardsList: async () => {
+    try {
+      const response = await api.get("/api/GroupCardWeb/groupCards-list");
+      return response.data; // Return the list of group cards from the API
+    } catch (error) {
+      console.error("Error fetching group cards list", error);
+      throw error;
+    }
+  },
+  // **Function to fetch group cards by reader ID**
+  fetchGroupCardsByReaderId: async (
+    readerId: string,
+    pageNumber = 1,
+    pageSize = 10
+  ) => {
+    try {
+      const response = await api.get(
+        `/api/GroupCardWeb/GetGroupCardsByReaderId/${readerId}`,
+        {
+          params: {
+            pageNumber,
+            pageSize,
+          },
+        }
+      );
+      return response.data; // Return the group cards data from the API
+    } catch (error) {
+      console.error("Error fetching group cards by reader ID", error);
+      throw error;
+    }
+  },
+  // **Newly added function to create a group card**
+  createGroupCard: async (name: string, image: File, readerId: string) => {
+    try {
+      const formData = new FormData();
+      formData.append("Name", name); // If API expects "Name", this is fine
+      formData.append("image", image); // This is correct for the image
+      formData.append("ReaderId", readerId); // Assuming "ReaderId" is correct key
+
+      const response = await api.post(
+        "/api/GroupCardWeb/create-groupCard",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data", // Correct header for form data
+          },
+        }
+      );
+
+      return response.data; // Return the response from the API
+    } catch (error) {
+      console.error("Error creating group card", error);
+      throw error;
+    }
+  },
+  // **Newly added function to fetch the booking list**
+  fetchBookingsList: async () => {
+    try {
+      const response = await api.get("/api/BookingWeb/bookings-list");
+      return response.data; // Return the booking list data from the API
+    } catch (error) {
+      console.error("Error fetching booking list", error);
+      throw error;
+    }
+  },
+  // Function to fetch bookings by reader ID
+  fetchBookingsByReaderId: async (
+    readerId: string,
+    pageNumber: number = 1,
+    pageSize: number = 10
+  ) => {
+    try {
+      const response = await api.get(
+        `/api/BookingWeb/GetBookingsByReaderId/${readerId}`,
+        {
+          params: {
+            pageNumber,
+            pageSize,
+          },
+        }
+      );
+      return response.data; // Return the response from the API
+    } catch (error) {
+      console.error("Error fetching bookings by reader ID", error);
+      throw error;
+    }
+  },
+  fetchUsersList: async () => {
+    try {
+      const response = await api.get("/api/UserWeb/users-list");
+      return response.data; // Return the list of users from the API
+    } catch (error) {
+      console.error("Error fetching users list", error);
+      throw error;
+    }
+  },
 };
 
 export default ApiService;

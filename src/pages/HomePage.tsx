@@ -10,7 +10,7 @@ const HomePage = () => {
       try {
         // Call the API to fetch the token
         const response = await ApiService.getToken();
-        const token = response.token?.result;  // Assuming the token is under `token.result`
+        const token = response.token?.result;  // Assuming the token is under token.result
 
         if (token) {
           // Store the token in localStorage
