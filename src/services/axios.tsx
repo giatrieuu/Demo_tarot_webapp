@@ -34,8 +34,8 @@ const ApiService = {
       throw error;
     }
   },
-   // Function to fetch user data with images by userId
-   getUserWithImages: async (userId: string) => {
+  // Function to fetch user data with images by userId
+  getUserWithImages: async (userId: string) => {
     try {
       const response = await api.get(`/api/UserWeb/user-with-images/${userId}`);
       return response.data; // Return the user data and images
@@ -44,7 +44,36 @@ const ApiService = {
       throw error;
     }
   },
-  
+
+  // Function to get notifications for a reader
+  getReaderNotifications: async (readerId: string) => {
+    try {
+      // Adjusted to use query parameters instead of URL segments
+      const response = await api.get(`/api/NotificationWeb/get-reader-noti`, {
+        params: {
+          readerId, // Pass the readerId as a query parameter
+        },
+      });
+      return response.data; // Return the notifications data
+    } catch (error) {
+      console.error("Error fetching reader notifications", error);
+      throw error;
+    }
+  },
+    // Function to fetch notifications for a user by userId
+    getUserNotifications: async (userId: string) => {
+      try {
+        const response = await api.get(`/api/NotificationWeb/get-user-noti`, {
+          params: {
+            userId, // Pass the userId as a query parameter
+          },
+        });
+        return response.data; // Return the notifications data from the API
+      } catch (error) {
+        console.error("Error fetching user notifications", error);
+        throw error;
+      }
+    },
 
   // Function to create a topic
   createTopic: async (name: string) => {

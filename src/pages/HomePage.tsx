@@ -1,35 +1,10 @@
-import React, { useEffect } from "react";
+
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import ApiService from "../services/axios"; // Assuming ApiService is correctly implemented
 import { Player } from "@lottiefiles/react-lottie-player";
 
 const HomePage = () => {
   const navigate = useNavigate();
-  useEffect(() => {
-    const fetchToken = async () => {
-      try {
-        // Call the API to fetch the token
-        const response = await ApiService.getToken();
-        const token = response.token?.result;  // Assuming the token is under token.result
 
-        if (token) {
-          // Store the token in localStorage
-          localStorage.setItem("authToken", token);
-          toast.success("Token retrieved successfully!");
-
-          // Optionally: you could use the token here for further actions
-          // or store it globally in a state management system if needed.
-        }
-      } catch (error) {
-        console.error("Error fetching token", error);
-        toast.error("Failed to retrieve token. Please try again.");
-      }
-    };
-
-    // Fetch the token when the homepage loads
-    fetchToken();
-  }, []); // Empty dependency array ensures this runs once when component mounts
 
 
   return (

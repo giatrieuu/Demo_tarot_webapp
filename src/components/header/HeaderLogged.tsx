@@ -1,11 +1,11 @@
-import { Layout, Input, Avatar, Dropdown, Menu, message } from "antd";
+import { Layout, Input, Avatar, Dropdown, Menu, message, Badge, Spin } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import { UserOutlined } from "@ant-design/icons";
-import { useDispatch, useSelector } from "react-redux"; // Import useSelector to get data from Redux store
-import { logout } from "../../redux/authSlice"; // Import the logout action
+import { UserOutlined, BellOutlined } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../redux/authSlice";
 import Logo from "../Logo";
-import ApiService from "../../services/axios"; // Import ApiService to fetch user data
-import { RootState } from "../../redux/store"; // Import RootState to define Redux store types
+import ApiService from "../../services/axios";
+import { RootState } from "../../redux/store";
 import { useEffect, useState } from "react";
 
 const { Header } = Layout;
@@ -14,35 +14,116 @@ const { Search } = Input;
 const AppHeader: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const userId = useSelector((state: RootState) => state.auth.userId); // Get userId from Redux state
-  const [userData, setUserData] = useState<any>(null); // State to hold user data
+  const userId = useSelector((state: RootState) => state.auth.userId);
+  const [userData, setUserData] = useState<any>(null);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [loadingNotifications, setLoadingNotifications] = useState<boolean>(true);
+  const [unreadCount, setUnreadCount] = useState<number>(0); // Track unread notifications
+  const [role, setRole] = useState<number | null>(null); // Track user role
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await ApiService.getUserWithImages(userId); // Assuming this API call fetches user data
-        setUserData(response); // Store the user data in state
+        const response = await ApiService.getUserWithImages(userId);
+        setUserData(response);
+
+        // Assuming the role is part of the user data response
+        setRole(response.user?.role);
       } catch (error) {
         message.error("Failed to fetch user data.");
       }
     };
 
     if (userId) {
-      fetchUserData(); // Fetch user data when userId is available
+      fetchUserData();
     }
   }, [userId]);
 
-  // Function to handle the logout process
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        setLoadingNotifications(true);
+        let response;
+
+        // Fetch notifications based on the role
+        if (role === 1) {
+          // For regular users
+          response = await ApiService.getUserNotifications(userId);
+        } else if (role === 22) {
+          // For tarot readers
+          response = await ApiService.getReaderNotifications(userId);
+        }
+
+        if (response) {
+          setNotifications(response); // Store notifications
+          const unread = response.filter((notification: any) => !notification.isRead).length;
+          setUnreadCount(unread); // Update count with unread notifications only
+        }
+
+        setLoadingNotifications(false);
+      } catch (error) {
+        message.error("Failed to fetch notifications.");
+        setLoadingNotifications(false);
+      }
+    };
+
+    if (userId && role !== null) {
+      fetchNotifications();
+    }
+  }, [userId, role]);
+
   const handleLogout = () => {
     dispatch(logout());
-    localStorage.removeItem("persist:root"); // Optionally clear persisted state
+    localStorage.removeItem("persist:root");
     navigate("/login");
   };
+
+  // Function to mark notifications as read
+  const handleNotificationClick = () => {
+    const updatedNotifications = notifications.map((notification) => ({
+      ...notification,
+      isRead: true, // Mark all notifications as read
+    }));
+
+    setNotifications(updatedNotifications);
+    setUnreadCount(0); // Reset unread count to zero
+
+    // Optionally, send an API request to update the read status on the server
+    // ApiService.markNotificationsAsRead(userId);
+  };
+
+  // Notification dropdown without border and adjusted position
+  const notificationDropdown = (
+    <div
+      style={{
+        width: '300px',
+        maxHeight: '400px',
+        overflowY: 'auto',
+        padding: '10px',
+        backgroundColor: 'white',
+        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+        marginTop: '12px', // Adjust this value to move the dropdown downward
+      }}
+    >
+      {loadingNotifications ? (
+        <Spin />
+      ) : notifications.length === 0 ? (
+        <p>No new notifications</p>
+      ) : (
+        notifications.map((notification) => (
+          <div key={notification.id} style={{ padding: '10px 0' }}>
+            <p>{notification.description}</p>
+            <small>{new Date(notification.createAt).toLocaleString()}</small>
+          </div>
+        ))
+      )}
+    </div>
+  );
 
   const menuItems = [
     {
       key: "welcome",
-      label: <span>Welcome, {userData?.user?.name || "Guest"}</span>, // Display user's name
+      label: <span>Welcome, {userData?.user?.name || "Guest"}</span>,
       disabled: true,
     },
     {
@@ -51,7 +132,7 @@ const AppHeader: React.FC = () => {
     },
     {
       key: "logout",
-      label: <span onClick={handleLogout}>Logout</span>, // Call handleLogout on click
+      label: <span onClick={handleLogout}>Logout</span>,
     },
   ];
 
@@ -65,21 +146,27 @@ const AppHeader: React.FC = () => {
         <Search placeholder="Search..." className="max-w-md" />
       </div>
 
-      <div className="flex space-x-4 mr-8">
+      <div className="flex space-x-6 items-center">
         <Link to="/blog" className="text-white">
           Blog
         </Link>
         <Link to="/list-tarot-reader" className="text-white">
           Booking
         </Link>
-      </div>
 
-      <div>
+        {/* Notification Bell with Dropdown */}
+        <Dropdown overlay={notificationDropdown} trigger={['click']} placement="bottomRight" onClick={handleNotificationClick}>
+          <Badge count={unreadCount} offset={[10, 0]}>
+            <BellOutlined className="text-white text-2xl cursor-pointer" />
+          </Badge>
+        </Dropdown>
+
+        {/* User Avatar */}
         <Dropdown overlay={menu} placement="bottomRight" arrow trigger={["hover"]}>
           <Avatar
             size="large"
-            src={userData?.url?.[0]} // Use the first image from the url array for the avatar
-            icon={!userData?.url ? <UserOutlined /> : undefined} // Default icon if no image
+            src={userData?.url?.[0]}
+            icon={!userData?.url ? <UserOutlined /> : undefined}
             className="cursor-pointer bg-[#5F8D8D]"
           />
         </Dropdown>
