@@ -12,18 +12,15 @@ const Register = lazy(() => import("../pages/Register"));
 const ForgotPassword = lazy(() => import("../pages/ForgotPassword"));
 const ListReaders = lazy(() => import("../pages/ListTarotReader"));
 const ReaderDetail = lazy(() => import("../pages/ReaderDetail"));
-const BlogPage = lazy(() => import("../pages/Blog"));
+const BlogPage = lazy(() => import("../pages/Blog/BlogDetail"));
+const BlogDetail = lazy(() => import("../pages/Blog/BlogDetail"));
+
 const ManagerBooking = lazy(() => import("../pages/Tarot-Reader/CalendarPage"));
 const PostManager = lazy(() => import("../pages/Tarot-Reader/PostManager"));
 const Profile = lazy(() => import("../pages/Profile"));
 const NewPost = lazy(() => import("../pages/Tarot-Reader/NewPost"));
 const TopicManagement = lazy(() => import("../pages/Admin/TopicManagement"));
-const CardDrawGuide = lazy(
-  () => import("../pages/CardDrawGuide/CardDrawGuide")
-);
-const CardDeckManager = lazy(
-  () => import("../pages/Tarot-Reader/CardDeckManager")
-);
+const CardDeckManager = lazy(() => import("../pages/Tarot-Reader/CardDeckManager"));
 
 const ShuffleCard = lazy(() => import("../pages/CardDrawGuide/ShuffleCard"));
 const CardMeaning = lazy(() => import("../pages/CardDrawGuide/CardMeaning"));

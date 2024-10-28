@@ -1,29 +1,7 @@
-
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import ApiService from "../services/axios"; // Assuming ApiService is correctly implemented
 
 const HomePage = () => {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchToken = async () => {
-      try {
-        const response = await ApiService.getToken();
-        const token = response.token?.result;
-
-        if (token) {
-          localStorage.setItem("authToken", token);
-          toast.success("Token retrieved successfully!");
-        }
-      } catch (error) {
-        console.error("Error fetching token", error);
-        toast.error("Failed to retrieve token. Please try again.");
-      }
-    };
-
-    fetchToken();
-  }, []);
 
   return (
     <div className="bg-black min-h-screen">

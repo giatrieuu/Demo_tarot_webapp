@@ -9,6 +9,7 @@ import { RootState } from "../../redux/store";
 import { useEffect, useState } from "react";
 
 const { Header } = Layout;
+const { Search } = Input;
 
 const AppHeader: React.FC = () => {
   const dispatch = useDispatch();

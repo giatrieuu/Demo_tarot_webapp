@@ -33,6 +33,7 @@
     "react-router-dom": "^6.26.2",
     "react-toastify": "^10.0.5",
     "redux": "^5.0.1",
+    "redux-persist": "^6.0.0",
     "tinymce": "^7.4.1"
   },
   "devDependencies": {
