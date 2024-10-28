@@ -5,7 +5,8 @@ import { Upload, message, Button, Input, Avatar } from "antd";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import ApiService from "../services/axios"; // Import ApiService for fetching and updating image
-import ImgCrop from 'antd-img-crop'; // Import for image cropping feature
+import ImgCrop from "antd-img-crop"; // Import for image cropping feature
+import dayjs from "dayjs"; // Import dayjs for handling date formatting
 
 interface FollowUser {
   id: number;
@@ -17,12 +18,11 @@ const Profile: React.FC = () => {
   const userId = useSelector((state: RootState) => state.auth.userId); // Get userId from Redux store
   const [userData, setUserData] = useState<any>(null); // State to hold user data
   const [imageUrl, setImageUrl] = useState<string | null>(null); // State to hold profile image URL
-  const [fullName, setFullName] = useState<string>("Nguyễn Quang Huy");
-  const [email, setEmail] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
-  const [gender, setGender] = useState<string>("");
-  const [dob, setDob] = useState<string>("");
-  const [biography, setBiography] = useState<string>("");
+  const [fullName, setFullName] = useState<string>(""); // Initialize as an empty string
+  const [email, setEmail] = useState<string>(""); // Initialize email
+  const [phone, setPhone] = useState<string>(""); // Initialize phone
+  const [dob, setDob] = useState<string>(""); // Initialize dob
+  const [biography, setBiography] = useState<string>(""); // Initialize biography
 
   const follows: FollowUser[] = [
     { id: 1, name: "Glucozo10" },
@@ -30,6 +30,7 @@ const Profile: React.FC = () => {
     { id: 3, name: "Glucozo10" },
   ];
 
+  // Fetch user data
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -38,8 +39,9 @@ const Profile: React.FC = () => {
         setFullName(user?.name || "");
         setEmail(user?.email || "");
         setPhone(user?.phone || "");
-        setGender(user?.gender || "");
-        setDob(user?.dob || "");
+
+        // Format the date before setting
+        setDob(user?.dob ? dayjs(user.dob).format("YYYY-MM-DD") : ""); 
         setBiography(user?.description || "");
         setImageUrl(response?.url?.[0] || null); // Store profile image URL
         setUserData(response);
@@ -53,47 +55,58 @@ const Profile: React.FC = () => {
     }
   }, [userId]);
 
-  const handleBack = () => {
-    navigate(-1);
-  };
-
+  // Handle profile information save
   const handleSave = async () => {
     try {
-      await ApiService.updateUserProfile({
-        id: userId,
-        name: fullName,
-        email,
-        phone,
-        gender,
-        dob,
-        description: biography,
-      });
+      // Prepare the data to be sent for updating the profile
+      const updateData: { [key: string]: string | undefined } = {
+        id: userId, // Include the user ID
+        name: fullName || undefined, // If name is present, send it
+        phone: phone || undefined, // If phone is present, send it
+        description: biography || undefined, // If description is present, send it
+        dob: dob || undefined, // If dob is present, send it
+      };
+
+      // Call the updateUserProfile API to save the updated user information
+      await ApiService.updateUser(updateData);
       message.success("Profile updated successfully");
     } catch (error) {
       message.error("Failed to save profile.");
     }
   };
 
+  // Handle profile image upload
   const handleImageUpload = async (file: File) => {
     try {
       const formData = new FormData();
-      formData.append('file', file); // Append file to the formData for uploading
-      const response = await ApiService.updateProfileImage(userId, formData); // API to handle profile image update
-      setImageUrl(response?.url); // Update the image URL on successful upload
-      message.success("Image updated successfully");
+      formData.append("File", file); // Use 'File' as the key, matching the API
+      formData.append("UserId", userId); // Add the userId from your Redux store
+      formData.append("PostId", ""); // Assuming no PostId for profile, pass empty
+      formData.append("GroupId", ""); // Assuming no GroupId for profile, pass empty
+      formData.append("ReaderId", ""); // Assuming no ReaderId for profile, pass empty
+
+      const response = await ApiService.updateImage(formData); // Adjusted API call
+
+      if (response?.url) {
+        setImageUrl(response.url); // Update image URL in state after successful upload
+        message.success("Image updated successfully");
+      } else {
+        message.error("Failed to get image URL");
+      }
     } catch (error) {
-      message.error("Failed to upload image.");
+      message.error("Failed to upload image");
     }
   };
 
+  // Before uploading image validation
   const beforeUpload = (file: File) => {
-    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     if (!isJpgOrPng) {
-      message.error('You can only upload JPG/PNG files!');
+      message.error("You can only upload JPG/PNG files!");
     }
     const isLt2M = file.size / 1024 / 1024 < 2;
     if (!isLt2M) {
-      message.error('Image must smaller than 2MB!');
+      message.error("Image must be smaller than 2MB!");
     }
     return isJpgOrPng && isLt2M;
   };
@@ -102,7 +115,7 @@ const Profile: React.FC = () => {
     <div className="bg-[#D3E0DC] min-h-screen p-8">
       {/* Header */}
       <div className="flex items-center gap-2 mb-6">
-        <Button onClick={handleBack} icon={<LeftOutlined />}>
+        <Button onClick={() => navigate(-1)} icon={<LeftOutlined />}>
           Back
         </Button>
       </div>
@@ -122,7 +135,9 @@ const Profile: React.FC = () => {
                   <Upload
                     showUploadList={false} // Hide the default upload list UI
                     beforeUpload={beforeUpload} // Add validation for file type and size
-                    customRequest={({ file }) => handleImageUpload(file as File)} // Handle custom upload
+                    customRequest={({ file }) =>
+                      handleImageUpload(file as File)
+                    } // Handle custom upload
                   >
                     {imageUrl ? (
                       <Avatar
@@ -171,17 +186,6 @@ const Profile: React.FC = () => {
                 onChange={(e) => setPhone(e.target.value)}
               />
               <div className="flex gap-4">
-                <select
-                  className="border p-2 rounded-md w-1/2"
-                  value={gender}
-                  onChange={(e) => setGender(e.target.value)}
-                >
-                  <option value="">Select Gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                </select>
-
                 <Input
                   type="date"
                   className="w-1/2"
@@ -228,7 +232,9 @@ const Profile: React.FC = () => {
                 <HeartFilled className="text-red-500" />
               </div>
             ))}
-            <Button type="link" className="mt-2">+More</Button>
+            <Button type="link" className="mt-2">
+              +More
+            </Button>
           </div>
         </div>
       </div>

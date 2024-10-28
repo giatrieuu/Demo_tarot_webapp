@@ -7,6 +7,7 @@ import Logo from "../Logo";
 import ApiService from "../../services/axios";
 import { RootState } from "../../redux/store";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const { Header } = Layout;
 const { Search } = Input;
@@ -24,11 +25,13 @@ const AppHeader: React.FC = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await ApiService.getUserWithImages(userId);
-        setUserData(response);
+        if (userId) {
+          const response = await ApiService.getUserWithImages(userId); // Only fetch when userId is valid
+          setUserData(response);
 
-        // Assuming the role is part of the user data response
-        setRole(response.user?.role);
+          // Assuming the role is part of the user data response
+          setRole(response.user?.role);
+        }
       } catch (error) {
         message.error("Failed to fetch user data.");
       }
@@ -42,25 +45,27 @@ const AppHeader: React.FC = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        setLoadingNotifications(true);
-        let response;
+        if (userId && role !== null) {
+          setLoadingNotifications(true);
+          let response;
 
-        // Fetch notifications based on the role
-        if (role === 1) {
-          // For regular users
-          response = await ApiService.getUserNotifications(userId);
-        } else if (role === 22) {
-          // For tarot readers
-          response = await ApiService.getReaderNotifications(userId);
+          // Fetch notifications based on the role
+          if (role === 1) {
+            // For regular users
+            response = await ApiService.getUserNotifications(userId);
+          } else if (role === 22) {
+            // For tarot readers
+            response = await ApiService.getReaderNotifications(userId);
+          }
+
+          if (response) {
+            setNotifications(response); // Store notifications
+            const unread = response.filter((notification: any) => !notification.isRead).length;
+            setUnreadCount(unread); // Update count with unread notifications only
+          }
+
+          setLoadingNotifications(false);
         }
-
-        if (response) {
-          setNotifications(response); // Store notifications
-          const unread = response.filter((notification: any) => !notification.isRead).length;
-          setUnreadCount(unread); // Update count with unread notifications only
-        }
-
-        setLoadingNotifications(false);
       } catch (error) {
         message.error("Failed to fetch notifications.");
         setLoadingNotifications(false);
@@ -72,24 +77,29 @@ const AppHeader: React.FC = () => {
     }
   }, [userId, role]);
 
-  const handleLogout = () => {
-    dispatch(logout());
-    localStorage.removeItem("persist:root");
-    navigate("/login");
-  };
-
-  // Function to mark notifications as read
-  const handleNotificationClick = () => {
-    const updatedNotifications = notifications.map((notification) => ({
-      ...notification,
-      isRead: true, // Mark all notifications as read
-    }));
-
-    setNotifications(updatedNotifications);
-    setUnreadCount(0); // Reset unread count to zero
-
-    // Optionally, send an API request to update the read status on the server
-    // ApiService.markNotificationsAsRead(userId);
+  const handleLogout = async () => {
+    try {
+      // Call the API to log out if the user is logged in via Google
+      const token = localStorage.getItem('authToken');
+      
+      if (token) {
+        // Assuming token is the indicator that the user is logged in via Google
+        await ApiService.logoutUser(); // Call the logout API for Google
+        localStorage.removeItem('authToken'); // Remove the token from localStorage
+        sessionStorage.removeItem("authToken");
+        toast.success("Logged out successfully from Google.");
+      }
+  
+      // Dispatch logout action from Redux
+      dispatch(logout());
+      localStorage.removeItem("persist:root"); // Remove persisted Redux state
+  
+      // Navigate to home page
+      navigate("/");
+    } catch (error) {
+      toast.error("Failed to log out.");
+      console.error("Logout failed", error);
+    }
   };
 
   // Notification dropdown without border and adjusted position
@@ -120,6 +130,12 @@ const AppHeader: React.FC = () => {
     </div>
   );
 
+  const handleDashboardClick = () => {
+    if (role === 2) {
+      navigate("/admin-dashboard"); // Navigate to admin dashboard
+    }
+  };
+
   const menuItems = [
     {
       key: "welcome",
@@ -130,11 +146,18 @@ const AppHeader: React.FC = () => {
       key: "profile",
       label: <Link to="/my-profile">My Profile</Link>,
     },
+    // Conditionally render "Dashboard" option for admins
+    role === 2
+      ? {
+          key: "dashboard",
+          label: <span onClick={handleDashboardClick}>Dashboard</span>,
+        }
+      : null,
     {
       key: "logout",
       label: <span onClick={handleLogout}>Logout</span>,
     },
-  ];
+  ].filter(Boolean); // Filter out null items
 
   const menu = <Menu items={menuItems} />;
 
@@ -154,22 +177,34 @@ const AppHeader: React.FC = () => {
           Booking
         </Link>
 
-        {/* Notification Bell with Dropdown */}
-        <Dropdown overlay={notificationDropdown} trigger={['click']} placement="bottomRight" onClick={handleNotificationClick}>
-          <Badge count={unreadCount} offset={[10, 0]}>
-            <BellOutlined className="text-white text-2xl cursor-pointer" />
-          </Badge>
-        </Dropdown>
+        {/* Show different content based on whether the user is logged in or not */}
+        {userId ? (
+          <>
+            {/* Notification Bell with Dropdown */}
+            <Dropdown overlay={notificationDropdown} trigger={['click']} placement="bottomRight">
+              <Badge count={unreadCount} offset={[10, 0]}>
+                <BellOutlined className="text-white text-2xl cursor-pointer" />
+              </Badge>
+            </Dropdown>
 
-        {/* User Avatar */}
-        <Dropdown overlay={menu} placement="bottomRight" arrow trigger={["hover"]}>
-          <Avatar
-            size="large"
-            src={userData?.url?.[0]}
-            icon={!userData?.url ? <UserOutlined /> : undefined}
-            className="cursor-pointer bg-[#5F8D8D]"
-          />
-        </Dropdown>
+            {/* User Avatar */}
+            <Dropdown overlay={menu} placement="bottomRight" arrow trigger={["hover"]}>
+              <Avatar
+                size="large"
+                src={userData?.url?.[0]}
+                icon={!userData?.url ? <UserOutlined /> : undefined}
+                className="cursor-pointer bg-[#5F8D8D]"
+              />
+            </Dropdown>
+          </>
+        ) : (
+          <Link
+            to="/login"
+            className="text-white bg-[#91a089] px-4 py-2 rounded hover:bg-[#72876e]"
+          >
+            Sign In
+          </Link>
+        )}
       </div>
     </Header>
   );

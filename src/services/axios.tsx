@@ -1,4 +1,5 @@
 import axios from "axios";
+import { defaultAxiosInstance, tokenAxiosInstance } from "./axiosInstance";
 
 const API_URL = "https://www.bookingtarot.somee.com";
 
@@ -34,7 +35,17 @@ const ApiService = {
       throw error;
     }
   },
-  // Function to fetch user data with images by userId
+  // Function to log out the user
+  logoutUser: async () => {
+    try {
+      const response = await api.post("/Auth/logout", {});
+      return response.data; // Return the logout response
+    } catch (error) {
+      console.error("Error logging out", error);
+      throw error;
+    }
+  },
+  // Function to fetch user data with images by userId  
   getUserWithImages: async (userId: string) => {
     try {
       const response = await api.get(`/api/UserWeb/user-with-images/${userId}`);
@@ -60,20 +71,20 @@ const ApiService = {
       throw error;
     }
   },
-    // Function to fetch notifications for a user by userId
-    getUserNotifications: async (userId: string) => {
-      try {
-        const response = await api.get(`/api/NotificationWeb/get-user-noti`, {
-          params: {
-            userId, // Pass the userId as a query parameter
-          },
-        });
-        return response.data; // Return the notifications data from the API
-      } catch (error) {
-        console.error("Error fetching user notifications", error);
-        throw error;
-      }
-    },
+  // Function to fetch notifications for a user by userId
+  getUserNotifications: async (userId: string) => {
+    try {
+      const response = await api.get(`/api/NotificationWeb/get-user-noti`, {
+        params: {
+          userId, // Pass the userId as a query parameter
+        },
+      });
+      return response.data; // Return the notifications data from the API
+    } catch (error) {
+      console.error("Error fetching user notifications", error);
+      throw error;
+    }
+  },
 
   // Function to create a topic
   createTopic: async (name: string) => {
@@ -255,6 +266,43 @@ const ApiService = {
       return response.data; // Return the list of blog posts from the API
     } catch (error) {
       console.error("Error fetching blog list", error);
+      throw error;
+    }
+  },
+  // Function to update user data
+  updateUser: async (data: any) => {
+    try {
+      const formData = new FormData();
+
+      // Append only the available fields to the form data
+      if (data.id) formData.append("Id", data.id);
+      if (data.name) formData.append("Name", data.name);
+      if (data.phone) formData.append("Phone", data.phone);
+      if (data.description) formData.append("Description", data.description);
+      if (data.dob) formData.append("Dob", data.dob);
+
+      const response = await defaultAxiosInstance.post("/api/UserWeb/update-user", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error("Error updating user profile", error);
+      throw error;
+    }
+  },
+  updateImage: async (formData: FormData) => {
+    try {
+      const response = await api.post("/api/Images/UpdateImage", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data; // Return the response from the API
+    } catch (error) {
+      console.error('Error updating image', error);
       throw error;
     }
   },

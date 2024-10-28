@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Table, Button, Dropdown, Menu, Modal, Form, Input, message } from 'antd';
 import { MoreOutlined, UserAddOutlined } from '@ant-design/icons';
-import AppHeader from '../../components/header/Header';
+import AppHeader from '../../components/header/HeaderLogged';
 import AdminSidebar from '../../components/sidebar/AdminSidebar';
 import ApiService from '../../services/axios'; // Import the ApiService
 

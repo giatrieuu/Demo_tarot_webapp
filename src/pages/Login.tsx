@@ -14,7 +14,6 @@ const Login: React.FC = () => {
   // Function to handle Google login
   const handleGoogleLogin = () => {
     try {
-      // Redirect to the OAuth login endpoint
       window.location.href = "https://www.bookingtarot.somee.com/Auth/redirect";
     } catch (error) {
       console.error("Google login failed", error);
@@ -39,8 +38,6 @@ const Login: React.FC = () => {
         // Dispatch login action with token and userId
         dispatch(login({ token, userId }));
 
-        // Navigate to homepage
-        navigate("/", { replace: true });
         toast.success("Logged in successfully!");
       } else {
         toast.error("Failed to retrieve Google token.");
@@ -65,7 +62,7 @@ const Login: React.FC = () => {
   // Effect to trigger token fetching after redirect
   useEffect(() => {
     fetchGoogleToken();
-  }, []); // Run once after component mounts
+  }, ); // Run once after component mounts
 
   const handleReaderLogin = async (values: any) => {
     const { email, password } = values;
