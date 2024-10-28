@@ -1,185 +1,230 @@
-import React, { useState } from 'react';
-import { Table, Button, Input, Space, Modal, Form, Upload } from 'antd';
-import { EditOutlined, DeleteOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
-import 'antd/dist/reset.css';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import {
+  Layout,
+  Table,
+  Button,
+  Tooltip,
+  Modal,
+  Input,
+  Form,
+  message,
+  Upload,
+} from "antd";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  PlusOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
+import AppHeader from "../../components/header/HeaderLogged";
+import TarotReaderSidebar from "../../components/sidebar/TarotReaderSidebar";
+import ApiService from "../../services/axios";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+
+const { Content } = Layout;
 
 const CardDeckManager: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showMenu] = useState(true);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [cardDecks, setCardDecks] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [newCardDeckName, setNewCardDeckName] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [description, setDescription] = useState(""); // New state for description
   const [form] = Form.useForm();
-  const navigate = useNavigate();
-  // Sample Data
-  const dataSource = [
-    {
-      key: '1',
-      st: '1',
-      id: 'Card deck 1',
-      name: 'Name card deck 1',
-      createDate: '10 - 10 -2024',
-      topics: 'Love, Study, Money',
-      lastModified: '10 - 10 -2024',
-    },
-    {
-      key: '2',
-      st: '2',
-      id: 'Card deck 2',
-      name: 'Name card deck 2',
-      createDate: '10 - 10 -2024',
-      topics: 'Love',
-      lastModified: '10 - 10 -2024',
-    },
-    {
-      key: '3',
-      st: '3',
-      id: 'Card deck 3',
-      name: 'Name card deck 2',
-      createDate: '10 - 10 -2024',
-      topics: 'Love',
-      lastModified: '10 - 10 -2024',
-    },
-  ];
+  const userId = useSelector((state: RootState) => state.auth.userId);
 
-  // Table Columns
-  const columns = [
-    {
-      title: 'St',
-      dataIndex: 'st',
-      key: 'st',
-      align: 'center' as const,
-    },
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-    },
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      render: (text: string) => <b>{text}</b>,
-    },
-    {
-      title: 'Create date',
-      dataIndex: 'createDate',
-      key: 'createDate',
-    },
-    {
-      title: 'Topics',
-      dataIndex: 'topics',
-      key: 'topics',
-    },
-    {
-      title: 'Last modified',
-      dataIndex: 'lastModified',
-      key: 'lastModified',
-    },
-    {
-      title: 'Action',
-      key: 'action',
-      render: () => (
-        <Space size="middle">
-          <Button icon={<EditOutlined />} type="primary" className="bg-[#91A089]">
-            Edit
-          </Button>
-          <Button icon={<DeleteOutlined />} danger>
-            Delete
-          </Button>
-        </Space>
-      ),
-      align: 'center' as const,
-    },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        if (userId) {
+          const data = await ApiService.fetchGroupCardsByReaderId(userId, 1, 10);
+          setCardDecks(data);
+        }
+      } catch (error) {
+        message.error("Failed to load card decks");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [userId]);
 
-  // Modal Handlers
-  const showModal = () => {
-    setIsModalOpen(true);
+  const handleCreateCardDeck = async () => {
+    if (!newCardDeckName.trim() || !imageFile || !description.trim()) {
+      message.error("Card deck name, image, and description are required");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const formData = new FormData();
+      formData.append("Name", newCardDeckName);
+      formData.append("image", imageFile); // Image file
+      formData.append("ReaderId", userId); // ReaderId from Redux
+      formData.append("Description", description); // Append the description
+
+      // Call the API to create a group card
+      const response = await ApiService.createGroupCard(
+        newCardDeckName,
+        imageFile,
+        userId,
+        description // Pass the description to the API service
+      );
+
+      // Add the newly created card deck to the list
+      setCardDecks([...cardDecks, { id: response.id, name: newCardDeckName, description }]);
+
+      message.success("Card deck created successfully!");
+      setIsModalVisible(false);
+      setNewCardDeckName("");
+      setImageFile(null);
+      setDescription(""); // Reset the description
+    } catch (error) {
+      message.error("Failed to create card deck");
+    } finally {
+      setLoading(false);
+    }
   };
 
-const handleOk = () => {
-  form.validateFields().then((values) => {
-      console.log('Form values:', values); // Here, you would handle the form submission
-      setIsModalOpen(false);
-      form.resetFields();
-      navigate(`/card-deck-upload/${createdDeckId}`);
-    });
+  const showModal = () => {
+    setIsModalVisible(true);
   };
 
   const handleCancel = () => {
-    setIsModalOpen(false);
-    form.resetFields();
+    setIsModalVisible(false);
+    setNewCardDeckName("");
+    setImageFile(null);
+    setDescription(""); // Reset the description
   };
 
+  const columns = [
+    {
+      title: "STT",
+      dataIndex: "id",
+      key: "id",
+      align: "center" as "center",
+      width: "10%",
+      render: (_: any, __: any, index: number) => index + 1,
+    },
+    {
+      title: "Card Deck Name",
+      dataIndex: "name",
+      key: "name",
+      align: "left" as "left",
+      width: "60%",
+    },
+    {
+      title: "Description", // New column for description
+      dataIndex: "description",
+      key: "description",
+      align: "left" as "left",
+      width: "20%",
+    },
+    {
+      title: "Action",
+      key: "action",
+      align: "center" as "center",
+      width: "20%",
+      render: (_: any, record: any) => (
+        <div className="flex justify-center space-x-2">
+          <Tooltip title="Edit">
+            <Button
+              type="primary"
+              shape="round"
+              icon={<EditOutlined />}
+              onClick={() => handleEdit(record.id, record.name)}
+            />
+          </Tooltip>
+          <Tooltip title="Delete">
+            <Button
+              type="primary"
+              shape="round"
+              danger
+              icon={<DeleteOutlined />}
+              onClick={() => handleDelete(record.id, record.name)}
+            />
+          </Tooltip>
+        </div>
+      ),
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-[#EDF3E8] p-8">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-3xl font-bold">Card deck</h2>
-        <Button
-          type="primary"
-          shape="circle"
-          icon={<PlusOutlined />}
-          size="large"
-          className="bg-[#91A089]"
-          onClick={showModal}
-        />
-      </div>
+    <Layout style={{ minHeight: "100vh" }}>
+      <AppHeader />
+      <Layout>
+        <TarotReaderSidebar showMenu={showMenu} />
+        <Layout className={`transition-all duration-300 ${showMenu ? "ml-56" : "ml-0"}`}>
+          <Content style={{ padding: "24px" }}>
+            <div className="flex justify-between items-center mb-6">
+              <h1 className="text-2xl font-bold">Card Deck Management</h1>
+              <Button type="primary" icon={<PlusOutlined />} onClick={showModal}>
+                + Create Card Deck
+              </Button>
+            </div>
+            <p className="mb-6">Manage all your card decks from this panel.</p>
 
-      {/* Search Bar */}
-      <div className="mb-4 flex">
-        <Input.Search
-          placeholder="Keyword"
-          allowClear
-          className="mr-2 max-w-xs"
-          enterButton="Search"
-        />
-      </div>
+            <Table
+              dataSource={cardDecks}
+              columns={columns}
+              rowKey="id"
+              rowSelection={{
+                selectedRowKeys,
+                onChange: setSelectedRowKeys,
+              }}
+              pagination={false}
+              loading={loading}
+            />
 
-      {/* Table */}
-      <Table
-        dataSource={dataSource}
-        columns={columns}
-        pagination={false}
-        bordered
-        className="bg-white"
-      />
+            <Modal
+              title="Create New Card Deck"
+              visible={isModalVisible}
+              onOk={handleCreateCardDeck}
+              onCancel={handleCancel}
+              okText="Create"
+              cancelText="Cancel"
+              centered
+            >
+              <Form layout="vertical">
+                <Form.Item label="Card Deck Name">
+                  <Input
+                    value={newCardDeckName}
+                    onChange={(e) => setNewCardDeckName(e.target.value)}
+                    placeholder="Enter card deck name"
+                  />
+                </Form.Item>
 
-      {/* Modal for Adding New Card Deck */}
-      <Modal
-        title="New card deck"
-        visible={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        okText="Create"
-        cancelText="Cancel"
-      >
-        <Form form={form} layout="vertical">
-          <Form.Item
-            name="cardDeckName"
-            label="Card deck name"
-            rules={[{ required: true, message: 'Please input the card deck name!' }]}
-          >
-            <Input placeholder="Enter card deck name" />
-          </Form.Item>
+                <Form.Item label="Description">
+                  <Input.TextArea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Enter description"
+                  />
+                </Form.Item>
 
-          <Form.Item
-            name="description"
-            label="Description"
-            rules={[{ required: true, message: 'Please input the description!' }]}
-          >
-            <Input.TextArea rows={3} placeholder="Enter description" />
-          </Form.Item>
-
-          <Form.Item
-            name="image"
-            label="Image"
-            rules={[{ required: true, message: 'Please upload an image!' }]}
-          >
-            <Upload maxCount={1}>
-              <Button icon={<UploadOutlined />}>Choose files</Button>
-            </Upload>
-          </Form.Item>
-        </Form>
-      </Modal>
-    </div>
+                <Form.Item label="Image">
+                  <Upload
+                    maxCount={1}
+                    beforeUpload={(file) => {
+                      setImageFile(file); // Manually set the image file
+                      return false; // Prevent automatic upload
+                    }}
+                    onRemove={() => setImageFile(null)} // Handle file removal
+                  >
+                    <Button icon={<UploadOutlined />}>Choose files</Button>
+                  </Upload>
+                </Form.Item>
+              </Form>
+            </Modal>
+          </Content>
+        </Layout>
+      </Layout>
+    </Layout>
   );
 };
 

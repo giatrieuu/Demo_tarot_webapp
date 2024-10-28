@@ -23,12 +23,11 @@ const TarotReaderDashboard: React.FC = () => {
         {/* Content Section */}
         <Layout className={`transition-all duration-300 ${showMenu ? 'ml-56' : 'ml-0'}`}>
           <Content style={{ padding: '24px' }}>
-            <Routes>
-              {/* Điều hướng mặc định về trang dashboard */}
-              <Route path="/" element={<Navigate to="/tarot-reader-dashboard" replace />} />
-              <Route path="/calendar" element={<CalendarPage />} />
-              {/* Các route khác nếu cần */}
-            </Routes>
+          <div>
+              <h1 className="text-xl font-bold">Admin Dashboard</h1>
+              <p>Welcome to the admin dashboard! This is the content area.</p>
+              {/* Add more content here as needed */}
+            </div>
           </Content>
         </Layout>
       </Layout>
