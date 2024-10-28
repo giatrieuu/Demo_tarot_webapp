@@ -34,7 +34,7 @@ export const PUBLIC = {
     PROFILE: '/my-profile',
     CARD_DRAW: '/card-draw',
     CARD_MEANING: '/card-meaning',
-    BLOG_DETAIL: '/blog/:id',
+    BLOG_DETAIL: '/post-detail/:id',
 };
 
 export const AdminSidebarData = {

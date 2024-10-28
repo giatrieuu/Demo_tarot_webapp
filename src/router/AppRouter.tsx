@@ -12,7 +12,7 @@ const Register = lazy(() => import("../pages/Register"));
 const ForgotPassword = lazy(() => import("../pages/ForgotPassword"));
 const ListReaders = lazy(() => import("../pages/ListTarotReader"));
 const ReaderDetail = lazy(() => import("../pages/ReaderDetail"));
-const BlogPage = lazy(() => import("../pages/Blog/BlogDetail"));
+const BlogPage = lazy(() => import("../pages/Blog/Blog"));
 const BlogDetail = lazy(() => import("../pages/Blog/BlogDetail"));
 
 const ManagerBooking = lazy(() => import("../pages/Tarot-Reader/CalendarPage"));

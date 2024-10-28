@@ -139,25 +139,21 @@ const AppHeader: React.FC = () => {
   const menu = <Menu items={menuItems} />;
 
   return (
-    <Header className="flex justify-between items-center bg-[#2C4551] shadow-md p-4">
+    <Header className="flex justify-between items-center bg-white shadow-md p-4">
       <Logo />
 
-      <div className="flex-1 text-center mt-8">
-        <Search placeholder="Search..." className="max-w-md" />
-      </div>
-
       <div className="flex space-x-6 items-center">
-        <Link to="/blog" className="text-white">
-          Blog
-        </Link>
-        <Link to="/list-tarot-reader" className="text-white">
+        <Link to="/list-tarot-reader" className="text-[#4a044e] hover:text-[#a21caf] hover:scale-105" style={{ fontFamily: 'Uncial Antiqua' }}>
           Booking
+        </Link>
+        <Link to="/blog" className="text-[#4a044e] hover:text-[#a21caf] hover:scale-105" style={{ fontFamily: 'Uncial Antiqua' }}>
+          Blog
         </Link>
 
         {/* Notification Bell with Dropdown */}
         <Dropdown overlay={notificationDropdown} trigger={['click']} placement="bottomRight" onClick={handleNotificationClick}>
           <Badge count={unreadCount} offset={[10, 0]}>
-            <BellOutlined className="text-white text-2xl cursor-pointer" />
+            <BellOutlined className="text-[#4a044e] text-2xl cursor-pointer" />
           </Badge>
         </Dropdown>
 

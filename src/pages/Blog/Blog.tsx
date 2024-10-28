@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Typography, Spin } from 'antd';
+import { Card, Typography } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import ApiService from '../../services/axios';
@@ -21,21 +21,17 @@ interface Blog {
 const BlogPage: React.FC = () => {
   const navigate = useNavigate();
   const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        setLoading(true);
-        const response = await ApiService.fetchBlogList(1, 10);
-        setBlogs(response);
+        const response = await ApiService.getPosts();
+        setBlogs(response.posts);
       } catch (err) {
         console.error("Error fetching blog list:", err);
         setError("Failed to fetch blogs");
-      } finally {
-        setLoading(false);
       }
     };
     fetchBlogs();
@@ -50,7 +46,6 @@ const BlogPage: React.FC = () => {
     setBlogs(filteredBlogs);
   };
 
-  if (loading) return <Spin tip="Loading..." />;
   if (error) return <div>{error}</div>;
 
   return (
@@ -90,7 +85,7 @@ const BlogPage: React.FC = () => {
               key={blog.post.id}
               hoverable
               className="rounded-lg overflow-hidden bg-white shadow-md text-black"
-              onClick={() => navigate(`/blog/${blog.post.id}`)}
+              onClick={() => {navigate(`/post-detail/${blog.post.id}`) }}
               cover={
                 <img
                   src={blog.url || 'https://via.placeholder.com/150'}

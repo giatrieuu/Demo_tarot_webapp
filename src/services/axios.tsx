@@ -60,20 +60,20 @@ const ApiService = {
       throw error;
     }
   },
-    // Function to fetch notifications for a user by userId
-    getUserNotifications: async (userId: string) => {
-      try {
-        const response = await api.get(`/api/NotificationWeb/get-user-noti`, {
-          params: {
-            userId, // Pass the userId as a query parameter
-          },
-        });
-        return response.data; // Return the notifications data from the API
-      } catch (error) {
-        console.error("Error fetching user notifications", error);
-        throw error;
-      }
-    },
+  // Function to fetch notifications for a user by userId
+  getUserNotifications: async (userId: string) => {
+    try {
+      const response = await api.get(`/api/NotificationWeb/get-user-noti`, {
+        params: {
+          userId, // Pass the userId as a query parameter
+        },
+      });
+      return response.data; // Return the notifications data from the API
+    } catch (error) {
+      console.error("Error fetching user notifications", error);
+      throw error;
+    }
+  },
 
   // Function to create a topic
   createTopic: async (name: string) => {
@@ -246,15 +246,21 @@ const ApiService = {
       throw error;
     }
   },
-  // Function to fetch the list of blog posts
-  fetchBlogList: async (pageNumber = 1, pageSize = 10) => {
+  getPosts: async () => {
     try {
-      const response = await api.get(`/api/PostWeb/GetPagedPosts`, {
-        params: { pageNumber, pageSize },
-      });
-      return response.data; // Return the list of blog posts from the API
+      const response = await api.get("/api/PostWeb/GetPagedPostsNew");
+      return response.data; // Trả về dữ liệu bài đăng từ API
     } catch (error) {
-      console.error("Error fetching blog list", error);
+      console.error("Error fetching posts list", error);
+      throw error;
+    }
+  },
+  getBlogById: async (id: string) => {
+    try {
+      const response = await api.get(`/api/PostWeb/post-detail/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching blog post details", error);
       throw error;
     }
   },
