@@ -9,7 +9,6 @@ import {
   Form,
   message,
   Upload,
-  Space,
 } from "antd";
 import {
   EditOutlined,
@@ -33,6 +32,7 @@ const CardDeckManager: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newCardDeckName, setNewCardDeckName] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [description, setDescription] = useState(""); // New state for description
   const [form] = Form.useForm();
   const userId = useSelector((state: RootState) => state.auth.userId);
 
@@ -41,11 +41,7 @@ const CardDeckManager: React.FC = () => {
       setLoading(true);
       try {
         if (userId) {
-          const data = await ApiService.fetchGroupCardsByReaderId(
-            userId,
-            1,
-            10
-          );
+          const data = await ApiService.fetchGroupCardsByReaderId(userId, 1, 10);
           setCardDecks(data);
         }
       } catch (error) {
@@ -58,42 +54,42 @@ const CardDeckManager: React.FC = () => {
   }, [userId]);
 
   const handleCreateCardDeck = async () => {
-    if (!newCardDeckName.trim() || !imageFile) {
-      message.error('Card deck name and image are required');
+    if (!newCardDeckName.trim() || !imageFile || !description.trim()) {
+      message.error("Card deck name, image, and description are required");
       return;
     }
-  
-    console.log("Card Deck Name:", newCardDeckName);
-    console.log("Selected Image File:", imageFile);
-    console.log("Reader ID:", userId);
-  
+
     try {
       setLoading(true);
-  
+
       const formData = new FormData();
-      formData.append('Name', newCardDeckName);
-      formData.append('image', imageFile); // Ensure this is the correct File object
-      formData.append('ReaderId', userId);  // Append ReaderId from Redux
-  
-      // Log formData keys and values for debugging
-      formData.forEach((value, key) => {
-        console.log(`${key}:`, value); // This will show all key-value pairs in formData
-      });
-  
-      const response = await ApiService.createGroupCard(formData);
-      setCardDecks([...cardDecks, { id: response.id, name: newCardDeckName }]);
-  
-      message.success('Card deck created successfully!');
+      formData.append("Name", newCardDeckName);
+      formData.append("image", imageFile); // Image file
+      formData.append("ReaderId", userId); // ReaderId from Redux
+      formData.append("Description", description); // Append the description
+
+      // Call the API to create a group card
+      const response = await ApiService.createGroupCard(
+        newCardDeckName,
+        imageFile,
+        userId,
+        description // Pass the description to the API service
+      );
+
+      // Add the newly created card deck to the list
+      setCardDecks([...cardDecks, { id: response.id, name: newCardDeckName, description }]);
+
+      message.success("Card deck created successfully!");
       setIsModalVisible(false);
-      setNewCardDeckName('');
+      setNewCardDeckName("");
       setImageFile(null);
+      setDescription(""); // Reset the description
     } catch (error) {
-      message.error('Failed to create card deck');
+      message.error("Failed to create card deck");
     } finally {
       setLoading(false);
     }
   };
-  
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -103,6 +99,7 @@ const CardDeckManager: React.FC = () => {
     setIsModalVisible(false);
     setNewCardDeckName("");
     setImageFile(null);
+    setDescription(""); // Reset the description
   };
 
   const columns = [
@@ -119,7 +116,14 @@ const CardDeckManager: React.FC = () => {
       dataIndex: "name",
       key: "name",
       align: "left" as "left",
-      width: "70%",
+      width: "60%",
+    },
+    {
+      title: "Description", // New column for description
+      dataIndex: "description",
+      key: "description",
+      align: "left" as "left",
+      width: "20%",
     },
     {
       title: "Action",
@@ -155,19 +159,11 @@ const CardDeckManager: React.FC = () => {
       <AppHeader />
       <Layout>
         <TarotReaderSidebar showMenu={showMenu} />
-        <Layout
-          className={`transition-all duration-300 ${
-            showMenu ? "ml-56" : "ml-0"
-          }`}
-        >
+        <Layout className={`transition-all duration-300 ${showMenu ? "ml-56" : "ml-0"}`}>
           <Content style={{ padding: "24px" }}>
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-2xl font-bold">Card Deck Management</h1>
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={showModal}
-              >
+              <Button type="primary" icon={<PlusOutlined />} onClick={showModal}>
                 + Create Card Deck
               </Button>
             </div>
@@ -203,12 +199,19 @@ const CardDeckManager: React.FC = () => {
                   />
                 </Form.Item>
 
+                <Form.Item label="Description">
+                  <Input.TextArea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Enter description"
+                  />
+                </Form.Item>
+
                 <Form.Item label="Image">
                   <Upload
                     maxCount={1}
                     beforeUpload={(file) => {
-                      // Manually handle the file upload
-                      setImageFile(file); // Set image file in the state
+                      setImageFile(file); // Manually set the image file
                       return false; // Prevent automatic upload
                     }}
                     onRemove={() => setImageFile(null)} // Handle file removal

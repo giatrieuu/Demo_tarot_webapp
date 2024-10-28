@@ -34,6 +34,17 @@ const ApiService = {
       throw error;
     }
   },
+   // Function to fetch user data with images by userId
+   getUserWithImages: async (userId: string) => {
+    try {
+      const response = await api.get(`/api/UserWeb/user-with-images/${userId}`);
+      return response.data; // Return the user data and images
+    } catch (error) {
+      console.error("Error fetching user with images", error);
+      throw error;
+    }
+  },
+  
 
   // Function to create a topic
   createTopic: async (name: string) => {
@@ -134,30 +145,37 @@ const ApiService = {
       throw error;
     }
   },
-  // **Newly added function to create a group card**
-  createGroupCard: async (name: string, image: File, readerId: string) => {
+  // Corrected function to create a group card
+  createGroupCard: async (
+    name: string,
+    image: File,
+    readerId: string,
+    description: string
+  ) => {
     try {
       const formData = new FormData();
-      formData.append("Name", name); // If API expects "Name", this is fine
-      formData.append("image", image); // This is correct for the image
-      formData.append("ReaderId", readerId); // Assuming "ReaderId" is correct key
+      formData.append("Name", name); // Ensure the key matches what the API expects
+      formData.append("image", image); // Correct key for the image file
+      formData.append("ReaderId", readerId); // Key for readerId
+      formData.append("Description", description); // Added missing description
 
       const response = await api.post(
         "/api/GroupCardWeb/create-groupCard",
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data", // Correct header for form data
+            "Content-Type": "multipart/form-data", // Ensure correct headers for multipart
           },
         }
       );
 
-      return response.data; // Return the response from the API
+      return response.data; // Return the API response
     } catch (error) {
       console.error("Error creating group card", error);
       throw error;
     }
   },
+
   // **Newly added function to fetch the booking list**
   fetchBookingsList: async () => {
     try {
@@ -210,9 +228,7 @@ const ApiService = {
       console.error("Error fetching blog list", error);
       throw error;
     }
-  }
+  },
 };
-
-
 
 export default ApiService;
