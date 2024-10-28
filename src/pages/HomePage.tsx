@@ -2,24 +2,19 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ApiService from "../services/axios"; // Assuming ApiService is correctly implemented
-import { Player } from "@lottiefiles/react-lottie-player";
 
 const HomePage = () => {
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchToken = async () => {
       try {
-        // Call the API to fetch the token
         const response = await ApiService.getToken();
-        const token = response.token?.result;  // Assuming the token is under `token.result`
+        const token = response.token?.result;
 
         if (token) {
-          // Store the token in localStorage
           localStorage.setItem("authToken", token);
           toast.success("Token retrieved successfully!");
-
-          // Optionally: you could use the token here for further actions
-          // or store it globally in a state management system if needed.
         }
       } catch (error) {
         console.error("Error fetching token", error);
@@ -27,46 +22,38 @@ const HomePage = () => {
       }
     };
 
-    // Fetch the token when the homepage loads
     fetchToken();
-  }, []); // Empty dependency array ensures this runs once when component mounts
-
+  }, []);
 
   return (
-    <div className="bg-[#1E213A] min-h-screen">
-      {/* Header Section */}
-      <header className="relative flex items-center justify-between px-16 py-20 bg-[#E9F4F2]">
+    <div className="bg-black min-h-screen">
+      {/* Section 1 */}
+      <section
+        className="relative flex items-center justify-between px-16 py-20 h-screen bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('src/assets/home3.jpg')" }} // Replace with the actual image path
+      >
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+
         {/* Left Content Section */}
-        <div className="flex-1 pr-12">
-          <h1 className="text-6xl font-bold text-black leading-tight">
+        <div className="relative z-10 flex-1 pr-12">
+          <h1 className="text-6xl font-bold text-white leading-tight">
             Unlock the Mysteries <br />
             <span className="font-light">One Card at a Time</span>
           </h1>
-          <p className="mt-6 text-xl text-gray-700">
+          <p className="mt-6 text-xl text-white">
             Gain clarity, find your path, and explore the depths of your destiny
             with our expert readings.
           </p>
           <button
             onClick={() => navigate("/card-draw")}
-            className="bg-[#CBDAD5] hover:bg-[#B5C8C3] text-black px-8 py-4 mt-10 text-lg rounded-md">
+            className="bg-white text-[#4a044e] font-bold px-8 py-4 mt-10 text-lg rounded-md">
             Free Tarot Reading
           </button>
         </div>
-
-        {/* Right Animation Section */}
-        <div className="flex-1 flex justify-end">
-          <Player
-            autoplay
-            loop
-            src="/zodiac-animation.json" // Make sure the path is correct
-            style={{ height: "450px", width: "450px" }} // Increased size
-          />
-        </div>
-      </header>
-
-      {/* Rest of your content */}
-      {/* You can add the feature section, about section, etc. below */}
+      </section>
     </div>
+
   );
 };
 

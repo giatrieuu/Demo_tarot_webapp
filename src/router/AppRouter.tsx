@@ -16,7 +16,8 @@ const Register = lazy(() => import("../pages/Register"));
 const ForgotPassword = lazy(() => import("../pages/ForgotPassword"));
 const ListReaders = lazy(() => import("../pages/ListTarotReader"));
 const ReaderDetail = lazy(() => import("../pages/ReaderDetail"));
-const BlogPage = lazy(() => import("../pages/Blog"));
+const BlogPage = lazy(() => import("../pages/Blog/Blog"));
+const BlogDetail = lazy(() => import("../pages/Blog/BlogDetail"));
 const CalendarPage = lazy(() => import("../pages/Tarot-Reader/CalendarPage"));
 const PostManager = lazy(() => import("../pages/Tarot-Reader/PostManager"));
 const Profile = lazy(() => import("../pages/Profile"));
@@ -33,9 +34,6 @@ const AppRouter: React.FC = () => {
     <Router>
       <Suspense>
         <Routes>
-          <Route path={ADMIN.ADMIN_DASHBOARD} element={<AdminDashboard />} />
-          <Route path={ADMIN.USER_MANAGEMENT} element={<UserManagement />} />
-          <Route path={ADMIN.TOPIC_MANAGEMENT} element={<TopicManagement />} />
           <Route element={<LayoutRoute />}>
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD} element={<TarotReaderDashboard />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CALENDAR} element={<CalendarPage />} />
@@ -55,6 +53,11 @@ const AppRouter: React.FC = () => {
             <Route path={PUBLIC.PROFILE} element={<Profile />} />
             <Route path={PUBLIC.CARD_DRAW} element={<ShuffleCard />} />
             <Route path={PUBLIC.CARD_MEANING} element={<CardMeaning />} />
+            <Route path={PUBLIC.BLOG_DETAIL} element={<BlogDetail />} />
+
+            <Route path={ADMIN.ADMIN_DASHBOARD} element={<AdminDashboard />} />
+            <Route path={ADMIN.USER_MANAGEMENT} element={<UserManagement />} />
+            <Route path={ADMIN.TOPIC_MANAGEMENT} element={<TopicManagement />} />
           </Route>
           <Route path={PUBLIC.LOGIN} element={<Login />} />
           <Route path={PUBLIC.REGISTER} element={<Register />} />

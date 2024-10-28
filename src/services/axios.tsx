@@ -113,7 +113,17 @@ const ApiService = {
       console.error("Error fetching blog list", error);
       throw error;
     }
-  }
+  },
+
+  getBlogById: async (id: string) => {
+    try {
+      const response = await api.get(`/api/PostWeb/post-detail/${id}`);
+      return response.data; 
+    } catch (error) {
+      console.error("Error fetching blog post details", error);
+      throw error;
+    }
+  },
 };
 
 

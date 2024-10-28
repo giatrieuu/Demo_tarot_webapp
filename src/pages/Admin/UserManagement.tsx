@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Layout, Table, Button, Dropdown, Menu, Modal, Form, Input } from 'antd';
 import { MoreOutlined, UserAddOutlined } from '@ant-design/icons';
-import AppHeader from '../../components/header/Header';
 import AdminSidebar from '../../components/sidebar/AdminSidebar';
 
 const { Content } = Layout;
@@ -108,9 +107,6 @@ const UserManagement: React.FC = () => {
 
     return (
         <Layout style={{ minHeight: '100vh' }}>
-            {/* Header Section */}
-            <AppHeader />
-
             <Layout>
                 {/* Sidebar Section */}
                 <AdminSidebar showMenu={showMenu} />
