@@ -18,22 +18,17 @@ const PostManager = lazy(() => import("../pages/Tarot-Reader/PostManager"));
 const Profile = lazy(() => import("../pages/Profile"));
 const NewPost = lazy(() => import("../pages/Tarot-Reader/NewPost"));
 const TopicManagement = lazy(() => import("../pages/Admin/TopicManagement"));
-<<<<<<< HEAD
 const CardDrawGuide = lazy(
   () => import("../pages/CardDrawGuide/CardDrawGuide")
 );
 const CardDeckManager = lazy(
   () => import("../pages/Tarot-Reader/CardDeckManager")
 );
-const CardDeckUpload = lazy(
-  () => import("../pages/Tarot-Reader/CardDeckUpload")
-);
-=======
+
 const ShuffleCard = lazy(() => import("../pages/CardDrawGuide/ShuffleCard"));
 const CardMeaning = lazy(() => import("../pages/CardDrawGuide/CardMeaning"));
-const CardDeckManager = lazy(() => import("../pages/Tarot-Reader/CardDeckManager"));
+
 const CardDeckUpload = lazy(() => import("../pages/Tarot-Reader/CardDeckUpload"));
->>>>>>> 66d750cda7341ec1cb4109eefb9e16caa75eb063
 const CardDeckList = lazy(() => import("../pages/Tarot-Reader/CardDeckList"));
 
 const AppRouter: React.FC = () => {

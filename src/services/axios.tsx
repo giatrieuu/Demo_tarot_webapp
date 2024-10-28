@@ -102,7 +102,6 @@ const ApiService = {
       throw error;
     }
   },
-<<<<<<< HEAD
   // **Newly added function to fetch the list of group cards**
   fetchGroupCardsList: async () => {
     try {
@@ -200,7 +199,6 @@ const ApiService = {
       throw error;
     }
   },
-=======
   // Function to fetch the list of blog posts
   fetchBlogList: async (pageNumber = 1, pageSize = 10) => {
     try {
@@ -213,7 +211,6 @@ const ApiService = {
       throw error;
     }
   }
->>>>>>> 66d750cda7341ec1cb4109eefb9e16caa75eb063
 };
 
 
