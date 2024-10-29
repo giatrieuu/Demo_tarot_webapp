@@ -45,6 +45,37 @@ const ApiService = {
       throw error;
     }
   },
+ // Function to change password
+ changePassword: async (
+  readerId: string,
+  oldPassword: string,
+  newPassword: string,
+  confirmPassword: string
+) => {
+  try {
+    const formData = new FormData();
+    formData.append("ReaderId", readerId); // Reader ID
+    formData.append("OldPassword", oldPassword); // Current password
+    formData.append("NewPassword", newPassword); // New password
+    formData.append("ConfirmPassword", confirmPassword); // Confirm new password
+
+    const response = await api.post("/api/ReaderWeb/change-password", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    if (response && response.data) {
+      return response.data; // Return the API response
+    } else {
+      throw new Error("No response from server.");
+    }
+  } catch (error) {
+    console.error("Error changing password:", error);
+    throw error;
+  }
+},
+
   // Function to fetch user data with images by userId
   getUserWithImages: async (userId: string) => {
     try {

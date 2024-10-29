@@ -23,6 +23,7 @@ const Profile: React.FC = () => {
   const [phone, setPhone] = useState<string>(""); // Initialize phone
   const [dob, setDob] = useState<string>(""); // Initialize dob
   const [biography, setBiography] = useState<string>(""); // Initialize biography
+  const [role, setRole] = useState<number | null>(null); // Store the user's role
 
   const follows: FollowUser[] = [
     { id: 1, name: "Glucozo10" },
@@ -45,6 +46,7 @@ const Profile: React.FC = () => {
         setBiography(user?.description || "");
         setImageUrl(response?.url?.[0] || null); // Store profile image URL
         setUserData(response);
+        setRole(user?.role || null); // Store the user's role
       } catch (error) {
         message.error("Failed to fetch user profile.");
       }
@@ -109,6 +111,11 @@ const Profile: React.FC = () => {
       message.error("Image must be smaller than 2MB!");
     }
     return isJpgOrPng && isLt2M;
+  };
+
+  // Handle navigating to change password page
+  const handleChangePassword = () => {
+    navigate("/change-password");
   };
 
   return (
@@ -200,6 +207,15 @@ const Profile: React.FC = () => {
                 Save
               </Button>
             </div>
+
+            {/* Show change password button if user role is 3 (tarot reader) */}
+            {role === 22 && (
+              <div className="mt-4">
+                <Button type="default" onClick={handleChangePassword}>
+                  Change Password
+                </Button>
+              </div>
+            )}
           </div>
         </div>
 

@@ -117,13 +117,10 @@ const ManagerBooking: React.FC = () => {
   );
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <AppHeader />
+    
 
-      <Layout>
-        <TarotReaderSidebar showMenu={showMenu} />
-
-        <Layout className={`transition-all duration-300 ${showMenu ? 'ml-56' : 'ml-0'}`}>
+   
+   
           <Content style={{ padding: '24px' }}>
             <div style={{ display: 'flex', gap: '20px', padding: '20px', minHeight: '100vh' }}>
               <div style={{ flex: 2 }}>
@@ -189,9 +186,7 @@ const ManagerBooking: React.FC = () => {
               </div>
             </div>
           </Content>
-        </Layout>
-      </Layout>
-    </Layout>
+
   );
 };
 
