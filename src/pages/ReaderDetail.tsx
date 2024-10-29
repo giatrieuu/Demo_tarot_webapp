@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Button, Tag, Rate, Typography, Spin, Divider } from "antd";
+import { Card, Button, Tag, Rate, Typography, Spin, Divider, Modal } from "antd";
 import { HeartOutlined, HeartFilled, ShareAltOutlined } from "@ant-design/icons";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -71,7 +71,7 @@ const ReaderDetail: React.FC = () => {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isFollowed, setIsFollowed] = useState<boolean>(false);
-  const userId = useSelector((state: RootState) => state.auth.userId);
+  const userId = useSelector((state: RootState) => state.auth.userId);;
 
   useEffect(() => {
     const fetchReaderData = async () => {
@@ -176,10 +176,36 @@ const ReaderDetail: React.FC = () => {
         console.error("Error following reader:", error);
       }
     } else {
-      console.log("Already followed");
-      // Thực hiện hành động khác khi đã theo dõi (nếu có)
+      Modal.confirm({
+        title: "Confirm Unfollow",
+        content: "Are you sure you want to unfollow this reader?",
+        okText: "Yes",
+        cancelText: "No",
+        onOk: async () => {
+          try {
+            const response = await fetch(
+              `https://www.bookingtarot.somee.com/api/FollowWeb/delete-follow?userId=${userId}&readerId=${readerId}`,
+              {
+                method: "POST",
+                headers: {
+                  accept: "text/plain",
+                },
+              }
+            );
+
+            // Bỏ qua nếu mã trạng thái là 400
+            if (!response.ok && response.status !== 400) {
+              throw new Error("Failed to unfollow reader");
+            }
+            setIsFollowed(false); // Cập nhật trạng thái hủy theo dõi thành công
+          } catch (error) {
+            console.error("Error unfollowing reader:", error);
+          }
+        },
+      });
     }
   };
+
 
   if (loading) {
     return <Spin tip="Loading..." />;
@@ -250,19 +276,18 @@ const ReaderDetail: React.FC = () => {
         </Card>
         <Card className="bg-[#d9e6dc] rounded-lg shadow-sm p-4">
           <Title level={5}>Reviews</Title>
-          <Divider />
           {reviews.length > 0 ? (
             reviews.map((review, index) => (
-              <div key={index} className="mb-4">
-                <Title level={5} className="mb-1">{review.userName}</Title>
-                <Paragraph className="text-gray-600 mb-1">
-                  Rating: <Rate disabled defaultValue={review.booking.rating} />
+              <div key={index}>
+                <Divider />
+                <Paragraph>
+                  <Text strong>{review.userName}</Text> - {review.booking.feedback}
                 </Paragraph>
-                <Paragraph>{review.booking.feedback}</Paragraph>
+                <Rate disabled defaultValue={review.booking.rating} />
               </div>
             ))
           ) : (
-            <Paragraph>No reviews available</Paragraph>
+            <Paragraph>No reviews yet</Paragraph>
           )}
         </Card>
       </div>
