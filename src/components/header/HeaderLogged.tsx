@@ -1,4 +1,13 @@
-import { Layout, Input, Avatar, Dropdown, Menu, message, Badge, Spin } from "antd";
+import {
+  Layout,
+  Input,
+  Avatar,
+  Dropdown,
+  Menu,
+  message,
+  Badge,
+  Spin,
+} from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { UserOutlined, BellOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,7 +27,8 @@ const AppHeader: React.FC = () => {
   const userId = useSelector((state: RootState) => state.auth.userId);
   const [userData, setUserData] = useState<any>(null);
   const [notifications, setNotifications] = useState<any[]>([]);
-  const [loadingNotifications, setLoadingNotifications] = useState<boolean>(true);
+  const [loadingNotifications, setLoadingNotifications] =
+    useState<boolean>(true);
   const [unreadCount, setUnreadCount] = useState<number>(0); // Track unread notifications
   const [role, setRole] = useState<number | null>(null); // Track user role
 
@@ -60,7 +70,9 @@ const AppHeader: React.FC = () => {
 
           if (response) {
             setNotifications(response); // Store notifications
-            const unread = response.filter((notification: any) => !notification.isRead).length;
+            const unread = response.filter(
+              (notification: any) => !notification.isRead
+            ).length;
             setUnreadCount(unread); // Update count with unread notifications only
           }
 
@@ -80,20 +92,20 @@ const AppHeader: React.FC = () => {
   const handleLogout = async () => {
     try {
       // Call the API to log out if the user is logged in via Google
-      const token = localStorage.getItem('authToken');
-      
+      const token = localStorage.getItem("authToken");
+
       if (token) {
         // Assuming token is the indicator that the user is logged in via Google
         await ApiService.logoutUser(); // Call the logout API for Google
-        localStorage.removeItem('authToken'); // Remove the token from localStorage
+        localStorage.removeItem("authToken"); // Remove the token from localStorage
         sessionStorage.removeItem("authToken");
         toast.success("Logged out successfully from Google.");
       }
-  
+
       // Dispatch logout action from Redux
       dispatch(logout());
       localStorage.removeItem("persist:root"); // Remove persisted Redux state
-  
+
       // Navigate to home page
       navigate("/");
     } catch (error) {
@@ -106,13 +118,13 @@ const AppHeader: React.FC = () => {
   const notificationDropdown = (
     <div
       style={{
-        width: '300px',
-        maxHeight: '400px',
-        overflowY: 'auto',
-        padding: '10px',
-        backgroundColor: 'white',
-        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-        marginTop: '12px', // Adjust this value to move the dropdown downward
+        width: "300px",
+        maxHeight: "400px",
+        overflowY: "auto",
+        padding: "10px",
+        backgroundColor: "white",
+        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+        marginTop: "12px", // Adjust this value to move the dropdown downward
       }}
     >
       {loadingNotifications ? (
@@ -121,7 +133,7 @@ const AppHeader: React.FC = () => {
         <p>No new notifications</p>
       ) : (
         notifications.map((notification) => (
-          <div key={notification.id} style={{ padding: '10px 0' }}>
+          <div key={notification.id} style={{ padding: "10px 0" }}>
             <p>{notification.description}</p>
             <small>{new Date(notification.createAt).toLocaleString()}</small>
           </div>
@@ -166,10 +178,18 @@ const AppHeader: React.FC = () => {
       <Logo />
 
       <div className="flex space-x-6 items-center">
-        <Link to="/list-tarot-reader" className="text-[#4a044e] hover:text-[#a21caf] hover:scale-105" style={{ fontFamily: 'Uncial Antiqua' }}>
+        <Link
+          to="/list-tarot-reader"
+          className="text-[#4a044e] hover:text-[#a21caf] hover:scale-105"
+          style={{ fontFamily: "Uncial Antiqua" }}
+        >
           Booking
         </Link>
-        <Link to="/blog" className="text-[#4a044e] hover:text-[#a21caf] hover:scale-105" style={{ fontFamily: 'Uncial Antiqua' }}>
+        <Link
+          to="/blog"
+          className="text-[#4a044e] hover:text-[#a21caf] hover:scale-105"
+          style={{ fontFamily: "Uncial Antiqua" }}
+        >
           Blog
         </Link>
 
@@ -177,14 +197,24 @@ const AppHeader: React.FC = () => {
         {userId ? (
           <>
             {/* Notification Bell with Dropdown */}
-            <Dropdown overlay={notificationDropdown} trigger={['click']} placement="bottomRight">
+            <Dropdown
+              overlay={notificationDropdown}
+              trigger={["click"]}
+              placement="bottomRight"
+            >
               <Badge count={unreadCount} offset={[10, 0]}>
-                <BellOutlined className="text-white text-2xl cursor-pointer" />
+                <BellOutlined className="text-[#4a044e] text-2xl cursor-pointer" />{" "}
+                {/* Changed color */}
               </Badge>
             </Dropdown>
 
             {/* User Avatar */}
-            <Dropdown overlay={menu} placement="bottomRight" arrow trigger={["hover"]}>
+            <Dropdown
+              overlay={menu}
+              placement="bottomRight"
+              arrow
+              trigger={["hover"]}
+            >
               <Avatar
                 size="large"
                 src={userData?.url?.[0]}
