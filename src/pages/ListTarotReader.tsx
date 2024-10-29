@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Checkbox, Input, Button, Slider, Select, Card, Rate, message } from 'antd';
+import { Checkbox, Input, Button, Slider, Select, Card, Rate, message, Spin } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 
@@ -31,6 +31,10 @@ const ListReaders: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<string>('High to low');
   const [totalPage, setTotalPage] = useState<number>(0);
   const [totalReader, setTotalReader] = useState<number>(0);
+  const [loading, setLoading] = useState(true);
+
+
+
   const navigate = useNavigate();
 
   // Hàm để lấy các chủ đề độc nhất từ danh sách người đọc
@@ -51,6 +55,7 @@ const ListReaders: React.FC = () => {
 
   // Hàm để fetch dữ liệu người đọc từ API
   const fetchReaders = async () => {
+    setLoading(true);
     try {
       const response = await fetch('https://www.bookingtarot.somee.com/api/ReaderWeb/GetPagedReadersInfo');
       if (!response.ok) throw new Error(`Network response was not ok: ${response.statusText}`);
@@ -73,12 +78,16 @@ const ListReaders: React.FC = () => {
       console.error('Error fetching readers:', error);
       message.error('Error fetching readers, please try again later.');
     }
+    finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     fetchReaders();
   }, []);
 
+  if (loading) return <Spin tip="Loading..." />;
   // Các hàm xử lý sự kiện
   const handleTopicChange = (checkedValues: string[]) => {
     setSelectedTopicIds(checkedValues);

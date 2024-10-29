@@ -12,11 +12,14 @@ import {
 } from '@ant-design/icons';
 import { TarotReaderSidebarData } from '../../constants';
 
-
 interface SidebarProps {
     showMenu: boolean;
-}
-
+  }
+  interface MenuItem {
+    key: string;
+    label: string;
+    icon?: string;
+  }
 const iconComponents: { [key: string]: JSX.Element } = {
     AppstoreOutlined: <AppstoreOutlined />,
     UserOutlined: <UserOutlined />,
@@ -27,24 +30,28 @@ const iconComponents: { [key: string]: JSX.Element } = {
     LogoutOutlined: <LogoutOutlined />
 };
 
-const TarotReaderSidebar: React.FC<SidebarProps> = ({ showMenu }) => {
-    const navigate = useNavigate();
-    const { MenuTarotReaderItems } = TarotReaderSidebarData;
-
-    const renderMenuTarotReaderItems = (items: typeof MenuTarotReaderItems) =>
-        items.map((item) => (
-            <Menu.Item key={item.url} icon={iconComponents[item.icon || '']} onClick={() => navigate(item.url)}>
-                {item.text}
-            </Menu.Item>
-        ));
-
-    return (
-        <aside className={`fixed top-16 mt-1 left-0 h-full bg-white shadow-md transition-all duration-300 ${showMenu ? 'w-56' : 'w-0 overflow-hidden'}`}>
-            <Menu mode="inline" style={{ height: '100%', borderRight: 0 }}>
-                {renderMenuTarotReaderItems(MenuTarotReaderItems)}
-            </Menu>
+const renderMenuItems = (items: MenuItem[], navigate: (path: string) => void) =>
+    items.map((item) => (
+      <Menu.Item 
+        key={item.key} 
+        icon={iconComponents[item.icon || '']} 
+        onClick={() => {
+        
+          navigate(item.key);
+        }}
+      >
+        {item.label}
+      </Menu.Item>
+    ));const TarotReaderSidebar: React.FC<SidebarProps> = ({ showMenu }) => {
+      const navigate = useNavigate();
+      const { MenuTarotReaderItems } = TarotReaderSidebarData;
+    
+      return (
+        <aside className={`fixed top-16 left-0 h-full bg-white shadow-md transition-all duration-300 ${showMenu ? 'w-56' : 'w-0 overflow-hidden'}`}>
+          <Menu mode="inline" style={{ height: '100%', borderRight: 0 }}>
+            {renderMenuItems(MenuTarotReaderItems, navigate)}
+          </Menu>
         </aside>
-    );
-};
-
+      );
+    };
 export default TarotReaderSidebar;
