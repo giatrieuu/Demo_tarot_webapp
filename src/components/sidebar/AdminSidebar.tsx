@@ -37,7 +37,7 @@ const AdminSidebar: React.FC<SidebarProps> = ({ showMenu }) => {
         ));
 
     return (
-        <aside className={`fixed top-16 mt-1 left-0 h-full bg-white shadow-md transition-all duration-300 ${showMenu ? 'w-56' : 'w-0 overflow-hidden'}`}>
+        <aside className={`fixed top-16 left-0 h-full bg-white shadow-md transition-all duration-300 ${showMenu ? 'w-56' : 'w-0 overflow-hidden'}`}>
             <Menu mode="inline" style={{ height: '100%', borderRight: 0 }}>
                 {renderMenuAdminItems(MenuAdminItems)}
             </Menu>

@@ -20,7 +20,7 @@ export const TAROT_READER = {
     TAROT_READER_DASHBOARD_POST: '/post-manager',
     TAROT_READER_DASHBOARD_ADD_POST: '/add-post',
     TAROT_READER_DASHBOARD_CARD_DECK: '/card-deck-manager',
-    TAROT_READER_DASHBOARD_CARD_DECK_UPLOAD:'/card-deck-upload',
+    TAROT_READER_DASHBOARD_CARD_DECK_UPLOAD: '/card-deck-upload',
     TAROT_READER_DASHBOARD_CARD_LIST: '/card-list'
 };
 export const PUBLIC = {
@@ -34,6 +34,7 @@ export const PUBLIC = {
     PROFILE: '/my-profile',
     CARD_DRAW: '/card-draw',
     CARD_MEANING: '/card-meaning',
+    BLOG_DETAIL: '/post-detail/:id',
 };
 
 export const AdminSidebarData = {
@@ -44,7 +45,6 @@ export const AdminSidebarData = {
         { text: "Bookings", icon: "CalendarOutlined", url: "/manage-bookings" },
         { text: "Blogs", icon: "FileTextOutlined", url: "/manage-blogs" },
         { text: "Settings", icon: "ToolOutlined", url: "/settings" },
-        { text: "Sign Out", icon: "LogoutOutlined", url: "/signout" },
     ]
 };
 

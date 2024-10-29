@@ -157,9 +157,7 @@ const TopicManagement: React.FC = () => {
 
     return (
         <Layout style={{ minHeight: '100vh' }}>
-            {/* Header Section */}
-            <AppHeader />
-
+               <AppHeader />
             <Layout>
                 {/* Sidebar Section */}
                 <AdminSidebar showMenu={showMenu} />
@@ -176,7 +174,7 @@ const TopicManagement: React.FC = () => {
                                 onClick={showModal}
                                 className="bg-green-500 hover:bg-green-400 text-white rounded-lg"
                             >
-                                + Create Topic
+                                Create Topic
                             </Button>
                         </div>
                         <p className="text-gray-500 mb-6">Manage all your topics from this panel.</p>

@@ -45,7 +45,7 @@ const ApiService = {
       throw error;
     }
   },
-  // Function to fetch user data with images by userId  
+  // Function to fetch user data with images by userId
   getUserWithImages: async (userId: string) => {
     try {
       const response = await api.get(`/api/UserWeb/user-with-images/${userId}`);
@@ -89,26 +89,37 @@ const ApiService = {
   // Function to create a topic
   createTopic: async (name: string) => {
     try {
+      const token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJUcmnhu4F1IEdpYSIsImVtYWlsIjoibGVnaWF0cmlldTMyNDVAZ21haWwuY29tIiwianRpIjoiNTBjOTI1NWEtNjMzZS00ZWY4LThhOTAtZDAxMjBmMGU3NzQ1IiwiSWQiOiJVc2VyXzJkYzBmMWE2ZjYiLCJSb2xlIjoiMiIsIkltYWdlIjoiaHR0cHM6Ly9maXJlYmFzZXN0b3JhZ2UuZ29vZ2xlYXBpcy5jb20vdjAvYi90YXJvdGJvb2tpbmdhcGkuYXBwc3BvdC5jb20vby9pbWFnZXMlMkZlMmIzNThkNC04ZjFhLTQyOWMtOGNiZi1hODdkZjJmNDU4ZjMuanBnP2FsdD1tZWRpYSZ0b2tlbj04YTEyNzNmNi05YTUxLTQ4M2YtOGY0NC02MDA5ZjNkZjA4NTgiLCJleHAiOjE3MzAxODk4MDYsImlzcyI6Imh0dHA6Ly93d3cuYm9va2luZ3Rhcm90LnNvbWVlLmNvbS8ifQ.EI4dYWbtCo2Bu4KcPpk8ObuSXCiXYhAadPPCNlqnrhs";
+  
       const formData = new FormData();
       formData.append("name", name);
-
+  
       const response = await api.post("/api/TopicWeb/create-topic", formData, {
+        withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
         },
       });
-
+  
       return response.data; // Return the response from the API
     } catch (error) {
       console.error("Error creating topic", error);
       throw error;
     }
   },
+  
 
   // Function to fetch the list of topics
   fetchTopicsList: async () => {
     try {
-      const response = await api.get("/api/TopicWeb/topics-list");
+      const token = localStorage.getItem("authToken");
+      const response = await api.get("/api/TopicWeb/topics-list", {
+        headers: {
+          Authorization: `bearer ${token}`, // Include the token in the Authorization header
+        },
+      });
       return response.data; // Return the list of topics from the API
     } catch (error) {
       console.error("Error fetching topics list", error);
@@ -257,15 +268,21 @@ const ApiService = {
       throw error;
     }
   },
-  // Function to fetch the list of blog posts
-  fetchBlogList: async (pageNumber = 1, pageSize = 10) => {
+  getPosts: async () => {
     try {
-      const response = await api.get(`/api/PostWeb/GetPagedPosts`, {
-        params: { pageNumber, pageSize },
-      });
-      return response.data; // Return the list of blog posts from the API
+      const response = await api.get("/api/PostWeb/GetPagedPostsNew");
+      return response.data; // Trả về dữ liệu bài đăng từ API
     } catch (error) {
-      console.error("Error fetching blog list", error);
+      console.error("Error fetching posts list", error);
+      throw error;
+    }
+  },
+  getBlogById: async (id: string) => {
+    try {
+      const response = await api.get(`/api/PostWeb/post-detail/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching blog post details", error);
       throw error;
     }
   },
@@ -281,11 +298,15 @@ const ApiService = {
       if (data.description) formData.append("Description", data.description);
       if (data.dob) formData.append("Dob", data.dob);
 
-      const response = await defaultAxiosInstance.post("/api/UserWeb/update-user", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await defaultAxiosInstance.post(
+        "/api/UserWeb/update-user",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       return response.data;
     } catch (error) {
@@ -297,12 +318,81 @@ const ApiService = {
     try {
       const response = await api.post("/api/Images/UpdateImage", formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
       return response.data; // Return the response from the API
     } catch (error) {
-      console.error('Error updating image', error);
+      console.error("Error updating image", error);
+      throw error;
+    }
+  },
+  // Function to fetch comments by postId with pagination
+  getCommentsByPostId: async (
+    postId: string,
+    pageNumber = 1,
+    pageSize = 10
+  ) => {
+    try {
+      const response = await api.get(
+        `/api/CommentWeb/GetCommentsByPostId/${postId}`,
+        {
+          params: {
+            pageNumber,
+            pageSize,
+          },
+        }
+      );
+      return response.data; // Return the comments data from the API
+    } catch (error) {
+      console.error("Error fetching comments by post ID", error);
+      throw error;
+    }
+  },
+  // Function to post a comment
+  postComment: async (postId: string, userId: string, text: string) => {
+    try {
+      const formData = new FormData();
+      formData.append("PostId", postId);
+      formData.append("UserId", userId); // Assuming userId is available from the app state
+      formData.append("Text", text);
+
+      const response = await api.post(
+        "/api/CommentWeb/create-comment",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      return response.data; // Return the API response
+    } catch (error) {
+      console.error("Error posting comment:", error);
+      throw error;
+    }
+  },
+  // Function to edit a comment
+  updateComment: async (commentId: string, text: string) => {
+    try {
+      const formData = new FormData();
+      formData.append("Id", commentId); // Pass the comment ID
+      formData.append("Text", text); // The updated text
+
+      const response = await api.post(
+        "/api/CommentWeb/update-comment",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      return response.data; // Return the updated comment response
+    } catch (error) {
+      console.error("Error updating comment:", error);
       throw error;
     }
   },
