@@ -13,6 +13,7 @@ export const ADMIN = {
     ADMIN_DASHBOARD: '/admin-dashboard',
     USER_MANAGEMENT: '/manage-users',
     TOPIC_MANAGEMENT: '/manage-topic',
+    BLOG_MANAGEMENT: '/manage-blogs',
 }
 export const TAROT_READER = {
     TAROT_READER_DASHBOARD: '/tarot-reader-dashboard',
@@ -21,7 +22,8 @@ export const TAROT_READER = {
     TAROT_READER_DASHBOARD_ADD_POST: '/add-post',
     TAROT_READER_DASHBOARD_CARD_DECK: '/card-deck-manager',
     TAROT_READER_DASHBOARD_CARD_DECK_UPLOAD: '/card-deck-upload',
-    TAROT_READER_DASHBOARD_CARD_LIST: '/card-list'
+    TAROT_READER_DASHBOARD_CARD_LIST: '/card-list',
+    CREATE_BLOG: '/create-blog',
 };
 export const PUBLIC = {
     HOME: '/homepage',

@@ -4,6 +4,7 @@ import LayoutRoute from "../layout/LayoutRoute";
 import { ADMIN, PUBLIC, TAROT_READER } from "../constants";
 import HomePage from "../pages/HomePage";
 import TarotReaderDashboard from "../pages/Tarot-Reader/TarotReaderDashboard";
+import BlogManagement from "../pages/Admin/BlogManagement";
 
 const AdminDashboard = lazy(() => import("../pages/Admin/AdminDashboard"));
 const UserManagement = lazy(() => import("../pages/Admin/UserManagement"));
@@ -12,8 +13,10 @@ const Register = lazy(() => import("../pages/Register"));
 const ForgotPassword = lazy(() => import("../pages/ForgotPassword"));
 const ListReaders = lazy(() => import("../pages/ListTarotReader"));
 const ReaderDetail = lazy(() => import("../pages/ReaderDetail"));
+
 const BlogPage = lazy(() => import("../pages/Blog/Blog"));
 const BlogDetail = lazy(() => import("../pages/Blog/BlogDetail"));
+const CreateBlog = lazy(() => import("../pages/Blog/CreateBlog"));
 
 const ManagerBooking = lazy(() => import("../pages/Tarot-Reader/CalendarPage"));
 const PostManager = lazy(() => import("../pages/Tarot-Reader/PostManager"));
@@ -80,6 +83,11 @@ const AppRouter: React.FC = () => {
             <Route path={ADMIN.ADMIN_DASHBOARD} element={<AdminDashboard />} />
             <Route path={ADMIN.USER_MANAGEMENT} element={<UserManagement />} />
             <Route path={ADMIN.TOPIC_MANAGEMENT} element={<TopicManagement />} />
+            <Route path={ADMIN.BLOG_MANAGEMENT} element={<BlogManagement />} />
+
+            <Route path={TAROT_READER.CREATE_BLOG} element={<CreateBlog />} />
+
+
           </Route>
           <Route path={PUBLIC.LOGIN} element={<Login />} />
           <Route path={PUBLIC.REGISTER} element={<Register />} />

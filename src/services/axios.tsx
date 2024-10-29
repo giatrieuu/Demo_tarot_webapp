@@ -255,7 +255,7 @@ const ApiService = {
       throw error;
     }
   },
-  getBlogById: async (id: string) => {
+  getPostById: async (id: string) => {
     try {
       const response = await api.get(`/api/PostWeb/post-detail/${id}`);
       return response.data;
@@ -264,6 +264,65 @@ const ApiService = {
       throw error;
     }
   },
+  createPost: async (
+    readerId: string,
+    title: string,
+    text: string,
+    content: string,
+    image: File
+  ) => {
+    try {
+      const formData = new FormData();
+      formData.append("ReaderId", readerId);
+      formData.append("Title", title);
+      formData.append("Text", text);
+      formData.append("Content", content);
+      formData.append("Image", image);
+
+      const response = await api.post(
+        "/api/PostWeb/create-post",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error("Error creating post", error);
+      throw error;
+    }
+  },
+  updatePost: async (
+    id: string,
+    title: string,
+    text: string,
+    content: string,
+    image: File
+  ) => {
+    try {
+      const formData = new FormData();
+      formData.append("id", id);
+      formData.append("title", title);
+      formData.append("text", text);
+      formData.append("content", content);
+      formData.append("image", image);
+
+      const response = await api.post("/api/PostWeb/update-post", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error("Error updating post", error);
+      throw error;
+    }
+  },
+
 };
 
 export default ApiService;

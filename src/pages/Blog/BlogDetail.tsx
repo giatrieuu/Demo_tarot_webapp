@@ -18,7 +18,7 @@ const BlogDetail: React.FC = () => {
             }
 
             try {
-                const response = await ApiService.getBlogById(id);
+                const response = await ApiService.getPostById(id);
                 setBlog(response);
             } catch (err) {
                 console.error("Error fetching blog post details:", err);
@@ -36,10 +36,10 @@ const BlogDetail: React.FC = () => {
             {/* Breadcrumb */}
             <Breadcrumb className="mb-4">
                 <Breadcrumb.Item>
-                    <Link to="/">Home</Link> {/* Sử dụng Link thay cho <a> */}
+                    <Link to="/">Home</Link>
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>
-                    <Link to="/blog">Blog</Link> {/* Sử dụng Link thay cho <a> */}
+                    <Link to="/blog">Blog</Link>
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>
                     {blog?.post?.title || "Blog Detail"}
