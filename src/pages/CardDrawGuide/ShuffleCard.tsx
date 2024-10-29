@@ -31,10 +31,15 @@ const ShuffleCard: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col justify-center items-center">
+        <div className="min-h-screen flex flex-col justify-center items-center ">
             {/* Section 1 */}
-            <section className="w-full bg-[#eef7f6] text-gray-800 p-12 lg:p-16">
-                <div className="grid grid-cols-1 lg:grid-cols-2 items-center">
+            <section
+                className="w-full bg-[#eef7f6] text-gray-800 p-12 lg:p-16 h-screen bg-cover bg-center bg-no-repeat"
+                style={{
+                    backgroundImage: `url('src/assets/home1.jpg')`,
+                }}
+            >
+                <div className="grid grid-cols-1 lg:grid-cols-2 items-center bg-opacity-75 w-full h-full bg-white p-8 shadow-md">
                     {/* Phần bên trái chứa text */}
                     <div className="text-center lg:text-right lg:flex lg:justify-end">
                         <div className="lg:max-w-l text-center">
@@ -67,7 +72,6 @@ const ShuffleCard: React.FC = () => {
                             />
                             <h3 className="text-xl font-semibold">{decks[currentDeck].name}</h3>
                             <div className="flex space-x-2 mt-4">
-                                {/* Add indicators for the deck */}
                                 {[...Array(decks.length)].map((_, index) => (
                                     <div
                                         key={index}
@@ -88,7 +92,7 @@ const ShuffleCard: React.FC = () => {
             </section>
 
             {/* Section 2 */}
-            <section className="bg-[#629584] text-white flex flex-col md:flex-row justify-center items-center w-full p-8">
+            <section className="bg-black text-white flex flex-col md:flex-row justify-center items-center w-full p-8">
                 <div className="flex flex-col justify-center items-center space-y-6 w-full md:w-1/3 text-left">
                     <div>
                         <h3 className="text-lg text-white">Select Card deck</h3>

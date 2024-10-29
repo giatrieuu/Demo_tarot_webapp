@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Table, Button, Tooltip, Modal, Input, Form, message } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-import AppHeader from '../../components/header/Header';
+import AppHeader from '../../components/header/HeaderLogged';
 import AdminSidebar from '../../components/sidebar/AdminSidebar';
 import ApiService from '../../services/axios';  // Import the ApiService with fetchTopicsList
 
@@ -157,9 +157,7 @@ const TopicManagement: React.FC = () => {
 
     return (
         <Layout style={{ minHeight: '100vh' }}>
-            {/* Header Section */}
-            <AppHeader />
-
+               <AppHeader />
             <Layout>
                 {/* Sidebar Section */}
                 <AdminSidebar showMenu={showMenu} />
@@ -176,7 +174,7 @@ const TopicManagement: React.FC = () => {
                                 onClick={showModal}
                                 className="bg-green-500 hover:bg-green-400 text-white rounded-lg"
                             >
-                                + Create Topic
+                                Create Topic
                             </Button>
                         </div>
                         <p className="text-gray-500 mb-6">Manage all your topics from this panel.</p>

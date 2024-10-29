@@ -10,9 +10,6 @@ const AdminDashboard: React.FC = () => {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      {/* Header Section */}
-      <AppHeader />
-
       <Layout>
         {/* Sidebar Section */}
         <AdminSidebar showMenu={showMenu} />
