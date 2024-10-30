@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Card, Button, Tag, Rate, Typography, Spin, Divider, Modal } from "antd";
 import { HeartOutlined, HeartFilled, ShareAltOutlined } from "@ant-design/icons";
 import { useParams, useNavigate } from "react-router-dom";
-// import { useSelector } from "react-redux";
-// import { RootState } from "../redux/store";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 import BookingPopup from "./BookingPopup"; // Import component popup
 
 
@@ -74,9 +74,11 @@ const ReaderDetail: React.FC = () => {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isFollowed, setIsFollowed] = useState<boolean>(false);
-  // const userId = useSelector((state: RootState) => state.auth.userId); // Get userId from Redux store
-  const userId = 'User_16719e2aba';
+
+  const userId = useSelector((state: RootState) => state.auth.userId); // Get userId from Redux store
+
   const [isBookingPopupVisible, setIsBookingPopupVisible] = useState(false); // Trạng thái popup
+
 
 
   useEffect(() => {
@@ -199,10 +201,16 @@ const ReaderDetail: React.FC = () => {
               }
             );
 
+
             if (!response.ok) {
-              throw new Error("Failed to unfollow reader");
+
+              // Bỏ qua nếu mã trạng thái là 400
+              if (!response.ok && response.status !== 400) {
+
+                throw new Error("Failed to unfollow reader");
+              }
+              setIsFollowed(false); // Cập nhật trạng thái hủy theo dõi thành công
             }
-            setIsFollowed(false); // Cập nhật trạng thái hủy theo dõi thành công
           } catch (error) {
             console.error("Error unfollowing reader:", error);
           }
@@ -210,6 +218,7 @@ const ReaderDetail: React.FC = () => {
       });
     }
   };
+
 
   const handleBookNowClick = () => {
     if (!userId) {
@@ -290,19 +299,18 @@ const ReaderDetail: React.FC = () => {
         </Card>
         <Card className="bg-[#d9e6dc] rounded-lg shadow-sm p-4">
           <Title level={5}>Reviews</Title>
-          <Divider />
           {reviews.length > 0 ? (
             reviews.map((review, index) => (
-              <div key={index} className="mb-4">
-                <Title level={5} className="mb-1">{review.userName}</Title>
-                <Paragraph className="text-gray-600 mb-1">
-                  Rating: <Rate disabled defaultValue={review.booking.rating} />
+              <div key={index}>
+                <Divider />
+                <Paragraph>
+                  <Text strong>{review.userName}</Text> - {review.booking.feedback}
                 </Paragraph>
-                <Paragraph>{review.booking.feedback}</Paragraph>
+                <Rate disabled defaultValue={review.booking.rating} />
               </div>
             ))
           ) : (
-            <Paragraph>No reviews available</Paragraph>
+            <Paragraph>No reviews yet</Paragraph>
           )}
         </Card>
         <BookingPopup visible={isBookingPopupVisible} onClose={() => setIsBookingPopupVisible(false)} />

@@ -10,23 +10,24 @@ export const ERROR = {
     ERROR404: '/404',
 };
 export const ADMIN = {
-    ADMIN_DASHBOARD: '/admin-dashboard',
-    USER_MANAGEMENT: '/manage-users',
-    TOPIC_MANAGEMENT: '/manage-topic',
+    ADMIN_DASHBOARD: '/admin/admin-dashboard',
+    USER_MANAGEMENT: '/admin/manage-users',
+    TOPIC_MANAGEMENT: '/admin/manage-topic',
 }
 export const TAROT_READER = {
-    TAROT_READER_DASHBOARD: '/tarot-reader-dashboard',
-    TAROT_READER_DASHBOARD_CALENDAR: '/manage-bookings',
-    TAROT_READER_DASHBOARD_POST: '/post-manager',
-    TAROT_READER_DASHBOARD_ADD_POST: '/add-post',
-    TAROT_READER_DASHBOARD_CARD_DECK: '/card-deck-manager',
-    TAROT_READER_DASHBOARD_CARD_DECK_UPLOAD: '/card-deck-upload',
-    TAROT_READER_DASHBOARD_CARD_LIST: '/card-list'
+    TAROT_READER_DASHBOARD: '/tarot-reader/tarot-reader-dashboard',
+    TAROT_READER_DASHBOARD_CALENDAR: '/tarot-reader/manage-bookings',
+    TAROT_READER_DASHBOARD_POST: '/tarot-reader/post-manager',
+    TAROT_READER_DASHBOARD_ADD_POST: '/tarot-reader/add-post',
+    TAROT_READER_DASHBOARD_CARD_DECK: '/tarot-reader/card-deck-manager',
+    TAROT_READER_DASHBOARD_CARD_DECK_UPLOAD: '/tarot-reader/card-deck-upload',
+    TAROT_READER_DASHBOARD_CARD_LIST: '/tarot-reader/card-list'
 };
 export const PUBLIC = {
     HOME: '/homepage',
     LOGIN: '/login',
     FORGOT_PASSWORD: '/forgot-password',
+    CHANGE_PASSWORD: '/change-password',
     REGISTER: '/register',
     LIST_READERS: '/list-tarot-reader',
     BLOG: '/blog',
@@ -39,24 +40,20 @@ export const PUBLIC = {
 
 export const AdminSidebarData = {
     MenuAdminItems: [
-        { text: "Dashboard", icon: "AppstoreOutlined", url: "/admin-dashboard" },
-        { text: "Users", icon: "UserOutlined", url: "/manage-users" },
-        { text: "Topic", icon: "DollarOutlined", url: "/manage-topic" },
-        { text: "Bookings", icon: "CalendarOutlined", url: "/manage-bookings" },
-        { text: "Blogs", icon: "FileTextOutlined", url: "/manage-blogs" },
-        { text: "Settings", icon: "ToolOutlined", url: "/settings" },
-    ]
-};
+      { "key": "/admin/admin-dashboard", "label": "Dashboard", "icon": "AppstoreOutlined" },
+      { "key": "/admin/manage-users", "label": "User Management", "icon": "UserOutlined" },
+      { "key": "/admin/manage-topic", "label": "Topic Management", "icon": "DollarOutlined" },
+      { "key": "/admin/manage-blogs", "label": "Blogs ", "icon": "FileTextOutlined" },
+    ],
+  };
 
 export const TarotReaderSidebarData = {
     MenuTarotReaderItems: [
-        { text: "Dashboard", icon: "AppstoreOutlined", url: "/tarot-reader-dashboard" },
-        { text: "Booking", icon: "UserOutlined", url: "/manage-booking" },
-        { text: "Topic", icon: "DollarOutlined", url: "/manage-topic" },
-        { text: "Bookings", icon: "CalendarOutlined", url: "/manage-bookings" },
-        { text: "Blogs", icon: "FileTextOutlined", url: "/manage-blogs" },
-        { text: "Settings", icon: "ToolOutlined", url: "/settings" },
-        { text: "Sign Out", icon: "LogoutOutlined", url: "/signout" },
+
+        { "key": "/tarot-reader/tarot-reader-dashboard", "label": "Dashboard", "icon": "AppstoreOutlined" },
+        { "key": "/tarot-reader/manage-topic", "label": "Topic Management", "icon": "DollarOutlined" },
+        { "key": "/tarot-reader/manage-bookings", "label": "Bookings", "icon": "CalendarOutlined" },
+        { "key": "/tarot-reader/signout", "label": "Sign Out ", "icon": "LogoutOutlined" },
     ]
 };
 
