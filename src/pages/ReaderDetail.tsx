@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Card, Button, Tag, Rate, Typography, Spin, Divider, Modal } from "antd";
+import { Card, Button, Tag, Rate, Typography, Divider, Modal } from "antd";
 import { HeartOutlined, HeartFilled, ShareAltOutlined } from "@ant-design/icons";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import BookingPopup from "./BookingPopup"; // Import component popup
+import Loader from '../loader/Loader'; // Import component Loader
+
 
 
 
@@ -201,21 +203,17 @@ const ReaderDetail: React.FC = () => {
               }
             );
 
-
-            if (!response.ok) {
-
-              // Bỏ qua nếu mã trạng thái là 400
-              if (!response.ok && response.status !== 400) {
-
-                throw new Error("Failed to unfollow reader");
-              }
-              setIsFollowed(false); // Cập nhật trạng thái hủy theo dõi thành công
+            if (response.ok || response.status === 400) { // Nếu bỏ theo dõi thành công hoặc trạng thái là 400 (đã bỏ theo dõi)
+              setIsFollowed(false); // Cập nhật trạng thái theo dõi
+            } else {
+              throw new Error("Failed to unfollow reader");
             }
           } catch (error) {
             console.error("Error unfollowing reader:", error);
           }
         },
       });
+
     }
   };
 
@@ -230,8 +228,13 @@ const ReaderDetail: React.FC = () => {
 
 
   if (loading) {
-    return <Spin tip="Loading..." />;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader /> {/* Loader sẽ xuất hiện ở chính giữa */}
+      </div>
+    );
   }
+
   if (error) {
     return <div>Error fetching reader data: {error}</div>;
   }
@@ -313,7 +316,14 @@ const ReaderDetail: React.FC = () => {
             <Paragraph>No reviews yet</Paragraph>
           )}
         </Card>
-        <BookingPopup visible={isBookingPopupVisible} onClose={() => setIsBookingPopupVisible(false)} />
+        <BookingPopup
+          visible={isBookingPopupVisible}
+          onClose={() => setIsBookingPopupVisible(false)}
+          readerData={readerData}
+          avatarUrl={imageUrl} // Truyền URL ảnh avatar của reader
+          topics={topics} // Truyền danh sách chủ đề của reader
+        />
+
 
       </div>
     </div>
