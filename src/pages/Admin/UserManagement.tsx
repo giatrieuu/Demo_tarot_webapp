@@ -1,133 +1,226 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Button, Dropdown, Menu, Modal, Form, Input, message } from 'antd';
-import { MoreOutlined, UserAddOutlined } from '@ant-design/icons';
-import ApiService from '../../services/axios'; // Assuming you already have axios setup
+import React, { useState, useEffect } from "react";
+import {
+  Table,
+  Button,
+  Dropdown,
+  Menu,
+  Modal,
+  Form,
+  Input,
+  Tabs,
+  message,
+} from "antd";
+import {
+  CheckCircleOutlined,
+  MoreOutlined,
+  StopOutlined,
+  UserAddOutlined,
+} from "@ant-design/icons";
+import ApiService from "../../services/axios"; // Make sure this is correctly set up
+
+const { TabPane } = Tabs;
 
 const UserManagement: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
-  const [users, setUsers] = useState([]); // Users data
+  const [users, setUsers] = useState([]); // Regular users data
+  const [tarotReaders, setTarotReaders] = useState([]); // Tarot readers data
   const [loading, setLoading] = useState(false); // Loading state for the table
+  const [activeTab, setActiveTab] = useState("users"); // Track active tab
 
-  // Fetch the users when the component is mounted
+  // Fetch users data
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const response = await ApiService.fetchUsersList();
+      setUsers(response); // Update users state with API response
+    } catch (error) {
+      message.error("Failed to load users");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch tarot readers data
+  const fetchTarotReaders = async () => {
+    setLoading(true);
+    try {
+      const response = await ApiService.fetchReadersList();
+      setTarotReaders(response); // Update tarot readers state with API response
+    } catch (error) {
+      message.error("Failed to load tarot readers");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch data based on active tab
   useEffect(() => {
-    const fetchUsers = async () => {
-      setLoading(true); // Start loading
-      try {
-        const response = await ApiService.fetchUsersList(); // Assuming your ApiService has this method
-        setUsers(response); // Update the users state with API response
-      } catch (error) {
-        message.error('Failed to load users'); // Error handling
-      } finally {
-        setLoading(false); // Stop loading
-      }
-    };
-    fetchUsers();
-  }, []);
+    if (activeTab === "users") {
+      fetchUsers();
+    } else {
+      fetchTarotReaders();
+    }
+  }, [activeTab]);
 
   // Handle actions for user rows
   const handleMenuClick = (key: string, record: any) => {
-    if (key === 'assign') {
+    if (key === "assign") {
       setSelectedUser(record);
-      setIsModalVisible(true); // Show the modal for assigning email/password
+      setIsModalVisible(true);
     }
   };
 
   // Handle the OK action for the assign modal
   const handleModalOk = () => {
-    console.log('Assigning email and password for:', selectedUser);
-    setIsModalVisible(false); // Close modal
+    console.log("Assigning email and password for:", selectedUser);
+    setIsModalVisible(false);
   };
 
   // Cancel the assign modal
   const handleModalCancel = () => {
-    setIsModalVisible(false); // Close modal
+    setIsModalVisible(false);
   };
 
   // Show the modal for creating a new tarot reader
   const handleCreateModal = () => {
-    setIsCreateModalVisible(true); // Show create modal
+    setIsCreateModalVisible(true);
   };
 
   // Handle account creation form submission
-  const handleCreateAccount = (values: any) => {
-    console.log('Creating account for:', values); // Log values (replace with API call if needed)
-    setIsCreateModalVisible(false); // Close the modal
+  const handleCreateAccount = async (values: any) => {
+    try {
+      setLoading(true);
+      const { name, email, password } = values;
+      await ApiService.createReader(name, email, password);
+      message.success("Tarot Reader account created successfully");
+      setIsCreateModalVisible(false);
+      if (activeTab === "tarotReaders") {
+        fetchTarotReaders(); // Refresh tarot readers list after creation
+      }
+    } catch (error) {
+      message.error("Failed to create Tarot Reader account");
+    } finally {
+      setLoading(false);
+    }
   };
-
-  // Define table columns
+  // Handle block/unblock action
+  // Handle actions for user rows
+  const handleBlockUnblock = async (record: any) => {
+    const { id, status } = record;
+    const isBlocked = status === "Blocked";
+    try {
+      setLoading(true);
+      if (activeTab === "users") {
+        if (isBlocked) {
+          await ApiService.unblockUser(id);
+          message.success("User unblocked successfully");
+        } else {
+          await ApiService.blockUser(id);
+          message.success("User blocked successfully");
+        }
+        fetchUsers(); // Refresh the users list
+      } else {
+        if (isBlocked) {
+          await ApiService.unblockReader(id);
+          message.success("Reader unblocked successfully");
+        } else {
+          await ApiService.blockReader(id);
+          message.success("Reader blocked successfully");
+        }
+        fetchTarotReaders(); // Refresh the tarot readers list
+      }
+    } catch (error) {
+      message.error("Failed to update status");
+    } finally {
+      setLoading(false);
+    }
+  };
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
     },
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
     },
     {
-      title: 'Role',
-      dataIndex: 'roleId',
-      key: 'roleId',
-      render: (roleId: string) => (roleId === 'user' ? 'User' : 'Tarot Reader'), // Role rendering
+      title: "Role",
+      dataIndex: "roleId",
+      key: "roleId",
+      render: (roleId: string) => (roleId === "user" ? "User" : "Tarot Reader"),
     },
     {
-      title: 'Phone',
-      dataIndex: 'phone',
-      key: 'phone',
+      title: "Phone",
+      dataIndex: "phone",
+      key: "phone",
     },
     {
-      title: '',
-      key: 'action',
-      render: (text: any, record: any) => (
-        <Dropdown
-          overlay={
-            <Menu
-              onClick={({ key }) => handleMenuClick(key, record)} // Handle row menu actions
-              items={[{ label: 'Assign Email/Password', key: 'assign' }]}
-            />
+      title: "Action",
+      key: "action",
+      render: (record: any) => (
+        <Button
+          type="primary"
+          danger={record.status !== "Blocked"}
+          icon={
+            record.status === "Blocked" ? (
+              <CheckCircleOutlined />
+            ) : (
+              <StopOutlined />
+            )
           }
-          trigger={['click']}
+          onClick={() => handleBlockUnblock(record)}
         >
-          <Button icon={<MoreOutlined />} />
-        </Dropdown>
+          {record.status === "Blocked" ? "Unblock" : "Block"}
+        </Button>
       ),
     },
   ];
-
   return (
     <div>
       <h1 className="text-xl font-bold">User Management</h1>
       <p>Manage all your users from this panel.</p>
 
-      {/* Button to create a new Tarot Reader */}
-      <div className="mb-4">
-        <Button
-          type="primary"
-          icon={<UserAddOutlined />}
-          onClick={handleCreateModal}
-          className="bg-[#1890ff]"
-        >
-          Create Tarot Reader Account
-        </Button>
-      </div>
-
-      {/* User Table */}
-      <Table
-        dataSource={users}
-        columns={columns}
-        pagination={false} // Remove pagination
-        loading={loading} // Display loading state when fetching users
-        className="bg-white shadow-sm rounded-lg"
-      />
+      {/* Tabs for Users and Tarot Readers */}
+      <Tabs activeKey={activeTab} onChange={setActiveTab}>
+        <TabPane tab="Users" key="users">
+          <Table
+            dataSource={users}
+            columns={columns}
+            pagination={false}
+            loading={loading}
+            className="bg-white shadow-sm rounded-lg"
+          />
+        </TabPane>
+        <TabPane tab="Tarot Readers" key="tarotReaders">
+          <div className="mb-4">
+            <Button
+              type="primary"
+              icon={<UserAddOutlined />}
+              onClick={handleCreateModal}
+              className="bg-[#1890ff]"
+            >
+              Create Tarot Reader Account
+            </Button>
+          </div>
+          <Table
+            dataSource={tarotReaders}
+            columns={columns}
+            pagination={false}
+            loading={loading}
+            className="bg-white shadow-sm rounded-lg"
+          />
+        </TabPane>
+      </Tabs>
 
       {/* Modal for Assigning Email/Password */}
       <Modal
@@ -138,7 +231,10 @@ const UserManagement: React.FC = () => {
       >
         <Form layout="vertical">
           <Form.Item label="Email">
-            <Input placeholder="Enter email" defaultValue={selectedUser?.email} />
+            <Input
+              placeholder="Enter email"
+              defaultValue={selectedUser?.email}
+            />
           </Form.Item>
           <Form.Item label="Password">
             <Input.Password placeholder="Enter password" />
@@ -150,22 +246,28 @@ const UserManagement: React.FC = () => {
       <Modal
         title="Create Tarot Reader Account"
         visible={isCreateModalVisible}
-        onOk={() => setIsCreateModalVisible(false)}
         onCancel={() => setIsCreateModalVisible(false)}
         footer={null}
       >
         <Form layout="vertical" onFinish={handleCreateAccount}>
           <Form.Item
+            name="name"
+            label="Name"
+            rules={[{ required: true, message: "Please input the name!" }]}
+          >
+            <Input placeholder="Enter name" />
+          </Form.Item>
+          <Form.Item
             name="email"
             label="Email"
-            rules={[{ required: true, message: 'Please input the email!' }]}
+            rules={[{ required: true, message: "Please input the email!" }]}
           >
             <Input placeholder="Enter email" />
           </Form.Item>
           <Form.Item
             name="password"
             label="Password"
-            rules={[{ required: true, message: 'Please input the password!' }]}
+            rules={[{ required: true, message: "Please input the password!" }]}
           >
             <Input.Password placeholder="Enter password" />
           </Form.Item>
