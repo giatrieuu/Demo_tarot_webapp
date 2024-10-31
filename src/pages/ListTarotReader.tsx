@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Checkbox, Input, Button, Slider, Select, Card, Rate, message, Spin } from 'antd';
+import { Checkbox, Input, Button, Slider, Select, Card, Rate, message } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import Loader from '../loader/Loader'; // Import component Loader
+
 
 const { Option } = Select;
 
@@ -87,7 +89,14 @@ const ListReaders: React.FC = () => {
     fetchReaders();
   }, []);
 
-  if (loading) return <Spin tip="Loading..." />;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader /> {/* Loader sẽ xuất hiện ở chính giữa */}
+      </div>
+    );
+  }
+
   // Các hàm xử lý sự kiện
   const handleTopicChange = (checkedValues: string[]) => {
     setSelectedTopicIds(checkedValues);

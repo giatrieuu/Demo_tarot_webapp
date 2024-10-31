@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Card, Button, Tag, Rate, Typography, Spin, Divider, Modal } from "antd";
+import { Card, Button, Tag, Rate, Typography, Divider, Modal } from "antd";
 import { HeartOutlined, HeartFilled, ShareAltOutlined } from "@ant-design/icons";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import BookingPopup from "./BookingPopup"; // Import component popup
+import Loader from '../loader/Loader'; // Import component Loader
+
+
+
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -71,7 +76,12 @@ const ReaderDetail: React.FC = () => {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isFollowed, setIsFollowed] = useState<boolean>(false);
-  const userId = useSelector((state: RootState) => state.auth.userId);;
+
+  const userId = useSelector((state: RootState) => state.auth.userId); // Get userId from Redux store
+
+  const [isBookingPopupVisible, setIsBookingPopupVisible] = useState(false); // Trạng thái popup
+
+
 
   useEffect(() => {
     const fetchReaderData = async () => {
@@ -193,23 +203,38 @@ const ReaderDetail: React.FC = () => {
               }
             );
 
-            // Bỏ qua nếu mã trạng thái là 400
-            if (!response.ok && response.status !== 400) {
+            if (response.ok || response.status === 400) { // Nếu bỏ theo dõi thành công hoặc trạng thái là 400 (đã bỏ theo dõi)
+              setIsFollowed(false); // Cập nhật trạng thái theo dõi
+            } else {
               throw new Error("Failed to unfollow reader");
             }
-            setIsFollowed(false); // Cập nhật trạng thái hủy theo dõi thành công
           } catch (error) {
             console.error("Error unfollowing reader:", error);
           }
         },
       });
+
+    }
+  };
+
+
+  const handleBookNowClick = () => {
+    if (!userId) {
+      navigate("/login");
+    } else {
+      setIsBookingPopupVisible(true); // Hiển thị popup nếu đã đăng nhập
     }
   };
 
 
   if (loading) {
-    return <Spin tip="Loading..." />;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader /> {/* Loader sẽ xuất hiện ở chính giữa */}
+      </div>
+    );
   }
+
   if (error) {
     return <div>Error fetching reader data: {error}</div>;
   }
@@ -265,6 +290,7 @@ const ReaderDetail: React.FC = () => {
               type="primary"
               size="large"
               className="bg-[#72876e] hover:bg-[#91a089]"
+              onClick={handleBookNowClick} // Sự kiện khi nhấn "Book Now"
             >
               Book Now
             </Button>
@@ -290,6 +316,15 @@ const ReaderDetail: React.FC = () => {
             <Paragraph>No reviews yet</Paragraph>
           )}
         </Card>
+        <BookingPopup
+          visible={isBookingPopupVisible}
+          onClose={() => setIsBookingPopupVisible(false)}
+          readerData={readerData}
+          avatarUrl={imageUrl} // Truyền URL ảnh avatar của reader
+          topics={topics} // Truyền danh sách chủ đề của reader
+        />
+
+
       </div>
     </div>
   );
