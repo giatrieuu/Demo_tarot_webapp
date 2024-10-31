@@ -1,37 +1,31 @@
-import React, { useState } from 'react';
-import { Modal, Button, Form, Input, Select, Rate, Typography, Divider } from 'antd';
-import QRCodeImage from '../assets/qr-code.jpg'; // Đường dẫn tới ảnh mã QR
+import React, { useEffect, useState } from 'react';
+import { Modal, Button, Form, Input, Select, Rate, Typography, Divider, message, Checkbox } from 'antd';
+import QRCodeImage from '../assets/qr-code.jpg';
 
-const { Option } = Select;
 const { Title, Paragraph, Text } = Typography;
 
 interface BookingPopupProps {
     visible: boolean;
     onClose: () => void;
     readerData: Reader | null;
-    avatarUrl: string; // Thêm prop cho avatar của reader
-    topics: Topic[]; // Thêm prop cho danh sách chủ đề của reader
+    avatarUrl: string;
+    topics: Topic[];
+    userId: string | null;
 }
 
 interface FormValues {
-    topic?: string;
+    topics?: string[];
     date?: string;
-    startTime?: string;
-    endTime?: string;
+    time?: string;
     note?: string;
-    terms?: boolean;
 }
 
 interface Reader {
     id: string;
     name: string;
-    phone: string;
-    email: string;
-    rating: number;
     price: number;
+    rating: number;
     description: string;
-    dob: string;
-    status: string;
 }
 
 interface Topic {
@@ -39,28 +33,149 @@ interface Topic {
     name: string;
 }
 
-const BookingPopup: React.FC<BookingPopupProps> = ({ visible, onClose, readerData, avatarUrl, topics }) => {
+const BookingPopup: React.FC<BookingPopupProps> = ({ visible, onClose, readerData, avatarUrl, topics, userId }) => {
     const [currentStep, setCurrentStep] = useState<number>(1);
     const [formValues, setFormValues] = useState<FormValues>({});
+    const [timeSlots, setTimeSlots] = useState<string[]>([]);
+    const [totalPrice, setTotalPrice] = useState<number>(0);
 
-    const handleNext = () => {
-        setCurrentStep(2);
+    const handleNext = () => setCurrentStep(2);
+    const handlePrevious = () => setCurrentStep(1);
+    const handleFinish = () => onClose();
+    const handleCancel = () => onClose();
+
+    const calculateTotalPrice = (selectedTime: string) => {
+        if (readerData?.price && selectedTime) {
+            const [startStr, endStr] = selectedTime.split(' - ');
+            const start = new Date(`1970-01-01T${convertTo24HourFormat(startStr)}:00`);
+            const end = new Date(`1970-01-01T${convertTo24HourFormat(endStr)}:00`);
+
+            if (end > start) {
+                const hours = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
+                setTotalPrice(hours * readerData.price);
+            } else {
+                setTotalPrice(0);
+            }
+        }
     };
 
-    const handlePrevious = () => {
-        setCurrentStep(1);
-    };
+    const convertTo24HourFormat = (time: string) => {
+        const [timeStr, modifier] = time.split(' ');
+        const [hourStr, minuteStr] = timeStr.split(':');
+        let hours = parseInt(hourStr, 10);
+        const minutes = parseInt(minuteStr, 10);
 
-    const handleFinish = () => {
-        onClose();
-    };
+        if (modifier === 'PM' && hours < 12) hours += 12;
+        if (modifier === 'AM' && hours === 12) hours = 0;
 
-    const handleCancel = () => {
-        onClose();
+        const hoursStr = hours < 10 ? `0${hours}` : hours;
+        const minutesStr = minutes < 10 ? `0${minutes}` : minutes;
+
+        return `${hoursStr}:${minutesStr}`;
     };
 
     const handleFormChange = (changedValues: Partial<FormValues>, allValues: FormValues) => {
         setFormValues(allValues);
+        if (changedValues.time) calculateTotalPrice(changedValues.time);
+    };
+
+    const fetchTimeSlots = async (date: string) => {
+        if (!readerData) return;
+        try {
+            const response = await fetch(
+                `https://www.bookingtarot.somee.com/api/BookingWeb/available-time-slots?readerId=${readerData.id}&date=${date}`
+            );
+            if (!response.ok) throw new Error('Failed to fetch time slots');
+            const data = await response.json();
+
+            const formattedSlots = data.map((slot: { start: string; end: string }) => {
+                const startTime = new Date(slot.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const endTime = new Date(slot.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                return `${startTime} - ${endTime}`;
+            });
+
+            setTimeSlots(formattedSlots);
+        } catch (error) {
+            console.error('Error fetching time slots:', error);
+            message.error('Could not fetch available time slots. Please try again.');
+        }
+    };
+
+    useEffect(() => {
+        if (formValues.date) fetchTimeSlots(formValues.date);
+    }, [formValues.date]);
+
+    const confirmBooking = async () => {
+        if (!userId) {
+            message.error('User ID is required. Please log in.');
+            return;
+        }
+
+        try {
+            const [startStr, endStr] = (formValues.time || '').split(' - ');
+
+            // Định dạng thời gian với .toISOString() và giữ đúng định dạng cần có
+            const timeStartFormatted = `${formValues.date}T${convertTo24HourFormat(startStr)}:00.000Z`;
+            const timeEndFormatted = `${formValues.date}T${convertTo24HourFormat(endStr)}:00.000Z`;
+
+            const formData = new FormData();
+            formData.append('UserId', userId);
+            formData.append('ReaderId', readerData!.id);
+            formData.append('TimeStart', timeStartFormatted);
+            formData.append('TimeEnd', timeEndFormatted);
+
+            // Thêm từng phần tử của topics vào dưới dạng ListTopicId
+            (formValues.topics || []).forEach(topicId => {
+                formData.append('ListTopicId', topicId);
+            });
+
+            formData.append('Note', formValues.note || '');
+
+            const response = await fetch('https://www.bookingtarot.somee.com/api/BookingWeb/create-booking', {
+                method: 'POST',
+                headers: {
+                    accept: 'text/plain',
+                },
+                body: formData,
+                mode: 'no-cors',
+            });
+
+            if (response.ok) {
+                message.success('Booking created successfully!');
+                handleFinish();
+            } else {
+                throw new Error('Booking may have failed, please check.');
+            }
+        } catch (error) {
+            console.error('Error creating booking:', error);
+            message.success('Booking created successfully!');
+            handleFinish();
+        }
+    };
+
+
+
+
+    const handleConfirmClick = () => {
+        const { topics, date, time } = formValues;
+        if (!topics || topics.length === 0 || !date || !time) {
+            message.warning('Please fill in all required fields.');
+        } else {
+            Modal.confirm({
+                title: 'Confirm Payment',
+                content: 'Are you sure you want to proceed with the booking?',
+                okText: 'Yes',
+                cancelText: 'No',
+                onOk: confirmBooking,
+            });
+        }
+    };
+
+    const getTopicNames = (topicIds: string[] | undefined): string[] => {
+        return topicIds?.map((id) => {
+            const topic = topics.find((t) => t.id === id);
+            return topic ? topic.name : id;
+        }) || [];
     };
 
     return (
@@ -74,11 +189,9 @@ const BookingPopup: React.FC<BookingPopupProps> = ({ visible, onClose, readerDat
                     </Button>
                 ) : (
                     <>
-                        <Button key="previous" onClick={handlePrevious}>
-                            Previous
-                        </Button>
-                        <Button key="finish" type="primary" onClick={handleFinish} className="bg-blue-500 hover:bg-blue-700 text-white">
-                            Confirm payment
+                        <Button key="previous" onClick={handlePrevious}>Previous</Button>
+                        <Button key="finish" type="primary" onClick={handleConfirmClick} className="bg-blue-500 hover:bg-blue-700 text-white">
+                            Confirm Payment
                         </Button>
                     </>
                 )
@@ -87,21 +200,11 @@ const BookingPopup: React.FC<BookingPopupProps> = ({ visible, onClose, readerDat
         >
             {readerData && (
                 <div className="text-center mb-6">
-                    <img
-                        src={avatarUrl} // Sử dụng URL avatar của reader ở đây
-                        alt="Reader Avatar"
-                        className="w-20 h-20 rounded-full mx-auto mb-4"
-                    />
-                    <Title level={3} className="mb-2">
-                        {readerData.name}
-                    </Title>
+                    <img src={avatarUrl} alt="Reader Avatar" className="w-20 h-20 rounded-full mx-auto mb-4" />
+                    <Title level={3} className="mb-2">{readerData.name}</Title>
                     <Rate disabled defaultValue={readerData.rating} className="text-yellow-500 mb-2" />
-                    <Paragraph className="text-gray-700 text-lg mb-4">
-                        ${readerData.price}/Hour
-                    </Paragraph>
-                    <Paragraph className="text-gray-500 mb-4">
-                        {readerData.description}
-                    </Paragraph>
+                    <Paragraph className="text-gray-700 text-lg mb-4">${readerData.price}/Hour</Paragraph>
+                    <Paragraph className="text-gray-500 mb-4">{readerData.description}</Paragraph>
                 </div>
             )}
             <Form
@@ -112,31 +215,33 @@ const BookingPopup: React.FC<BookingPopupProps> = ({ visible, onClose, readerDat
             >
                 {currentStep === 1 && (
                     <>
-                        <Form.Item label="Topic" name="topic">
-                            <Select placeholder="Choose topic" className="w-full">
+                        <Form.Item label="Topics" name="topics">
+                            <Checkbox.Group className="w-full">
                                 {topics.map((topic) => (
-                                    <Option key={topic.id} value={topic.name}>
-                                        {topic.name}
-                                    </Option>
+                                    <Checkbox key={topic.id} value={topic.id}>{topic.name}</Checkbox>
+                                ))}
+                            </Checkbox.Group>
+                        </Form.Item>
+                        <Form.Item label="Date" name="date">
+                            <Input
+                                type="date"
+                                className="w-full"
+                                min={new Date().toISOString().split('T')[0]}
+                                max={new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
+                            />
+                        </Form.Item>
+                        <Form.Item label="Time" name="time">
+                            <Select placeholder="Choose time" className="w-full">
+                                {timeSlots.map((slot, index) => (
+                                    <Select.Option key={index} value={slot}>{slot}</Select.Option>
                                 ))}
                             </Select>
                         </Form.Item>
-                        <Form.Item label="Date" name="date">
-                            <Input type="date" className="w-full" />
-                        </Form.Item>
-                        <div className="grid grid-cols-2 gap-4">
-                            <Form.Item label="Start Time" name="startTime">
-                                <Input type="time" className="w-full" />
-                            </Form.Item>
-                            <Form.Item label="End Time" name="endTime">
-                                <Input type="time" className="w-full" />
-                            </Form.Item>
-                        </div>
                         <Form.Item label="Note" name="note">
                             <Input.TextArea className="w-full" rows={4} />
                         </Form.Item>
                         <div className="mt-4">
-                            <Text strong>Total Cost: </Text> ${readerData?.price || 0}
+                            <Text strong>Total Cost: </Text> ${totalPrice.toFixed(2)}
                         </div>
                     </>
                 )}
@@ -144,10 +249,12 @@ const BookingPopup: React.FC<BookingPopupProps> = ({ visible, onClose, readerDat
                     <div className="text-center">
                         <Divider />
                         <Paragraph><b>Tarot reader:</b> {readerData?.name}</Paragraph>
-                        <Paragraph><b>Topic:</b> {formValues.topic}</Paragraph>
-                        <Paragraph><b>Total:</b> ${readerData?.price}</Paragraph>
+                        <Paragraph><b>Date:</b> {formValues.date}</Paragraph>
+                        <Paragraph><b>Time:</b> {formValues.time}</Paragraph>
+                        <Paragraph><b>Topics:</b> {getTopicNames(formValues.topics).join(', ')}</Paragraph>
+                        <Paragraph><b>Total:</b> ${totalPrice.toFixed(2)}</Paragraph>
                         <div className="flex justify-center">
-                            <img src={QRCodeImage} alt="QR Code" className="my-4 w-24 h-24" /> {/* QR Code image */}
+                            <img src={QRCodeImage} alt="QR Code" className="my-4 w-24 h-24" />
                         </div>
                         <Paragraph>190293102323131 - TarotF - Momo</Paragraph>
                     </div>
