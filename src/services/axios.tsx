@@ -102,6 +102,19 @@ const ApiService = {
       throw error;
     }
   },
+  getReaderNotificationCounts: async (readerId: string) => {
+    try {
+      const response = await api.get(`/api/NotificationWeb/get-reader-noti-counts`, {
+        params: {
+          readerId,
+        },
+      });
+      return response.data; // Return the notification counts
+    } catch (error) {
+      console.error("Error fetching reader notification counts", error);
+      throw error;
+    }
+  },
   // Function to fetch notifications for a user by userId
   getUserNotifications: async (userId: string) => {
     try {
@@ -113,6 +126,19 @@ const ApiService = {
       return response.data; // Return the notifications data from the API
     } catch (error) {
       console.error("Error fetching user notifications", error);
+      throw error;
+    }
+  },
+  markNotificationAsRead: async (notificationId: string) => {
+    try {
+      const response = await api.post(`/api/NotificationWeb/mark-as-read`, null, {
+        params: {
+          notificationId, // Pass the notification ID as a query parameter
+        },
+      });
+      return response.data; // Return the response message
+    } catch (error) {
+      console.error("Error marking notification as read", error);
       throw error;
     }
   },
