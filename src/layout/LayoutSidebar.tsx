@@ -28,21 +28,24 @@ const LayoutSidebar: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   };
 
   return (
-    <Layout className="overflow-hidden h-screen flex flex-col">
-      {/* Single Header */}
-      <HeaderLogged toggleMenu={toggleMenu} />
-
-      {/* Sidebar and Content */}
+    <Layout className="h-screen overflow-hidden flex flex-row">
+      {/* Sidebar */}
       {renderSidebar()}
 
-      <Content className={`transition-all duration-300 overflow-auto ${showMenu ? 'ml-56' : 'ml-0'}`}>
-        <div className="flex flex-col min-h-screen">
-          <div className="flex-1 pt-16 mt-4 p-4 overflow-auto">
-            {children}
+      {/* Main content area */}
+      <Layout className="flex-1">
+        {/* Single Header */}
+        <HeaderLogged toggleMenu={toggleMenu} />
+
+        <Content className={`transition-all duration-300 overflow-auto ${showMenu ? 'ml-56' : 'ml-0'}`}>
+          <div className="flex flex-col min-h-screen">
+            <div className="flex-1 p-4 overflow-auto">
+              {children}
+            </div>
+            <Footer />
           </div>
-          <Footer />
-        </div>
-      </Content>
+        </Content>
+      </Layout>
     </Layout>
   );
 };

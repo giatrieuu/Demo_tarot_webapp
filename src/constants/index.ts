@@ -53,7 +53,7 @@ export const TarotReaderSidebarData = {
         { "key": "/tarot-reader/tarot-reader-dashboard", "label": "Dashboard", "icon": "AppstoreOutlined" },
         { "key": "/tarot-reader/manage-topic", "label": "Topic Management", "icon": "DollarOutlined" },
         { "key": "/tarot-reader/manage-bookings", "label": "Bookings", "icon": "CalendarOutlined" },
-        { "key": "/tarot-reader/signout", "label": "Sign Out ", "icon": "LogoutOutlined" },
+        { "key": "/tarot-reader/card-deck-manager", "label": "Sign Out ", "icon": "LogoutOutlined" },
     ]
 };
 

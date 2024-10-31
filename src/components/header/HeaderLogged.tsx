@@ -114,7 +114,32 @@ const AppHeader: React.FC = () => {
     }
   };
 
-  // Notification dropdown without border and adjusted position
+  // Function to handle notification click and mark it as read
+  const handleNotificationClick = async (notificationId: string) => {
+    try {
+      await ApiService.markNotificationAsRead(notificationId); // Mark notification as read
+      setNotifications((prev) =>
+        prev.map((notification) =>
+          notification.id === notificationId
+            ? { ...notification, isRead: true }
+            : notification
+        )
+      );
+      setUnreadCount((prevCount) => prevCount - 1); // Reduce the unread count
+    } catch (error) {
+      toast.error("Failed to mark notification as read.");
+    }
+  };
+
+  // Separate unread and read notifications
+  const unreadNotifications = notifications.filter(
+    (notification) => !notification.isRead
+  );
+  const readNotifications = notifications.filter(
+    (notification) => notification.isRead
+  );
+
+  // Notification dropdown with "Unread" and "Read" sections
   const notificationDropdown = (
     <div
       style={{
@@ -132,12 +157,58 @@ const AppHeader: React.FC = () => {
       ) : notifications.length === 0 ? (
         <p>No new notifications</p>
       ) : (
-        notifications.map((notification) => (
-          <div key={notification.id} style={{ padding: "10px 0" }}>
-            <p>{notification.description}</p>
-            <small>{new Date(notification.createAt).toLocaleString()}</small>
-          </div>
-        ))
+        <>
+          {/* Unread Notifications Section */}
+          {unreadNotifications.length > 0 && (
+            <div>
+              <h4 style={{ fontWeight: "bold", marginBottom: "8px" }}>
+                Unread Notifications
+              </h4>
+              {unreadNotifications.map((notification) => (
+                <div
+                  key={notification.id}
+                  onClick={() => handleNotificationClick(notification.id)}
+                  style={{
+                    padding: "10px 0",
+                    fontWeight: "bold", // Bold for unread notifications
+                    cursor: "pointer",
+                    borderBottom: "1px solid #f0f0f0", // Divider between notifications
+                  }}
+                >
+                  <p>{notification.description}</p>
+                  <small>
+                    {new Date(notification.createAt).toLocaleString()}
+                  </small>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Read Notifications Section */}
+          {readNotifications.length > 0 && (
+            <div style={{ marginTop: "10px" }}>
+              <h4 style={{ fontWeight: "normal", marginBottom: "8px" }}>
+                Read Notifications
+              </h4>
+              {readNotifications.map((notification) => (
+                <div
+                  key={notification.id}
+                  style={{
+                    padding: "10px 0",
+                    fontWeight: "normal", // Normal weight for read notifications
+                    cursor: "pointer",
+                    borderBottom: "1px solid #f0f0f0", // Divider between notifications
+                  }}
+                >
+                  <p>{notification.description}</p>
+                  <small>
+                    {new Date(notification.createAt).toLocaleString()}
+                  </small>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   );
@@ -203,8 +274,7 @@ const AppHeader: React.FC = () => {
               placement="bottomRight"
             >
               <Badge count={unreadCount} offset={[10, 0]}>
-                <BellOutlined className="text-[#4a044e] text-2xl cursor-pointer" />{" "}
-                {/* Changed color */}
+                <BellOutlined className="text-[#4a044e] text-2xl cursor-pointer" />
               </Badge>
             </Dropdown>
 
