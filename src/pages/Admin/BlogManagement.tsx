@@ -16,7 +16,6 @@ interface Post {
     title: string;
     text: string;
     content: string;
-    image: string;
     createdAt: string;
     status: string;
 }

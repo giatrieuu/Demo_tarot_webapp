@@ -45,36 +45,36 @@ const ApiService = {
       throw error;
     }
   },
- // Function to change password
- changePassword: async (
-  readerId: string,
-  oldPassword: string,
-  newPassword: string,
-  confirmPassword: string
-) => {
-  try {
-    const formData = new FormData();
-    formData.append("ReaderId", readerId); // Reader ID
-    formData.append("OldPassword", oldPassword); // Current password
-    formData.append("NewPassword", newPassword); // New password
-    formData.append("ConfirmPassword", confirmPassword); // Confirm new password
+  // Function to change password
+  changePassword: async (
+    readerId: string,
+    oldPassword: string,
+    newPassword: string,
+    confirmPassword: string
+  ) => {
+    try {
+      const formData = new FormData();
+      formData.append("ReaderId", readerId); // Reader ID
+      formData.append("OldPassword", oldPassword); // Current password
+      formData.append("NewPassword", newPassword); // New password
+      formData.append("ConfirmPassword", confirmPassword); // Confirm new password
 
-    const response = await api.post("/api/ReaderWeb/change-password", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+      const response = await api.post("/api/ReaderWeb/change-password", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
-    if (response && response.data) {
-      return response.data; // Return the API response
-    } else {
-      throw new Error("No response from server.");
+      if (response && response.data) {
+        return response.data; // Return the API response
+      } else {
+        throw new Error("No response from server.");
+      }
+    } catch (error) {
+      console.error("Error changing password:", error);
+      throw error;
     }
-  } catch (error) {
-    console.error("Error changing password:", error);
-    throw error;
-  }
-},
+  },
 
   // Function to fetch user data with images by userId
   getUserWithImages: async (userId: string) => {
@@ -122,10 +122,10 @@ const ApiService = {
     try {
       const token =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJUcmnhu4F1IEdpYSIsImVtYWlsIjoibGVnaWF0cmlldTMyNDVAZ21haWwuY29tIiwianRpIjoiNTBjOTI1NWEtNjMzZS00ZWY4LThhOTAtZDAxMjBmMGU3NzQ1IiwiSWQiOiJVc2VyXzJkYzBmMWE2ZjYiLCJSb2xlIjoiMiIsIkltYWdlIjoiaHR0cHM6Ly9maXJlYmFzZXN0b3JhZ2UuZ29vZ2xlYXBpcy5jb20vdjAvYi90YXJvdGJvb2tpbmdhcGkuYXBwc3BvdC5jb20vby9pbWFnZXMlMkZlMmIzNThkNC04ZjFhLTQyOWMtOGNiZi1hODdkZjJmNDU4ZjMuanBnP2FsdD1tZWRpYSZ0b2tlbj04YTEyNzNmNi05YTUxLTQ4M2YtOGY0NC02MDA5ZjNkZjA4NTgiLCJleHAiOjE3MzAxODk4MDYsImlzcyI6Imh0dHA6Ly93d3cuYm9va2luZ3Rhcm90LnNvbWVlLmNvbS8ifQ.EI4dYWbtCo2Bu4KcPpk8ObuSXCiXYhAadPPCNlqnrhs";
-  
+
       const formData = new FormData();
       formData.append("name", name);
-  
+
       const response = await api.post("/api/TopicWeb/create-topic", formData, {
         withCredentials: true,
         headers: {
@@ -133,14 +133,14 @@ const ApiService = {
           Authorization: `Bearer ${token}`, // Include the token in the Authorization header
         },
       });
-  
+
       return response.data; // Return the response from the API
     } catch (error) {
       console.error("Error creating topic", error);
       throw error;
     }
   },
-  
+
 
   // Function to fetch the list of topics
   fetchTopicsList: async () => {
@@ -317,6 +317,67 @@ const ApiService = {
       throw error;
     }
   },
+
+  createPost: async (
+    readerId: string,
+    title: string,
+    text: string,
+    content: string,
+    image: File
+  ) => {
+    try {
+      const formData = new FormData();
+      formData.append("ReaderId", readerId);
+      formData.append("Title", title);
+      formData.append("Text", text);
+      formData.append("Content", content);
+      formData.append("Image", image);
+
+      const response = await api.post(
+        "/api/PostWeb/create-post",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error("Error creating post", error);
+      throw error;
+    }
+  },
+
+  updatePost: async (
+    id: string,
+    title: string,
+    text: string,
+    content: string,
+    image: File
+  ) => {
+    try {
+      const formData = new FormData();
+      formData.append("id", id);
+      formData.append("title", title);
+      formData.append("text", text);
+      formData.append("content", content);
+      formData.append("image", image);
+
+      const response = await api.post("/api/PostWeb/update-post", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error("Error updating post", error);
+      throw error;
+    }
+  },
+
   // Function to update user data
   updateUser: async (data: any) => {
     try {
@@ -345,19 +406,51 @@ const ApiService = {
       throw error;
     }
   },
-  updateImage: async (formData: FormData) => {
+  // updateImage: async (formData: FormData) => {
+  //   try {
+  //     const response = await api.post("/api/Images/UpdateImage", formData, {
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     });
+  //     return response.data; // Return the response from the API
+  //   } catch (error) {
+  //     console.error("Error updating image", error);
+  //     throw error;
+  //   }
+  // },
+
+  updateImage: async (
+    file?: File,
+    postId?: string,
+    userId?: string,
+    cardId?: string,
+    groupId?: string,
+    readerId?: string
+  ) => {
     try {
-      const response = await api.post("/api/Images/UpdateImage", formData, {
+      const formData = new FormData();
+
+      if (file) formData.append("File", file);
+      if (postId) formData.append("PostId", postId);
+      if (userId) formData.append("UserId", userId);
+      if (cardId) formData.append("CardId", cardId);
+      if (groupId) formData.append("GroupId", groupId);
+      if (readerId) formData.append("ReaderId", readerId);
+
+      const response = await axios.post("/api/Images/UpdateImage", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      return response.data; // Return the response from the API
+
+      return response.data;
     } catch (error) {
       console.error("Error updating image", error);
       throw error;
     }
   },
+
   // Function to fetch comments by postId with pagination
   getCommentsByPostId: async (
     postId: string,

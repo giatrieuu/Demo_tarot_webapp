@@ -13,6 +13,7 @@ export const ADMIN = {
     ADMIN_DASHBOARD: '/admin/admin-dashboard',
     USER_MANAGEMENT: '/admin/manage-users',
     TOPIC_MANAGEMENT: '/admin/manage-topic',
+    BLOG_MANAGEMENT: '/manage-blogs',
 }
 export const TAROT_READER = {
     TAROT_READER_DASHBOARD: '/tarot-reader/tarot-reader-dashboard',
@@ -21,7 +22,8 @@ export const TAROT_READER = {
     TAROT_READER_DASHBOARD_ADD_POST: '/tarot-reader/add-post',
     TAROT_READER_DASHBOARD_CARD_DECK: '/tarot-reader/card-deck-manager',
     TAROT_READER_DASHBOARD_CARD_DECK_UPLOAD: '/tarot-reader/card-deck-upload',
-    TAROT_READER_DASHBOARD_CARD_LIST: '/tarot-reader/card-list'
+    TAROT_READER_DASHBOARD_CARD_LIST: '/tarot-reader/card-list',
+    CREATE_BLOG: '/create-blog',
 };
 export const PUBLIC = {
     HOME: '/homepage',
@@ -40,12 +42,12 @@ export const PUBLIC = {
 
 export const AdminSidebarData = {
     MenuAdminItems: [
-      { "key": "/admin/admin-dashboard", "label": "Dashboard", "icon": "AppstoreOutlined" },
-      { "key": "/admin/manage-users", "label": "User Management", "icon": "UserOutlined" },
-      { "key": "/admin/manage-topic", "label": "Topic Management", "icon": "DollarOutlined" },
-      { "key": "/admin/manage-blogs", "label": "Blogs ", "icon": "FileTextOutlined" },
+        { "key": "/admin/admin-dashboard", "label": "Dashboard", "icon": "AppstoreOutlined" },
+        { "key": "/admin/manage-users", "label": "User Management", "icon": "UserOutlined" },
+        { "key": "/admin/manage-topic", "label": "Topic Management", "icon": "DollarOutlined" },
+        { "key": "/admin/manage-blogs", "label": "Blogs ", "icon": "FileTextOutlined" },
     ],
-  };
+};
 
 export const TarotReaderSidebarData = {
     MenuTarotReaderItems: [

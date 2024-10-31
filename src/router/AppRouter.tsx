@@ -18,6 +18,8 @@ const ReaderDetail = lazy(() => import("../pages/ReaderDetail"));
 
 const BlogPage = lazy(() => import("../pages/Blog/Blog"));
 const BlogDetail = lazy(() => import("../pages/Blog/BlogDetail"));
+const BlogManagement = lazy(() => import("../pages/Admin/BlogManagement"));
+const CreateBlog = lazy(() => import("../pages/Blog/CreateBlog"));
 const TarotReaderDashboard = lazy(() => import("../pages/Tarot-Reader/TarotReaderDashboard"));
 const ManagerBooking = lazy(() => import("../pages/Tarot-Reader/CalendarPage"));
 const PostManager = lazy(() => import("../pages/Tarot-Reader/PostManager"));
@@ -61,6 +63,7 @@ const AppRouter: React.FC = () => {
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_DECK} element={<CardDeckManager />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_DECK_UPLOAD} element={<CardDeckUpload />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_LIST} element={<CardDeckList />} />
+            <Route path={TAROT_READER.CREATE_BLOG} element={<CreateBlog />} />
           </Route>
 
           {/* Admin Routes with MainLayout */}
@@ -70,18 +73,15 @@ const AppRouter: React.FC = () => {
             <Route path={ADMIN.TOPIC_MANAGEMENT} element={<TopicManagement />} />
             <Route path={ADMIN.BLOG_MANAGEMENT} element={<BlogManagement />} />
 
-            <Route path={TAROT_READER.CREATE_BLOG} element={<CreateBlog />} />
-
-
           </Route>
 
           {/* Auth Routes with No Sidebar Layout */}
-        
-            <Route path={PUBLIC.LOGIN} element={<Login />} />
-            <Route path={PUBLIC.REGISTER} element={<Register />} />
-            <Route path={PUBLIC.FORGOT_PASSWORD} element={<ForgotPassword />} />
-            <Route path={PUBLIC.CHANGE_PASSWORD} element={<ChangePassword />} />
-   
+
+          <Route path={PUBLIC.LOGIN} element={<Login />} />
+          <Route path={PUBLIC.REGISTER} element={<Register />} />
+          <Route path={PUBLIC.FORGOT_PASSWORD} element={<ForgotPassword />} />
+          <Route path={PUBLIC.CHANGE_PASSWORD} element={<ChangePassword />} />
+
         </Routes>
       </Suspense>
       <ToastContainer />

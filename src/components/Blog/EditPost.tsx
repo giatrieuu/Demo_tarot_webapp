@@ -1,5 +1,8 @@
-import React, { useEffect } from 'react';
-import { Modal, Form, Input, message } from 'antd';
+import React, { useState } from 'react';
+import { Modal, Form, Input, Upload, Button } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
+import type { UploadChangeParam } from 'antd/es/upload';
+import type { UploadFile } from 'antd/es/upload/interface';
 import ApiService from '../../services/axios';
 
 interface Post {
@@ -7,7 +10,6 @@ interface Post {
     title: string;
     text: string;
     content: string;
-    image: string;
     createdAt: string;
     status: string;
 }
@@ -21,44 +23,53 @@ interface EditPostProps {
 
 const EditPost: React.FC<EditPostProps> = ({ visible, post, onCancel, onOk }) => {
     const [form] = Form.useForm();
-    const [uploadedImage, setUploadedImage] = React.useState<File | null>(null);
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [uploading, setUploading] = useState<boolean>(false);
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (post) {
-            form.setFieldsValue(post);
-        } else {
-            form.resetFields();
+            form.setFieldsValue({
+                title: post.title,
+                text: post.text,
+                content: post.content,
+            });
         }
     }, [post, form]);
 
+    // Handle form submission
     const handleOk = async () => {
         try {
             const values = await form.validateFields();
 
-            if (!uploadedImage && !post?.image) {
-                message.error("Please upload an image.");
-                return;
+            // Ensure imageFile exists before including it in the updatePost call
+            if (imageFile && post?.id) {
+                setUploading(true);
+
+                // Call updatePost with imageFile included
+                await ApiService.updatePost(post.id, values.title, values.text, values.content, imageFile);
+
+                setUploading(false);
+            } else if (post?.id) {
+                // If there's no image file, pass a default or empty image (as per your API's requirements)
+                await ApiService.updatePost(post.id, values.title, values.text, values.content, new File([], ""));
             }
 
-            await ApiService.updatePost(
-                values.id,
-                values.title,
-                values.text,
-                values.content,
-                uploadedImage || new File([], "image.jpg")
-            );
-
-            message.success("Post updated successfully");
-            onOk({ ...post, ...values, image: uploadedImage ? URL.createObjectURL(uploadedImage) : post?.image } as Post);
+            // Update the component state and close the modal
+            const updatedPost = { ...post, ...values };
+            onOk(updatedPost);
+            form.resetFields();
+            setImageFile(null);
         } catch (error) {
-            message.error("Failed to update post");
-            console.error("Failed to update post", error);
+            console.error('Update failed:', error);
         }
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files ? e.target.files[0] : null;
-        setUploadedImage(file);
+    // Handle image file change
+    const handleImageChange = (info: UploadChangeParam<UploadFile<any>>) => {
+        const file = info.file.originFileObj; // Extracts the File object directly
+        if (file) {
+            setImageFile(file); // Set the file in state if it exists
+        }
     };
 
     return (
@@ -67,36 +78,36 @@ const EditPost: React.FC<EditPostProps> = ({ visible, post, onCancel, onOk }) =>
             visible={visible}
             onOk={handleOk}
             onCancel={onCancel}
-            destroyOnClose
+            okText="Save"
+            cancelText="Cancel"
+            confirmLoading={uploading}
         >
             <Form form={form} layout="vertical">
                 <Form.Item
-                    label="Title"
                     name="title"
+                    label="Title"
                     rules={[{ required: true, message: 'Please input the title!' }]}
                 >
                     <Input />
                 </Form.Item>
                 <Form.Item
-                    label="Text"
                     name="text"
+                    label="Text"
                     rules={[{ required: true, message: 'Please input the text!' }]}
                 >
                     <Input.TextArea rows={4} />
                 </Form.Item>
                 <Form.Item
-                    label="Content"
                     name="content"
+                    label="Content"
                     rules={[{ required: true, message: 'Please input the content!' }]}
                 >
-                    <Input.TextArea rows={4} />
+                    <Input.TextArea rows={6} />
                 </Form.Item>
-                <Form.Item label="Image">
-                    <Input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                    />
+                <Form.Item label="Upload Image">
+                    <Upload beforeUpload={() => false} onChange={handleImageChange}>
+                        <Button icon={<UploadOutlined />}>Select Image</Button>
+                    </Upload>
                 </Form.Item>
             </Form>
         </Modal>
