@@ -41,7 +41,11 @@ const CardDeckManager: React.FC = () => {
       setLoading(true);
       try {
         if (userId) {
-          const data = await ApiService.fetchGroupCardsByReaderId(userId, 1, 10);
+          const data = await ApiService.fetchGroupCardsByReaderId(
+            userId,
+            1,
+            10
+          );
           setCardDecks(data);
         }
       } catch (error) {
@@ -77,7 +81,10 @@ const CardDeckManager: React.FC = () => {
       );
 
       // Add the newly created card deck to the list
-      setCardDecks([...cardDecks, { id: response.id, name: newCardDeckName, description }]);
+      setCardDecks([
+        ...cardDecks,
+        { id: response.id, name: newCardDeckName, description },
+      ]);
 
       message.success("Card deck created successfully!");
       setIsModalVisible(false);
@@ -155,76 +162,68 @@ const CardDeckManager: React.FC = () => {
   ];
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <AppHeader />
-      <Layout>
-        <TarotReaderSidebar showMenu={showMenu} />
-        <Layout className={`transition-all duration-300 ${showMenu ? "ml-56" : "ml-0"}`}>
-          <Content style={{ padding: "24px" }}>
-            <div className="flex justify-between items-center mb-6">
-              <h1 className="text-2xl font-bold">Card Deck Management</h1>
-              <Button type="primary" icon={<PlusOutlined />} onClick={showModal}>
-                + Create Card Deck
-              </Button>
-            </div>
-            <p className="mb-6">Manage all your card decks from this panel.</p>
+    <Content style={{ padding: "24px" }}>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Card Deck Management</h1>
+        <Button type="primary" icon={<PlusOutlined />} onClick={showModal}>
+          + Create Card Deck
+        </Button>
+      </div>
+      <p className="mb-6">Manage all your card decks from this panel.</p>
 
-            <Table
-              dataSource={cardDecks}
-              columns={columns}
-              rowKey="id"
-              rowSelection={{
-                selectedRowKeys,
-                onChange: setSelectedRowKeys,
-              }}
-              pagination={false}
-              loading={loading}
+      <Table
+        dataSource={cardDecks}
+        columns={columns}
+        rowKey="id"
+        rowSelection={{
+          selectedRowKeys,
+          onChange: setSelectedRowKeys,
+        }}
+        pagination={false}
+        loading={loading}
+      />
+
+      <Modal
+        title="Create New Card Deck"
+        visible={isModalVisible}
+        onOk={handleCreateCardDeck}
+        onCancel={handleCancel}
+        okText="Create"
+        cancelText="Cancel"
+        centered
+      >
+        <Form layout="vertical">
+          <Form.Item label="Card Deck Name">
+            <Input
+              value={newCardDeckName}
+              onChange={(e) => setNewCardDeckName(e.target.value)}
+              placeholder="Enter card deck name"
             />
+          </Form.Item>
 
-            <Modal
-              title="Create New Card Deck"
-              visible={isModalVisible}
-              onOk={handleCreateCardDeck}
-              onCancel={handleCancel}
-              okText="Create"
-              cancelText="Cancel"
-              centered
+          <Form.Item label="Description">
+            <Input.TextArea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Enter description"
+            />
+          </Form.Item>
+
+          <Form.Item label="Image">
+            <Upload
+              maxCount={1}
+              beforeUpload={(file) => {
+                setImageFile(file); // Manually set the image file
+                return false; // Prevent automatic upload
+              }}
+              onRemove={() => setImageFile(null)} // Handle file removal
             >
-              <Form layout="vertical">
-                <Form.Item label="Card Deck Name">
-                  <Input
-                    value={newCardDeckName}
-                    onChange={(e) => setNewCardDeckName(e.target.value)}
-                    placeholder="Enter card deck name"
-                  />
-                </Form.Item>
-
-                <Form.Item label="Description">
-                  <Input.TextArea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Enter description"
-                  />
-                </Form.Item>
-
-                <Form.Item label="Image">
-                  <Upload
-                    maxCount={1}
-                    beforeUpload={(file) => {
-                      setImageFile(file); // Manually set the image file
-                      return false; // Prevent automatic upload
-                    }}
-                    onRemove={() => setImageFile(null)} // Handle file removal
-                  >
-                    <Button icon={<UploadOutlined />}>Choose files</Button>
-                  </Upload>
-                </Form.Item>
-              </Form>
-            </Modal>
-          </Content>
-        </Layout>
-      </Layout>
-    </Layout>
+              <Button icon={<UploadOutlined />}>Choose files</Button>
+            </Upload>
+          </Form.Item>
+        </Form>
+      </Modal>
+    </Content>
   );
 };
 

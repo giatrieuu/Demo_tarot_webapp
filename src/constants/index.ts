@@ -25,6 +25,10 @@ export const TAROT_READER = {
     TAROT_READER_DASHBOARD_CARD_LIST: '/tarot-reader/card-list',
     CREATE_BLOG: '/create-blog',
 };
+export const USER = {
+    MY_BOOKING: '/my-booking',
+    
+}
 export const PUBLIC = {
     HOME: '/homepage',
     LOGIN: '/login',
@@ -55,7 +59,7 @@ export const TarotReaderSidebarData = {
         { "key": "/tarot-reader/tarot-reader-dashboard", "label": "Dashboard", "icon": "AppstoreOutlined" },
         { "key": "/tarot-reader/manage-topic", "label": "Topic Management", "icon": "DollarOutlined" },
         { "key": "/tarot-reader/manage-bookings", "label": "Bookings", "icon": "CalendarOutlined" },
-        { "key": "/tarot-reader/signout", "label": "Sign Out ", "icon": "LogoutOutlined" },
+        { "key": "/tarot-reader/card-deck-manager", "label": "Sign Out ", "icon": "LogoutOutlined" },
     ]
 };
 

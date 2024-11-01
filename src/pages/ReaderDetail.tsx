@@ -78,7 +78,7 @@ const ReaderDetail: React.FC = () => {
   const [isFollowed, setIsFollowed] = useState<boolean>(false);
 
   const userId = useSelector((state: RootState) => state.auth.userId); // Get userId from Redux store
-
+  // const userId = 'User_2dc0f1a6f6';
   const [isBookingPopupVisible, setIsBookingPopupVisible] = useState(false); // Trạng thái popup
 
 
@@ -322,7 +322,9 @@ const ReaderDetail: React.FC = () => {
           readerData={readerData}
           avatarUrl={imageUrl} // Truyền URL ảnh avatar của reader
           topics={topics} // Truyền danh sách chủ đề của reader
+          userId={userId} // Đảm bảo userId được truyền vào
         />
+
 
 
       </div>

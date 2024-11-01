@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Tooltip, Modal, Input, Form, message } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-import ApiService from '../../services/axios';  // Import the ApiService with fetchTopicsList
+import ApiService from '../../services/axios'; // Import the ApiService with fetchTopicsList
 
 const TopicManagement: React.FC = () => {
-  const [topics, setTopics] = useState<any[]>([]);  // State to store the list of topics
-  const [loading, setLoading] = useState(false);  // State to manage the loading status
+  const [topics, setTopics] = useState<any[]>([]); // State to store the list of topics
+  const [loading, setLoading] = useState(false); // State to manage the loading status
   const [isModalVisible, setIsModalVisible] = useState(false); // Modal state
-  const [newTopicName, setNewTopicName] = useState('');  // State to store the new topic name
+  const [newTopicName, setNewTopicName] = useState(''); // State to store the new topic name
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const data = await ApiService.fetchTopicsList();  // Call the API to fetch the list of topics
+        const data = await ApiService.fetchTopicsList(); // Call the API to fetch the list of topics
         setTopics(data);
       } catch (error) {
         message.error("Failed to load topics");
@@ -35,10 +35,10 @@ const TopicManagement: React.FC = () => {
     try {
       setLoading(true);
       const response = await ApiService.createTopic(newTopicName); // Call the API to create a topic
-      setTopics([...topics, { id: response.id, name: newTopicName }]);  // Update the topic list with the new topic
+      setTopics([...topics, { id: response.id, name: newTopicName }]); // Update the topic list with the new topic
       message.success('Topic created successfully!');
       setIsModalVisible(false);
-      setNewTopicName('');  // Reset the input field
+      setNewTopicName(''); // Reset the input field
     } catch (error) {
       message.error('Failed to create topic');
     } finally {
@@ -54,7 +54,7 @@ const TopicManagement: React.FC = () => {
   // Function to close the modal
   const handleCancel = () => {
     setIsModalVisible(false);
-    setNewTopicName('');  // Reset the input
+    setNewTopicName(''); // Reset the input
   };
 
   // Table column configuration
@@ -65,7 +65,7 @@ const TopicManagement: React.FC = () => {
       key: 'id',
       align: 'center' as 'center',
       width: '10%',
-      render: (_: any, __: any, index: number) => index + 1
+      render: (_: any, __: any, index: number) => index + 1,
     },
     {
       title: 'Topic',
@@ -96,7 +96,7 @@ const TopicManagement: React.FC = () => {
               shape="round"
               danger
               icon={<DeleteOutlined />}
-              onClick={() => handleDelete(record.id, record.name)}
+              onClick={() => handleDelete(record.id)}
             />
           </Tooltip>
         </div>
@@ -113,7 +113,7 @@ const TopicManagement: React.FC = () => {
       content: (
         <Input
           defaultValue={currentName}
-          onChange={(e) => updatedName = e.target.value}
+          onChange={(e) => (updatedName = e.target.value)}
           placeholder="Enter new topic name"
         />
       ),
@@ -124,8 +124,8 @@ const TopicManagement: React.FC = () => {
         }
 
         try {
-          await ApiService.updateTopic(id, updatedName);  // Call the updateTopic API function
-          setTopics(topics.map(topic => topic.id === id ? { ...topic, name: updatedName } : topic));  // Update the topic list
+          await ApiService.updateTopic(id, updatedName); // Call the updateTopic API function
+          setTopics(topics.map((topic) => (topic.id === id ? { ...topic, name: updatedName } : topic))); // Update the topic list
           message.success('Topic updated successfully');
         } catch (error) {
           message.error('Failed to update topic');
@@ -135,13 +135,13 @@ const TopicManagement: React.FC = () => {
   };
 
   // Function to handle topic deletion
-  const handleDelete = async (id: string, name: string) => {
+  const handleDelete = async (id: string) => {
     Modal.confirm({
       title: 'Are you sure you want to delete this topic?',
       onOk: async () => {
         try {
-          await ApiService.deleteTopic(id, name);  // Call the deleteTopic API function
-          setTopics(topics.filter(topic => topic.id !== id));  // Remove the topic from the list
+          await ApiService.deleteTopic(id); // Call the deleteTopic API function
+          setTopics(topics.filter((topic) => topic.id !== id)); // Remove the topic from the list
           message.success('Topic deleted successfully');
         } catch (error) {
           message.error('Failed to delete topic');

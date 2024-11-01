@@ -59,11 +59,15 @@ const ApiService = {
       formData.append("NewPassword", newPassword); // New password
       formData.append("ConfirmPassword", confirmPassword); // Confirm new password
 
-      const response = await api.post("/api/ReaderWeb/change-password", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await api.post(
+        "/api/ReaderWeb/change-password",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       if (response && response.data) {
         return response.data; // Return the API response
@@ -75,6 +79,39 @@ const ApiService = {
       throw error;
     }
   },
+  createReader: async (name: string, email: string, password: string) => {
+    try {
+      const formData = new FormData();
+      formData.append("Name", name);
+      formData.append("Email", email);
+      formData.append("Password", password);
+
+      const response = await api.post(
+        "/api/ReaderWeb/create-reader",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      return response.data; // Return the response from the API
+    } catch (error) {
+      console.error("Error creating reader", error);
+      throw error;
+    }
+  },
+
+  fetchReadersList: async () => {
+    try {
+      const response = await api.get("/api/ReaderWeb/readers-list");
+      return response.data; // Return the readers data from the API
+    } catch (error) {
+      console.error("Error fetching readers list", error);
+      throw error;
+    }
+  },
 
   // Function to fetch user data with images by userId
   getUserWithImages: async (userId: string) => {
@@ -83,6 +120,17 @@ const ApiService = {
       return response.data; // Return the user data and images
     } catch (error) {
       console.error("Error fetching user with images", error);
+      throw error;
+    }
+  },
+  fetchReaderWithImages: async (readerId: string) => {
+    try {
+      const response = await api.get(
+        `/api/ReaderWeb/reader-with-images/${readerId}`
+      );
+      return response.data; // Return the data received from API
+    } catch (error) {
+      console.error("Error fetching reader with images", error);
       throw error;
     }
   },
@@ -102,6 +150,22 @@ const ApiService = {
       throw error;
     }
   },
+  getReaderNotificationCounts: async (readerId: string) => {
+    try {
+      const response = await api.get(
+        `/api/NotificationWeb/get-reader-noti-counts`,
+        {
+          params: {
+            readerId,
+          },
+        }
+      );
+      return response.data; // Return the notification counts
+    } catch (error) {
+      console.error("Error fetching reader notification counts", error);
+      throw error;
+    }
+  },
   // Function to fetch notifications for a user by userId
   getUserNotifications: async (userId: string) => {
     try {
@@ -116,12 +180,29 @@ const ApiService = {
       throw error;
     }
   },
+  markNotificationAsRead: async (notificationId: string) => {
+    try {
+      const response = await api.post(
+        `/api/NotificationWeb/mark-as-read`,
+        null,
+        {
+          params: {
+            notificationId, // Pass the notification ID as a query parameter
+          },
+        }
+      );
+      return response.data; // Return the response message
+    } catch (error) {
+      console.error("Error marking notification as read", error);
+      throw error;
+    }
+  },
 
   // Function to create a topic
   createTopic: async (name: string) => {
     try {
       const token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJUcmnhu4F1IEdpYSIsImVtYWlsIjoibGVnaWF0cmlldTMyNDVAZ21haWwuY29tIiwianRpIjoiNTBjOTI1NWEtNjMzZS00ZWY4LThhOTAtZDAxMjBmMGU3NzQ1IiwiSWQiOiJVc2VyXzJkYzBmMWE2ZjYiLCJSb2xlIjoiMiIsIkltYWdlIjoiaHR0cHM6Ly9maXJlYmFzZXN0b3JhZ2UuZ29vZ2xlYXBpcy5jb20vdjAvYi90YXJvdGJvb2tpbmdhcGkuYXBwc3BvdC5jb20vby9pbWFnZXMlMkZlMmIzNThkNC04ZjFhLTQyOWMtOGNiZi1hODdkZjJmNDU4ZjMuanBnP2FsdD1tZWRpYSZ0b2tlbj04YTEyNzNmNi05YTUxLTQ4M2YtOGY0NC02MDA5ZjNkZjA4NTgiLCJleHAiOjE3MzAxODk4MDYsImlzcyI6Imh0dHA6Ly93d3cuYm9va2luZ3Rhcm90LnNvbWVlLmNvbS8ifQ.EI4dYWbtCo2Bu4KcPpk8ObuSXCiXYhAadPPCNlqnrhs";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJUcmnhu4F1IEdpYSIsImVtYWlsIjoibGVnaWF0cmlldTMyNDVAZ21haWwuY29tIiwianRpIjoiNmZiMmVjYzItMTQxZi00Nzc2LTlhNzYtNTRlOGMwZmRmOWNkIiwiSWQiOiJVc2VyXzJkYzBmMWE2ZjYiLCJSb2xlIjoiMiIsIkltYWdlIjoiaHR0cHM6Ly9maXJlYmFzZXN0b3JhZ2UuZ29vZ2xlYXBpcy5jb20vdjAvYi90YXJvdGJvb2tpbmdhcGkuYXBwc3BvdC5jb20vby9pbWFnZXMlMkZlMmIzNThkNC04ZjFhLTQyOWMtOGNiZi1hODdkZjJmNDU4ZjMuanBnP2FsdD1tZWRpYSZ0b2tlbj04YTEyNzNmNi05YTUxLTQ4M2YtOGY0NC02MDA5ZjNkZjA4NTgiLCJleHAiOjE3MzAzOTQ3OTIsImlzcyI6Imh0dHA6Ly93d3cuYm9va2luZ3Rhcm90LnNvbWVlLmNvbS8ifQ.EASwKpXNwdR0sKhqKhjVpRsgIMcK_EivC-CyK0wGIN8";
 
       const formData = new FormData();
       formData.append("name", name);
@@ -140,8 +221,17 @@ const ApiService = {
       throw error;
     }
   },
-
-
+  deleteTopic: async (topicId: any) => {
+    try {
+      const response = await api.post(`/api/TopicWeb/delete-topic`, null, {
+        params: { topicId },
+      });
+      return response.data; // Return the response from the API
+    } catch (error) {
+      console.error("Error deleting topic", error);
+      throw error;
+    }
+  },
   // Function to fetch the list of topics
   fetchTopicsList: async () => {
     try {
@@ -154,25 +244,6 @@ const ApiService = {
       return response.data; // Return the list of topics from the API
     } catch (error) {
       console.error("Error fetching topics list", error);
-      throw error;
-    }
-  },
-  // Function to delete a topic
-  deleteTopic: async (id: string, name: string) => {
-    try {
-      const formData = new FormData();
-      formData.append("id", id);
-      formData.append("name", name);
-
-      const response = await api.post("/api/TopicWeb/delete-topic", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      return response.data; // Return the response from the API
-    } catch (error) {
-      console.error("Error deleting topic", error);
       throw error;
     }
   },
@@ -269,24 +340,26 @@ const ApiService = {
     }
   },
   // Function to fetch bookings by reader ID
-  fetchBookingsByReaderId: async (
-    readerId: string,
-    pageNumber: number = 1,
-    pageSize: number = 10
-  ) => {
+  fetchBookingsByReaderId: async (readerId: string) => {
     try {
       const response = await api.get(
-        `/api/BookingWeb/GetBookingsByReaderId/${readerId}`,
-        {
-          params: {
-            pageNumber,
-            pageSize,
-          },
-        }
+        `/api/BookingWeb/GetBookingsByReaderId/${readerId}`
       );
       return response.data; // Return the response from the API
     } catch (error) {
       console.error("Error fetching bookings by reader ID", error);
+      throw error;
+    }
+  },
+  // Function to fetch bookings by user ID
+  fetchBookingsByUserId: async (userId: string) => {
+    try {
+      const response = await api.get(
+        `/api/BookingWeb/GetBookingsByUserId/${userId}`
+      );
+      return response.data; // Return the response data from the API
+    } catch (error) {
+      console.error("Error fetching bookings by user ID", error);
       throw error;
     }
   },
@@ -406,39 +479,37 @@ const ApiService = {
       throw error;
     }
   },
-  // updateImage: async (formData: FormData) => {
-  //   try {
-  //     const response = await api.post("/api/Images/UpdateImage", formData, {
-  //       headers: {
-  //         "Content-Type": "multipart/form-data",
-  //       },
-  //     });
-  //     return response.data; // Return the response from the API
-  //   } catch (error) {
-  //     console.error("Error updating image", error);
-  //     throw error;
-  //   }
-  // },
-
-  updateImage: async (
-    file?: File,
-    postId?: string,
-    userId?: string,
-    cardId?: string,
-    groupId?: string,
-    readerId?: string
-  ) => {
+  updateReader: async (data: any) => {
     try {
       const formData = new FormData();
 
-      if (file) formData.append("File", file);
-      if (postId) formData.append("PostId", postId);
-      if (userId) formData.append("UserId", userId);
-      if (cardId) formData.append("CardId", cardId);
-      if (groupId) formData.append("GroupId", groupId);
-      if (readerId) formData.append("ReaderId", readerId);
+      // Append only the available fields to the form data
+      if (data.id) formData.append("Id", data.id);
+      if (data.name) formData.append("Name", data.name);
+      if (data.phone) formData.append("Phone", data.phone);
+      if (data.description) formData.append("Description", data.description);
+      if (data.dob) formData.append("Dob", data.dob);
 
-      const response = await axios.post("/api/Images/UpdateImage", formData, {
+      const response = await defaultAxiosInstance.post(
+        "/api/ReaderWeb/update-reader",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error("Error updating reader profile", error);
+      throw error;
+    }
+  },
+
+  updateImage: async (formData: FormData) => {
+    try {
+      const response = await api.post("/api/Images/UpdateImage", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -447,6 +518,63 @@ const ApiService = {
       return response.data;
     } catch (error) {
       console.error("Error updating image", error);
+      throw error;
+    }
+  },
+  // Block/Unblock User
+  blockUser: async (userId: string) => {
+    try {
+      const response = await api.post(`/api/UserWeb/change-user-status`, null, {
+        params: { userId },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error blocking user", error);
+      throw error;
+    }
+  },
+
+  unblockUser: async (userId: string) => {
+    try {
+      const response = await api.post(`/api/UserWeb/change-user-status`, null, {
+        params: { userId },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error unblocking user", error);
+      throw error;
+    }
+  },
+
+  // Block/Unblock Tarot Reader
+  blockReader: async (readerId: string) => {
+    try {
+      const response = await api.post(
+        `/api/ReaderWeb/change-reader-status`,
+        null,
+        {
+          params: { readerId },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error blocking reader", error);
+      throw error;
+    }
+  },
+
+  unblockReader: async (readerId: string) => {
+    try {
+      const response = await api.post(
+        `/api/ReaderWeb/change-reader-status`,
+        null,
+        {
+          params: { readerId },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error unblocking reader", error);
       throw error;
     }
   },
