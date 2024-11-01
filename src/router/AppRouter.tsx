@@ -4,8 +4,9 @@ import LayoutRoute from "../layout/LayoutRoute";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ADMIN, PUBLIC, TAROT_READER } from "../constants";
+import { ADMIN, PUBLIC, TAROT_READER, USER } from "../constants";
 import LayoutSidebarRoute from "../layout/LayoutSidebarRoute";
+
 
 // Lazy-loaded pages
 const HomePage = lazy(() => import("../pages/HomePage"));
@@ -30,7 +31,7 @@ const UserManagement = lazy(() => import("../pages/Admin/UserManagement"));
 const TopicManagement = lazy(() => import("../pages/Admin/TopicManagement"));
 const ShuffleCard = lazy(() => import("../pages/CardDrawGuide/ShuffleCard"));
 const CardMeaning = lazy(() => import("../pages/CardDrawGuide/CardMeaning"));
-
+const MyBooking = lazy(() => import("../pages/MyBooking"));
 const AppRouter: React.FC = () => {
   return (
     <Router>
@@ -49,6 +50,7 @@ const AppRouter: React.FC = () => {
             <Route path={PUBLIC.PROFILE} element={<Profile />} />
             <Route path={PUBLIC.CARD_DRAW} element={<ShuffleCard />} />
             <Route path={PUBLIC.CARD_MEANING} element={<CardMeaning />} />
+
           </Route>
 
           {/* Tarot Reader Routes with MainLayout */}
@@ -67,6 +69,10 @@ const AppRouter: React.FC = () => {
             <Route path={ADMIN.ADMIN_DASHBOARD} element={<AdminDashboard />} />
             <Route path={ADMIN.USER_MANAGEMENT} element={<UserManagement />} />
             <Route path={ADMIN.TOPIC_MANAGEMENT} element={<TopicManagement />} />
+          </Route>
+          <Route element={<LayoutRoute />}>
+            <Route path={USER.MY_BOOKING} element={<MyBooking/>} />
+           
           </Route>
 
           {/* Auth Routes with No Sidebar Layout */}

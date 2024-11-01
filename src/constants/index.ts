@@ -23,6 +23,10 @@ export const TAROT_READER = {
     TAROT_READER_DASHBOARD_CARD_DECK_UPLOAD: '/tarot-reader/card-deck-upload',
     TAROT_READER_DASHBOARD_CARD_LIST: '/tarot-reader/card-list'
 };
+export const USER = {
+    MY_BOOKING: '/my-booking',
+    
+}
 export const PUBLIC = {
     HOME: '/homepage',
     LOGIN: '/login',

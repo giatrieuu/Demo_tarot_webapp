@@ -351,6 +351,18 @@ const ApiService = {
       throw error;
     }
   },
+  // Function to fetch bookings by user ID
+  fetchBookingsByUserId: async (userId: string) => {
+    try {
+      const response = await api.get(
+        `/api/BookingWeb/GetBookingsByUserId/${userId}`
+      );
+      return response.data; // Return the response data from the API
+    } catch (error) {
+      console.error("Error fetching bookings by user ID", error);
+      throw error;
+    }
+  },
   fetchUsersList: async () => {
     try {
       const response = await api.get("/api/UserWeb/users-list");

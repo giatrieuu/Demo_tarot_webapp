@@ -104,7 +104,9 @@ const Profile: React.FC = () => {
 
       const response = await ApiService.updateImage(formData, {
         onUploadProgress: (progressEvent: ProgressEvent) => {
-          const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          const progress = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
           setUploadProgress(progress);
         },
       });
@@ -168,7 +170,9 @@ const Profile: React.FC = () => {
                   <Upload
                     showUploadList={false}
                     beforeUpload={beforeUpload}
-                    customRequest={({ file }) => handleImageUpload(file as File)}
+                    customRequest={({ file }) =>
+                      handleImageUpload(file as File)
+                    }
                   >
                     <div className="relative">
                       <Avatar
@@ -242,19 +246,18 @@ const Profile: React.FC = () => {
           </div>
         </div>
 
-        {role === "3" && (
-          <div className="w-1/3 bg-white p-6 rounded-lg shadow-lg">
-            <div className="mb-8">
-              <h3 className="font-semibold">Biography</h3>
-              <textarea
-                className="w-full border p-2 rounded-md mt-4"
-                rows={5}
-                value={biography}
-                onChange={(e) => setBiography(e.target.value)}
-                placeholder="Write something about yourself..."
-              ></textarea>
-            </div>
-
+        <div className="w-1/3 bg-white p-6 rounded-lg shadow-lg">
+          <div className="mb-8">
+            <h3 className="font-semibold">Biography</h3>
+            <textarea
+              className="w-full border p-2 rounded-md mt-4"
+              rows={5}
+              value={biography}
+              onChange={(e) => setBiography(e.target.value)}
+              placeholder="Write something about yourself..."
+            ></textarea>
+          </div>
+          {role === "3" && (
             <div>
               <h3 className="font-semibold mb-4">Follow</h3>
               {follows.map((user) => (
@@ -275,8 +278,8 @@ const Profile: React.FC = () => {
                 More
               </Button>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

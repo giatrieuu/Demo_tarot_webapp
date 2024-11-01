@@ -207,11 +207,18 @@ const AppHeader: React.FC = () => {
           label: <span onClick={handleDashboardClick}>Dashboard</span>,
         }
       : null,
+    role === 1
+      ? {
+          key: "my-booking",
+          label: <Link to="/my-booking">My Booking</Link>,
+        }
+      : null,
     {
       key: "logout",
       label: <span onClick={handleLogout}>Logout</span>,
     },
   ].filter(Boolean);
+  
 
   const menu = <Menu items={menuItems} />;
 
