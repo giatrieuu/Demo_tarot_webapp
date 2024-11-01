@@ -53,7 +53,7 @@ const AppRouter: React.FC = () => {
             <Route path={PUBLIC.CARD_DRAW} element={<ShuffleCard />} />
             <Route path={PUBLIC.CARD_MEANING} element={<CardMeaning />} />
           </Route>
-
+ 
           {/* Tarot Reader Routes with MainLayout */}
           <Route element={<LayoutSidebarRoute />}>
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD} element={<TarotReaderDashboard />} />

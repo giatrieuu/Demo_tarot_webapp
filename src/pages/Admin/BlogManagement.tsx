@@ -118,7 +118,7 @@ const BlogManagement: React.FC = () => {
 
     return (
         <div>
-            <h1>Blog Management</h1>
+            <h1 className="text-xl font-bold mb-8">Blog Management</h1>
             <Table columns={columns} dataSource={data} rowKey="id" loading={loading} />
 
             <EditPost

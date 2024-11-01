@@ -37,7 +37,7 @@ const LayoutSidebar: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
       <Content className={`transition-all duration-300 overflow-auto ${showMenu ? 'ml-56' : 'ml-0'}`}>
         <div className="flex flex-col min-h-screen">
-          <div className="flex-1 pt-16 mt-4 p-4 overflow-auto">
+          <div className="flex-1 mt-4 p-4 overflow-auto">
             {children}
           </div>
           <Footer />

@@ -49,7 +49,7 @@ const BlogDetail: React.FC = () => {
       }
 
       try {
-        const response = await ApiService.getBlogById(id);
+        const response = await ApiService.getPostById(id);
         setBlog(response);
       } catch (err) {
         console.error("Error fetching blog post details:", err);
@@ -61,35 +61,35 @@ const BlogDetail: React.FC = () => {
   }, [id]);
 
   // Fetch comments by postId
-// Fetch comments by postId
-useEffect(() => {
-  const fetchComments = async () => {
+  // Fetch comments by postId
+  useEffect(() => {
+    const fetchComments = async () => {
       if (id) {
-          try {
-              const response = await ApiService.getCommentsByPostId(id); // Fetch comments using postId
-              console.log('API response:', response); // Log the response to ensure we get the expected data
+        try {
+          const response = await ApiService.getCommentsByPostId(id); // Fetch comments using postId
+          console.log('API response:', response); // Log the response to ensure we get the expected data
 
-              // Extract the comments array from the response
-              const comments = response.comments || []; // Default to empty array if no comments
+          // Extract the comments array from the response
+          const comments = response.comments || []; // Default to empty array if no comments
 
-              const formattedComments = comments.map((comment: any) => ({
-                  author: comment.userName, // Use userName for the author field
-                  avatar: comment.userImage || 'https://joeschmoe.io/api/v1/random', // Use userImage for avatar, default if missing
-                  content: comment.content, // Use content for the comment text
-                  datetime: new Date(comment.createdAt).toLocaleString(), // Format createdAt as a readable date
-                  id: comment.id, // Include the comment ID
-              }));
+          const formattedComments = comments.map((comment: any) => ({
+            author: comment.userName, // Use userName for the author field
+            avatar: comment.userImage || 'https://joeschmoe.io/api/v1/random', // Use userImage for avatar, default if missing
+            content: comment.content, // Use content for the comment text
+            datetime: new Date(comment.createdAt).toLocaleString(), // Format createdAt as a readable date
+            id: comment.id, // Include the comment ID
+          }));
 
-              setCommentList(formattedComments); // Set fetched comments
-          } catch (err) {
-              console.error("Error fetching comments:", err);
-              setError("Failed to load comments");
-          }
+          setCommentList(formattedComments); // Set fetched comments
+        } catch (err) {
+          console.error("Error fetching comments:", err);
+          setError("Failed to load comments");
+        }
       }
-  };
+    };
 
-  fetchComments();
-}, [id]);
+    fetchComments();
+  }, [id]);
 
 
   // Handle comment submission
@@ -150,10 +150,10 @@ useEffect(() => {
           commentList.map((comment) =>
             comment.id === editingCommentId
               ? {
-                  ...comment,
-                  content: response.text,
-                  datetime: new Date().toLocaleString(),
-                }
+                ...comment,
+                content: response.text,
+                datetime: new Date().toLocaleString(),
+              }
               : comment
           )
         );
@@ -244,9 +244,8 @@ useEffect(() => {
         <div className="max-h-96 overflow-y-auto">
           <List
             className="comment-list"
-            header={`${commentList.length} ${
-              commentList.length === 1 ? "comment" : "comments"
-            }`}
+            header={`${commentList.length} ${commentList.length === 1 ? "comment" : "comments"
+              }`}
             itemLayout="horizontal"
             dataSource={commentList}
             renderItem={(item) => (

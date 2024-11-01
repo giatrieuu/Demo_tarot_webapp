@@ -13,7 +13,7 @@ export const ADMIN = {
     ADMIN_DASHBOARD: '/admin/admin-dashboard',
     USER_MANAGEMENT: '/admin/manage-users',
     TOPIC_MANAGEMENT: '/admin/manage-topic',
-    BLOG_MANAGEMENT: '/manage-blogs',
+    BLOG_MANAGEMENT: '/admin/manage-blogs',
 }
 export const TAROT_READER = {
     TAROT_READER_DASHBOARD: '/tarot-reader/tarot-reader-dashboard',
