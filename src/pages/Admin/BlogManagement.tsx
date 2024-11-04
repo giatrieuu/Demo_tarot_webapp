@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Space } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import ApiService from '../../services/axios';
 import EditPost from '../../components/Blog/EditPost';
+import CreatePost from '../../components/Blog/CreatePost';
+import DeletePost from '../../components/Blog/DeletePost';
 
 interface GetPostsResponse {
     totalItems: number;
@@ -24,7 +26,10 @@ const BlogManagement: React.FC = () => {
     const [data, setData] = useState<Post[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+    const [isCreateModalVisible, setIsCreateModalVisible] = useState<boolean>(false);
     const [currentPost, setCurrentPost] = useState<Post | null>(null);
+    const [isDeleteModalVisible, setIsDeleteModalVisible] = useState<boolean>(false);
+    const [postIdToDelete, setPostIdToDelete] = useState<string | null>(null);
 
     // Gọi API lấy danh sách bài viết
     const fetchPosts = async () => {
@@ -80,7 +85,7 @@ const BlogManagement: React.FC = () => {
                     <Button icon={<EditOutlined />} onClick={() => handleEdit(record)}>
                         Edit
                     </Button>
-                    <Button icon={<DeleteOutlined />} danger onClick={() => handleDelete(record.id)}>
+                    <Button icon={<DeleteOutlined />} danger onClick={() => openDeleteModal(record.id)}>
                         Delete
                     </Button>
                 </Space>
@@ -110,15 +115,46 @@ const BlogManagement: React.FC = () => {
         setCurrentPost(null); // Đặt lại currentPost
     };
 
-    // Hàm xử lý khi nhấn Delete
-    const handleDelete = (id: string) => {
-        console.log(`Delete blog with id: ${id}`);
-        // Logic xóa blog
+    // Open delete confirmation modal
+    const openDeleteModal = (id: string) => {
+        setPostIdToDelete(id);
+        setIsDeleteModalVisible(true);
+    };
+
+    // Close delete confirmation modal
+    const closeDeleteModal = () => {
+        setIsDeleteModalVisible(false);
+        setPostIdToDelete(null);
+    };
+
+    // Confirm deletion and update data
+    const handleDeleteConfirm = (id: string) => {
+        setData(data.filter((post) => post.id !== id)); // Remove post from state
+        setIsDeleteModalVisible(false); // Close modal
+    };
+
+    // Mở modal tạo blog mới
+    const showCreateModal = () => {
+        setIsCreateModalVisible(true);
+    };
+
+    // Xử lý khi đóng modal create
+    const handleCreateCancel = () => {
+        setIsCreateModalVisible(false);
+    };
+
+    // Xử lý khi nhận dữ liệu bài viết mới từ CreatePost
+    const handleCreateBlog = (newPost: Post) => {
+        setData([newPost, ...data]);
+        setIsCreateModalVisible(false);
     };
 
     return (
         <div>
             <h1 className="text-xl font-bold mb-8">Blog Management</h1>
+            <Button type="primary" icon={<PlusOutlined />} onClick={showCreateModal} style={{ marginBottom: 16 }}>
+                New Post
+            </Button>
             <Table columns={columns} dataSource={data} rowKey="id" loading={loading} />
 
             <EditPost
@@ -126,6 +162,19 @@ const BlogManagement: React.FC = () => {
                 post={currentPost}
                 onCancel={handleCancel}
                 onOk={handleOk}
+            />
+
+            <CreatePost
+                visible={isCreateModalVisible}
+                onCancel={handleCreateCancel}
+                onOk={handleCreateBlog}
+            />
+
+            <DeletePost
+                visible={isDeleteModalVisible}
+                id={postIdToDelete}
+                onClose={closeDeleteModal}
+                onDelete={handleDeleteConfirm}
             />
         </div>
     );

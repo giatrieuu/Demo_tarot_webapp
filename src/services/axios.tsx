@@ -538,7 +538,6 @@ const ApiService = {
   },
 
   createPost: async (
-    readerId: string,
     title: string,
     text: string,
     content: string,
@@ -546,7 +545,6 @@ const ApiService = {
   ) => {
     try {
       const formData = new FormData();
-      formData.append("ReaderId", readerId);
       formData.append("Title", title);
       formData.append("Text", text);
       formData.append("Content", content);
@@ -589,6 +587,18 @@ const ApiService = {
       return response.data;
     } catch (error) {
       console.error("Error updating post", error);
+      throw error;
+    }
+  },
+
+  deletePost: async (postId: string) => {
+    try {
+      const response = await api.post(`/api/PostWeb/delete-post`, null, {
+        params: { postId },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error deleting post", error);
       throw error;
     }
   },
@@ -650,25 +660,24 @@ const ApiService = {
   },
 
   updateImage: async (
-    file: File,
+    file?: File,
+    postId?: string,
     userId?: string,
     cardId?: string,
-    postId?: string,
     groupId?: string,
     readerId?: string
   ) => {
     try {
       const formData = new FormData();
-      formData.append("File", file); // The image file
-  
-      // Conditionally append additional parameters if they are provided
+
+      if (file) formData.append("File", file);
+      if (postId) formData.append("PostId", postId);
       if (userId) formData.append("UserId", userId);
       if (cardId) formData.append("CardId", cardId);
-      if (postId) formData.append("PostId", postId);
       if (groupId) formData.append("GroupId", groupId);
       if (readerId) formData.append("ReaderId", readerId);
-  
-      const response = await api.post("/api/Images/UpdateImage", formData, {
+
+      const response = await axios.post("/api/Images/UpdateImage", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
