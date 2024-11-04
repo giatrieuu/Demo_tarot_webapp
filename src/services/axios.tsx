@@ -298,6 +298,7 @@ const ApiService = {
       throw error;
     }
   },
+
   // Corrected function to create a group card
   createGroupCard: async (
     name: string,
@@ -325,6 +326,151 @@ const ApiService = {
       return response.data; // Return the API response
     } catch (error) {
       console.error("Error creating group card", error);
+      throw error;
+    }
+  },
+  // Function to fetch cards by group card ID
+  fetchCardsByGroupCardId: async (groupCardId: string) => {
+    try {
+      const response = await api.get(
+        `/api/CardWeb/cards-by-group/${groupCardId}`
+      );
+      return response.data; // Return the list of cards from the API
+    } catch (error) {
+      console.error("Error fetching cards by group card ID", error);
+      throw error;
+    }
+  },
+  // Function to create a new card in a group
+  createCard: async (
+    groupId: string,
+    element: string,
+    name: string,
+    message: string,
+    img: File
+  ) => {
+    try {
+      const formData = new FormData();
+      formData.append("GroupId", groupId); // Group ID
+      formData.append("Element", element); // Element of the card
+      formData.append("Name", name); // Card name
+      formData.append("Message", message); // Card message
+      formData.append("img", img); // Image file for the card
+
+      const response = await api.post("/api/CardWeb/create-card", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      return response.data; // Return the response data from the API
+    } catch (error) {
+      console.error("Error creating card:", error);
+      throw error;
+    }
+  },
+  // Function to update an existing card
+  updateCard: async (
+    id: string,
+    groupId: string,
+    element: string,
+    name: string,
+    message: string,
+    image?: File
+  ) => {
+    try {
+      const formData = new FormData();
+      formData.append("Id", id); // Card ID
+      formData.append("GroupId", groupId); // Group ID
+      formData.append("Element", element); // Element of the card
+      formData.append("Name", name); // Card name
+      formData.append("Message", message); // Card message
+      if (image) {
+        formData.append("Image", image); // Optional image file for the card
+      }
+
+      const response = await api.post("/api/CardWeb/update-card", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      return response.data; // Return the response data from the API
+    } catch (error) {
+      console.error("Error updating card:", error);
+      throw error;
+    }
+  },
+
+  createListCard: async (
+    cards: {
+      groupId: string;
+      element: string;
+      name: string;
+      message: string;
+      img: File;
+    }[]
+  ) => {
+    try {
+      const cardDataList = await Promise.all(
+        cards.map(async (card) => {
+          // Prepare FormData for the image upload
+          const imageFormData = new FormData();
+          imageFormData.append("File", card.img);
+          imageFormData.append("GroupId", card.groupId); // Pass GroupId if needed for image upload
+  
+          // Call updateImage API to upload the image and retrieve the URL or identifier
+          const uploadedImage = await ApiService.updateImage(imageFormData);
+  
+          // Return the card data with the uploaded image URL/ID
+          return {
+            groupId: card.groupId,
+            element: card.element,
+            name: card.name,
+            message: card.message,
+            img: uploadedImage.url || uploadedImage.id, // Use the correct property from the response
+          };
+        })
+      );
+  
+      // Prepare FormData for the createListCard API
+      const formData = new FormData();
+      cardDataList.forEach((card, index) => {
+        formData.append(`createListCardModel[${index}][groupId]`, card.groupId);
+        formData.append(`createListCardModel[${index}][element]`, card.element);
+        formData.append(`createListCardModel[${index}][name]`, card.name);
+        formData.append(`createListCardModel[${index}][message]`, card.message);
+        formData.append(`createListCardModel[${index}][img]`, card.img); // Use the uploaded image URL/ID
+      });
+  
+      // Call the API to create the list of cards
+      const response = await api.post(
+        "/api/CardWeb/create-list-card",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+  
+      return response.data; // Return the response from the API
+    } catch (error) {
+      console.error("Error creating list of cards", error);
+      throw error;
+    }
+  },
+  
+
+  // Function to delete a card by cardId
+  deleteCard: async (cardId: string) => {
+    try {
+      const response = await api.post(`/api/CardWeb/delete-card`, null, {
+        params: { cardId },
+      });
+      return response.data; // Return the response from the API
+    } catch (error) {
+      console.error("Error deleting card", error);
       throw error;
     }
   },
@@ -406,15 +552,11 @@ const ApiService = {
       formData.append("Content", content);
       formData.append("Image", image);
 
-      const response = await api.post(
-        "/api/PostWeb/create-post",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await api.post("/api/PostWeb/create-post", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       return response.data;
     } catch (error) {
@@ -507,20 +649,38 @@ const ApiService = {
     }
   },
 
-  updateImage: async (formData: FormData) => {
+  updateImage: async (
+    file: File,
+    userId?: string,
+    cardId?: string,
+    postId?: string,
+    groupId?: string,
+    readerId?: string
+  ) => {
     try {
+      const formData = new FormData();
+      formData.append("File", file); // The image file
+  
+      // Conditionally append additional parameters if they are provided
+      if (userId) formData.append("UserId", userId);
+      if (cardId) formData.append("CardId", cardId);
+      if (postId) formData.append("PostId", postId);
+      if (groupId) formData.append("GroupId", groupId);
+      if (readerId) formData.append("ReaderId", readerId);
+  
       const response = await api.post("/api/Images/UpdateImage", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-
-      return response.data;
+  
+      return response.data; // Return the response data from the API
     } catch (error) {
       console.error("Error updating image", error);
       throw error;
     }
   },
+  
   // Block/Unblock User
   blockUser: async (userId: string) => {
     try {

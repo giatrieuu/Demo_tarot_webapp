@@ -21,8 +21,9 @@ export const TAROT_READER = {
     TAROT_READER_DASHBOARD_POST: '/tarot-reader/post-manager',
     TAROT_READER_DASHBOARD_ADD_POST: '/tarot-reader/add-post',
     TAROT_READER_DASHBOARD_CARD_DECK: '/tarot-reader/card-deck-manager',
+    TAROT_READER_DASHBOARD_LIST_CARD: '/tarot-reader/card-deck-manager',
     TAROT_READER_DASHBOARD_CARD_DECK_UPLOAD: '/tarot-reader/card-deck-upload',
-    TAROT_READER_DASHBOARD_CARD_LIST: '/tarot-reader/card-list',
+    TAROT_READER_DASHBOARD_CARD_LIST: '/tarot-reader/card-list-manage',
     CREATE_BLOG: '/create-blog',
 };
 export const USER = {

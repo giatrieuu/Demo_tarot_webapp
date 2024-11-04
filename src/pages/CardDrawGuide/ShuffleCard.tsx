@@ -1,33 +1,47 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Player } from '@lottiefiles/react-lottie-player';
+import ApiService from "../../services/axios";
 
 interface Deck {
+    id: string;
     name: string;
     description: string;
     image: string;
 }
 
-const decks: Deck[] = [
-    {
-        name: "Rider-Waite Tarot",
-        description:
-            "The Rider-Waite Tarot, also known as the Rider-Waite-Smith Tarot, is one of the most iconic and widely used Tarot decks. Created in 1909 by artist Pamela Colman Smith under the guidance of Arthur Edward Waite, this deck introduced illustrated minor arcana cards, making it easier for readers to interpret the symbolism of each card. It is known for its deep symbolism and accessibility in Tarot reading.",
-        image: "src/assets/card.jpg", // Thay đường dẫn bằng ảnh của bạn
-    },
-    // Thêm nhiều bộ bài khác nếu cần
-];
-
+interface Topic {
+    id: string;
+    name: string;
+}
 
 const ShuffleCard: React.FC = () => {
-
     const [currentDeck, setCurrentDeck] = useState(0);
+    const [groupCards, setGroupCards] = useState<Deck[]>([]); // State for storing fetched card decks
+    const [topics, setTopics] = useState<Topic[]>([]); // State for storing fetched topics
+
+    // Fetch group cards (card decks) when the component mounts
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const decksData = await ApiService.fetchGroupCardsList();
+                setGroupCards(decksData); // Update the groupCards state with the fetched data
+
+                const topicsData = await ApiService.fetchTopicsList();
+                setTopics(topicsData); // Update the topics state with the fetched data
+            } catch (error) {
+                console.error("Failed to load data", error);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     const handlePrev = () => {
-        setCurrentDeck((prev) => (prev === 0 ? decks.length - 1 : prev - 1));
+        setCurrentDeck((prev) => (prev === 0 ? groupCards.length - 1 : prev - 1));
     };
 
     const handleNext = () => {
-        setCurrentDeck((prev) => (prev === decks.length - 1 ? 0 : prev + 1));
+        setCurrentDeck((prev) => (prev === groupCards.length - 1 ? 0 : prev + 1));
     };
 
     return (
@@ -40,7 +54,6 @@ const ShuffleCard: React.FC = () => {
                 }}
             >
                 <div className="grid grid-cols-1 lg:grid-cols-2 items-center bg-opacity-75 w-full h-full bg-white p-8 shadow-md">
-                    {/* Phần bên trái chứa text */}
                     <div className="text-center lg:text-right lg:flex lg:justify-end">
                         <div className="lg:max-w-l text-center">
                             <h2 className="text-2xl lg:text-3xl font-semibold mb-4">
@@ -49,13 +62,14 @@ const ShuffleCard: React.FC = () => {
                             <p className="text-lg lg:text-xl mb-8">
                                 Don't worry, check out the decks we have here.
                             </p>
-                            <p className="max-w-md lg:max-w-full text-sm lg:text-base">
-                                {decks[currentDeck].description}
-                            </p>
+                            {groupCards.length > 0 && (
+                                <p className="max-w-md lg:max-w-full text-sm lg:text-base">
+                                    {groupCards[currentDeck]?.description}
+                                </p>
+                            )}
                         </div>
                     </div>
 
-                    {/* Phần bên phải chứa hình ảnh và nút */}
                     <div className="flex justify-center items-center space-x-6 lg:space-x-8">
                         <button
                             onClick={handlePrev}
@@ -66,13 +80,15 @@ const ShuffleCard: React.FC = () => {
 
                         <div className="flex flex-col items-center">
                             <img
-                                src={decks[currentDeck].image}
-                                alt={decks[currentDeck].name}
+                                src={groupCards[currentDeck]?.image || 'src/assets/card.jpg'}
+                                alt={groupCards[currentDeck]?.name || "Card Deck"}
                                 className="w-48 h-64 lg:w-45 lg:h-80 rounded-lg shadow-md mb-4 object-contain"
                             />
-                            <h3 className="text-xl font-semibold">{decks[currentDeck].name}</h3>
+                            <h3 className="text-xl font-semibold">
+                                {groupCards[currentDeck]?.name || "Loading..."}
+                            </h3>
                             <div className="flex space-x-2 mt-4">
-                                {[...Array(decks.length)].map((_, index) => (
+                                {[...Array(groupCards.length)].map((_, index) => (
                                     <div
                                         key={index}
                                         className={`w-2 h-2 rounded-full ${currentDeck === index ? 'bg-white' : 'bg-gray-400'}`}
@@ -97,21 +113,21 @@ const ShuffleCard: React.FC = () => {
                     <div>
                         <h3 className="text-lg text-white">Select Card deck</h3>
                         <select className="bg-white text-left text-gray-800 shadow-md px-8 py-3 mt-2 rounded-lg border hover:bg-gray-50">
-                            <option>Rider-Waite Tarot</option>
-                            <option>Thoth Tarot</option>
-                            <option>The Wild Unknown Tarot</option>
-                            <option>The Tarot of Marseille</option>
-                            <option>Mystical Manga Tarot</option>
+                            {groupCards.map((deck) => (
+                                <option key={deck.id} value={deck.id}>
+                                    {deck.name}
+                                </option>
+                            ))}
                         </select>
                     </div>
                     <div>
                         <h3 className="text-lg text-white">Select Topic</h3>
                         <select className="bg-white text-left text-gray-800 shadow-md px-20 py-3 mt-2 rounded-lg border hover:bg-gray-50">
-                            <option>Love</option>
-                            <option>Study</option>
-                            <option>Finance</option>
-                            <option>Health</option>
-                            <option>Work</option>
+                            {topics.map((topic) => (
+                                <option key={topic.id} value={topic.id}>
+                                    {topic.name}
+                                </option>
+                            ))}
                         </select>
                     </div>
                     <button className="bg-white text-gray-800 px-5 py-2 mt-2 rounded-lg shadow-md hover:bg-gray-50">Submit</button>

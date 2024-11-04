@@ -15,9 +15,9 @@ import {
   DeleteOutlined,
   PlusOutlined,
   UploadOutlined,
+  PlusCircleOutlined,
 } from "@ant-design/icons";
-import AppHeader from "../../components/header/HeaderLogged";
-import TarotReaderSidebar from "../../components/sidebar/TarotReaderSidebar";
+import { useNavigate } from "react-router-dom";
 import ApiService from "../../services/axios";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -25,27 +25,21 @@ import { RootState } from "../../redux/store";
 const { Content } = Layout;
 
 const CardDeckManager: React.FC = () => {
-  const [showMenu] = useState(true);
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [cardDecks, setCardDecks] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newCardDeckName, setNewCardDeckName] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [description, setDescription] = useState(""); // New state for description
-  const [form] = Form.useForm();
+  const [description, setDescription] = useState("");
   const userId = useSelector((state: RootState) => state.auth.userId);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
         if (userId) {
-          const data = await ApiService.fetchGroupCardsByReaderId(
-            userId,
-            1,
-            10
-          );
+          const data = await ApiService.fetchGroupCardsByReaderId(userId, 1, 10);
           setCardDecks(data);
         }
       } catch (error) {
@@ -68,29 +62,18 @@ const CardDeckManager: React.FC = () => {
 
       const formData = new FormData();
       formData.append("Name", newCardDeckName);
-      formData.append("image", imageFile); // Image file
-      formData.append("ReaderId", userId); // ReaderId from Redux
-      formData.append("Description", description); // Append the description
+      formData.append("image", imageFile);
+      formData.append("ReaderId", userId);
+      formData.append("Description", description);
 
-      // Call the API to create a group card
-      const response = await ApiService.createGroupCard(
-        newCardDeckName,
-        imageFile,
-        userId,
-        description // Pass the description to the API service
-      );
-
-      // Add the newly created card deck to the list
-      setCardDecks([
-        ...cardDecks,
-        { id: response.id, name: newCardDeckName, description },
-      ]);
-
+      const response = await ApiService.createGroupCard(newCardDeckName, imageFile, userId, description);
+      setCardDecks([...cardDecks, { id: response.id, name: newCardDeckName, description }]);
+      
       message.success("Card deck created successfully!");
       setIsModalVisible(false);
       setNewCardDeckName("");
       setImageFile(null);
-      setDescription(""); // Reset the description
+      setDescription("");
     } catch (error) {
       message.error("Failed to create card deck");
     } finally {
@@ -106,7 +89,12 @@ const CardDeckManager: React.FC = () => {
     setIsModalVisible(false);
     setNewCardDeckName("");
     setImageFile(null);
-    setDescription(""); // Reset the description
+    setDescription("");
+  };
+
+  // Function to navigate to the list card by group card page
+  const handleAddCard = (groupCardId: string) => {
+    navigate(`/tarot-reader/card-list-manage/${groupCardId}`);
   };
 
   const columns = [
@@ -114,7 +102,7 @@ const CardDeckManager: React.FC = () => {
       title: "STT",
       dataIndex: "id",
       key: "id",
-      align: "center" as "center",
+      align: "center" as const,
       width: "10%",
       render: (_: any, __: any, index: number) => index + 1,
     },
@@ -122,20 +110,20 @@ const CardDeckManager: React.FC = () => {
       title: "Card Deck Name",
       dataIndex: "name",
       key: "name",
-      align: "left" as "left",
-      width: "60%",
+      align: "left" as const,
+      width: "30%",
     },
     {
-      title: "Description", // New column for description
+      title: "Description",
       dataIndex: "description",
       key: "description",
-      align: "left" as "left",
-      width: "20%",
+      align: "left" as const,
+      width: "40%",
     },
     {
       title: "Action",
       key: "action",
-      align: "center" as "center",
+      align: "center" as const,
       width: "20%",
       render: (_: any, record: any) => (
         <div className="flex justify-center space-x-2">
@@ -154,6 +142,14 @@ const CardDeckManager: React.FC = () => {
               danger
               icon={<DeleteOutlined />}
               onClick={() => handleDelete(record.id, record.name)}
+            />
+          </Tooltip>
+          <Tooltip title="Add Card">
+            <Button
+              type="primary"
+              shape="round"
+              icon={<PlusCircleOutlined />}
+              onClick={() => handleAddCard(record.id)} // Navigate to the list card page
             />
           </Tooltip>
         </div>
@@ -175,10 +171,6 @@ const CardDeckManager: React.FC = () => {
         dataSource={cardDecks}
         columns={columns}
         rowKey="id"
-        rowSelection={{
-          selectedRowKeys,
-          onChange: setSelectedRowKeys,
-        }}
         pagination={false}
         loading={loading}
       />
@@ -213,10 +205,10 @@ const CardDeckManager: React.FC = () => {
             <Upload
               maxCount={1}
               beforeUpload={(file) => {
-                setImageFile(file); // Manually set the image file
-                return false; // Prevent automatic upload
+                setImageFile(file);
+                return false;
               }}
-              onRemove={() => setImageFile(null)} // Handle file removal
+              onRemove={() => setImageFile(null)}
             >
               <Button icon={<UploadOutlined />}>Choose files</Button>
             </Upload>

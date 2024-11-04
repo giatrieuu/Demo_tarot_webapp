@@ -26,6 +26,7 @@ const ManagerBooking = lazy(() => import("../pages/Tarot-Reader/CalendarPage"));
 const PostManager = lazy(() => import("../pages/Tarot-Reader/PostManager"));
 const NewPost = lazy(() => import("../pages/Tarot-Reader/NewPost"));
 const CardDeckManager = lazy(() => import("../pages/Tarot-Reader/CardDeckManager"));
+const ListCardManage = lazy(() => import("../pages/Tarot-Reader/ListCardManage"));
 const CardDeckUpload = lazy(() => import("../pages/Tarot-Reader/CardDeckUpload"));
 const CardDeckList = lazy(() => import("../pages/Tarot-Reader/CardDeckList"));
 const Profile = lazy(() => import("../pages/Profile"));
@@ -34,6 +35,8 @@ const UserManagement = lazy(() => import("../pages/Admin/UserManagement"));
 const TopicManagement = lazy(() => import("../pages/Admin/TopicManagement"));
 const ShuffleCard = lazy(() => import("../pages/CardDrawGuide/ShuffleCard"));
 const CardMeaning = lazy(() => import("../pages/CardDrawGuide/CardMeaning"));
+
+
 const MyBooking = lazy(() => import("../pages/MyBooking"));
 const AppRouter: React.FC = () => {
   return (
@@ -62,7 +65,8 @@ const AppRouter: React.FC = () => {
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CALENDAR} element={<ManagerBooking />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_POST} element={<PostManager />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_ADD_POST} element={<NewPost />} />
-            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_DECK} element={<CardDeckManager />} />
+            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_DECK} element={<CardDeckManager/>} />
+          <Route path={`${TAROT_READER.TAROT_READER_DASHBOARD_CARD_LIST}/:groupCardId`} element={<ListCardManage />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_DECK_UPLOAD} element={<CardDeckUpload />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_LIST} element={<CardDeckList />} />
             <Route path={TAROT_READER.CREATE_BLOG} element={<CreateBlog />} />
