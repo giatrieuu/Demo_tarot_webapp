@@ -392,7 +392,6 @@ const ApiService = {
   },
 
   createPost: async (
-    readerId: string,
     title: string,
     text: string,
     content: string,
@@ -400,7 +399,6 @@ const ApiService = {
   ) => {
     try {
       const formData = new FormData();
-      formData.append("ReaderId", readerId);
       formData.append("Title", title);
       formData.append("Text", text);
       formData.append("Content", content);
@@ -507,9 +505,25 @@ const ApiService = {
     }
   },
 
-  updateImage: async (formData: FormData) => {
+  updateImage: async (
+    file?: File,
+    postId?: string,
+    userId?: string,
+    cardId?: string,
+    groupId?: string,
+    readerId?: string
+  ) => {
     try {
-      const response = await api.post("/api/Images/UpdateImage", formData, {
+      const formData = new FormData();
+
+      if (file) formData.append("File", file);
+      if (postId) formData.append("PostId", postId);
+      if (userId) formData.append("UserId", userId);
+      if (cardId) formData.append("CardId", cardId);
+      if (groupId) formData.append("GroupId", groupId);
+      if (readerId) formData.append("ReaderId", readerId);
+
+      const response = await axios.post("/api/Images/UpdateImage", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

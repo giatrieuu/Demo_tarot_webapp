@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Space } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import ApiService from '../../services/axios';
 import EditPost from '../../components/Blog/EditPost';
+import CreatePost from '../../components/Blog/CreatePost';
 
 interface GetPostsResponse {
     totalItems: number;
@@ -24,6 +25,7 @@ const BlogManagement: React.FC = () => {
     const [data, setData] = useState<Post[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+    const [isCreateModalVisible, setIsCreateModalVisible] = useState<boolean>(false);
     const [currentPost, setCurrentPost] = useState<Post | null>(null);
 
     // Gọi API lấy danh sách bài viết
@@ -116,9 +118,28 @@ const BlogManagement: React.FC = () => {
         // Logic xóa blog
     };
 
+    // Mở modal tạo blog mới
+    const showCreateModal = () => {
+        setIsCreateModalVisible(true);
+    };
+
+    // Xử lý khi đóng modal create
+    const handleCreateCancel = () => {
+        setIsCreateModalVisible(false);
+    };
+
+    // Xử lý khi nhận dữ liệu bài viết mới từ CreatePost
+    const handleCreateBlog = (newPost: Post) => {
+        setData([newPost, ...data]);
+        setIsCreateModalVisible(false);
+    };
+
     return (
         <div>
             <h1 className="text-xl font-bold mb-8">Blog Management</h1>
+            <Button type="primary" icon={<PlusOutlined />} onClick={showCreateModal} style={{ marginBottom: 16 }}>
+                New Post
+            </Button>
             <Table columns={columns} dataSource={data} rowKey="id" loading={loading} />
 
             <EditPost
@@ -126,6 +147,12 @@ const BlogManagement: React.FC = () => {
                 post={currentPost}
                 onCancel={handleCancel}
                 onOk={handleOk}
+            />
+
+            <CreatePost
+                visible={isCreateModalVisible}
+                onCancel={handleCreateCancel}
+                onOk={handleCreateBlog}
             />
         </div>
     );
