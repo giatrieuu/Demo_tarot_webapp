@@ -449,6 +449,18 @@ const ApiService = {
     }
   },
 
+  deletePost: async (postId: string) => {
+    try {
+      const response = await api.post(`/api/PostWeb/delete-post`, null, {
+        params: { postId },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error deleting post", error);
+      throw error;
+    }
+  },
+
   // Function to update user data
   updateUser: async (data: any) => {
     try {
