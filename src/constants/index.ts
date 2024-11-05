@@ -14,6 +14,10 @@ export const ADMIN = {
     USER_MANAGEMENT: '/admin/manage-users',
     TOPIC_MANAGEMENT: '/admin/manage-topic',
     BLOG_MANAGEMENT: '/admin/manage-blogs',
+    ADD_BLOG: 'create-blog',
+    EDIT_BLOG: 'edit-blog',
+
+
 }
 export const TAROT_READER = {
     TAROT_READER_DASHBOARD: '/tarot-reader/tarot-reader-dashboard',
@@ -28,7 +32,7 @@ export const TAROT_READER = {
 };
 export const USER = {
     MY_BOOKING: '/my-booking',
-    
+
 }
 export const PUBLIC = {
     HOME: '/homepage',

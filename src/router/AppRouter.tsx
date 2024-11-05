@@ -35,6 +35,10 @@ const UserManagement = lazy(() => import("../pages/Admin/UserManagement"));
 const TopicManagement = lazy(() => import("../pages/Admin/TopicManagement"));
 const ShuffleCard = lazy(() => import("../pages/CardDrawGuide/ShuffleCard"));
 const CardMeaning = lazy(() => import("../pages/CardDrawGuide/CardMeaning"));
+const EditPost = lazy(() => import("../pages/Blog/EditBlog"));
+
+
+
 
 
 const MyBooking = lazy(() => import("../pages/MyBooking"));
@@ -58,15 +62,15 @@ const AppRouter: React.FC = () => {
             <Route path={PUBLIC.CARD_MEANING} element={<CardMeaning />} />
 
           </Route>
- 
+
           {/* Tarot Reader Routes with MainLayout */}
           <Route element={<LayoutSidebarRoute />}>
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD} element={<TarotReaderDashboard />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CALENDAR} element={<ManagerBooking />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_POST} element={<PostManager />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_ADD_POST} element={<NewPost />} />
-            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_DECK} element={<CardDeckManager/>} />
-          <Route path={`${TAROT_READER.TAROT_READER_DASHBOARD_CARD_LIST}/:groupCardId`} element={<ListCardManage />} />
+            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_DECK} element={<CardDeckManager />} />
+            <Route path={`${TAROT_READER.TAROT_READER_DASHBOARD_CARD_LIST}/:groupCardId`} element={<ListCardManage />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_DECK_UPLOAD} element={<CardDeckUpload />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_LIST} element={<CardDeckList />} />
             <Route path={TAROT_READER.CREATE_BLOG} element={<CreateBlog />} />
@@ -78,11 +82,14 @@ const AppRouter: React.FC = () => {
             <Route path={ADMIN.USER_MANAGEMENT} element={<UserManagement />} />
             <Route path={ADMIN.TOPIC_MANAGEMENT} element={<TopicManagement />} />
             <Route path={ADMIN.BLOG_MANAGEMENT} element={<BlogManagement />} />
+            {/* <Route path={`${ADMIN.BLOG_MANAGEMENT}/edit-blog/:id`} element={<EditPost />} /> */}
+            <Route path={ADMIN.ADD_BLOG} element={<NewPost />} />
+            <Route path={`${ADMIN.EDIT_BLOG}/:id`} element={<EditPost />} />
 
           </Route>
           <Route element={<LayoutRoute />}>
-            <Route path={USER.MY_BOOKING} element={<MyBooking/>} />
-           
+            <Route path={USER.MY_BOOKING} element={<MyBooking />} />
+
           </Route>
 
           {/* Auth Routes with No Sidebar Layout */}

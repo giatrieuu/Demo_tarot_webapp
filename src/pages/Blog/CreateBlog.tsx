@@ -1,11 +1,20 @@
 import React, { useState } from "react";
+import { Input, Button, Row, Col, Card, Modal, message } from 'antd'; // Import Modal and message
+import ReactQuill from 'react-quill'; // Import Quill
+import 'react-quill/dist/quill.snow.css'; // Import CSS for Quill
 import ApiService from '../../services/axios';
+import Loader from '../../loader/Loader'; // Import component Loader
+
+const { TextArea } = Input;
 
 const CreateBlog: React.FC = () => {
     const [title, setTitle] = useState("");
-    const [text, setText] = useState("");
+    const [shortText, setShortText] = useState("");
     const [content, setContent] = useState("");
     const [image, setImage] = useState<File | null>(null);
+    const [isModalVisible, setIsModalVisible] = useState(false); // Trạng thái hiển thị modal
+    const [loading, setLoading] = useState(false); // Trạng thái loading
+    const [isPreviewVisible, setIsPreviewVisible] = useState(false); // Trạng thái hiển thị preview modal
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -14,73 +23,166 @@ const CreateBlog: React.FC = () => {
         }
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
+        setLoading(true); // Bắt đầu loading
 
-        if (!image) {
-            alert("Please upload an image.");
-            return;
+        // Kiểm tra các trường bắt buộc
+        if (!title || !shortText || !content || !image) {
+            message.warning("Please fill in all fields and upload an image."); // Hiển thị thông báo nếu thiếu trường
+            setLoading(false); // Dừng loading
+            return; // Thoát hàm
         }
 
         try {
-            const response = await ApiService.createPost("", title, text, content, image);
+            const response = await ApiService.createPost(title, shortText, content, image); // Gọi API để tạo bài viết
             console.log("Post created successfully:", response);
-            alert("Post created successfully!");
+            message.success("Post created successfully!");
+            // Reset form fields after successful submission
+            setTitle("");
+            setShortText("");
+            setContent("");
+            setImage(null);
+            setIsModalVisible(false); // Đóng modal sau khi tạo thành công
         } catch (error) {
             console.error("Error creating post:", error);
-            alert("Failed to create post. Please try again.");
+            message.error("Failed to create post. Please try again.");
+        } finally {
+            setLoading(false); // Kết thúc loading
         }
     };
 
+    const showConfirmModal = () => {
+        setIsModalVisible(true); // Hiện modal xác nhận
+    };
+
+    const handleOk = () => {
+        handleSubmit(); // Gọi hàm tạo bài viết
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false); // Đóng modal
+    };
+
+    const handlePreview = () => {
+        setIsPreviewVisible(true); // Hiện modal preview
+    };
+
+    const handlePreviewCancel = () => {
+        setIsPreviewVisible(false); // Đóng modal preview
+    };
+
+    // Nếu đang loading, hiện loader
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <Loader /> {/* Loader sẽ xuất hiện ở chính giữa */}
+            </div>
+        );
+    }
+
     return (
-        <div className="max-w-xl mx-auto p-8 bg-white shadow-md rounded-md mt-10">
-            <h2 className="text-2xl font-bold mb-6">Create New Post</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                    <label className="block text-gray-700">Title</label>
-                    <input
-                        type="text"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Enter post title"
+        <div className="max-w-6xl mx-auto p-6 bg-light shadow-lg rounded-md mt-10">
+            <h2 className="text-2xl font-bold mb-6">New Post</h2>
+
+            <Card>
+                <Row gutter={16}>
+                    <Col span={16}>
+                        {/* Title Input */}
+                        <Input
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            className="mb-4"
+                            placeholder="Enter post title"
+                            size="large"
+                        />
+                        {/* Short Text Area for additional text */}
+                        <TextArea
+                            value={shortText}
+                            onChange={(e) => setShortText(e.target.value)}
+                            className="mb-4"
+                            placeholder="Short description here...."
+                            rows={2}
+                        />
+                        {/* Image Input */}
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className="mb-4"
+                        />
+                        {image && (
+                            <img
+                                src={URL.createObjectURL(image)}
+                                alt="Current Post"
+                                style={{ width: '300px', height: '200px', objectFit: 'contain' }} // Kích thước cố định
+                                className="mb-4"
+                            />
+                        )}
+
+                        {/* Content Editor */}
+                        <ReactQuill
+                            value={content}
+                            onChange={setContent}
+                            className="mb-4"
+                            placeholder="Enter post content"
+                            style={{ height: '400px' }}
+                        />
+                    </Col>
+                    <Col span={8}>
+                        <div className="border-l pl-4">
+                            {/* Buttons for Save and Preview */}
+                            <div className="flex justify-end mt-4">
+                                <Button type="primary" onClick={showConfirmModal} className="mr-2">
+                                    Save
+                                </Button>
+                                <Button type="default" onClick={handlePreview} className="mr-2">
+                                    Preview
+                                </Button>
+                            </div>
+                            <h3 className="text-lg font-semibold mb-2">Newest comment</h3>
+                            <div className="comment mb-2">
+                                <strong>Your post not have any comment</strong>
+                            </div>
+                        </div>
+                    </Col>
+                </Row>
+            </Card>
+
+            {/* Modal xác nhận */}
+            <Modal
+                title="Confirm Save"
+                visible={isModalVisible}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                okText="Confirm"
+                cancelText="Cancel"
+            >
+                <p>Are you sure you want to save this post?</p>
+            </Modal>
+
+            <Modal
+                title="Preview Post"
+                visible={isPreviewVisible}
+                onCancel={handlePreviewCancel}
+                footer={[
+                    <Button key="back" onClick={handlePreviewCancel}>
+                        Close
+                    </Button>,
+                ]}
+            >
+                <h3>{title}</h3>
+                <p>{shortText}</p>
+                <div dangerouslySetInnerHTML={{ __html: content }} />
+                {image && (
+                    <img
+                        src={URL.createObjectURL(image)}
+                        alt="Preview"
+                        style={{ width: '300px', height: '200px', objectFit: 'contain' }}
                     />
-                </div>
-                <div>
-                    <label className="block text-gray-700">Text</label>
-                    <input
-                        type="text"
-                        value={text}
-                        onChange={(e) => setText(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Enter post text"
-                    />
-                </div>
-                <div>
-                    <label className="block text-gray-700">Content</label>
-                    <textarea
-                        value={content}
-                        onChange={(e) => setContent(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Enter post content"
-                        rows={4}
-                    />
-                </div>
-                <div>
-                    <label className="block text-gray-700">Image</label>
-                    <input
-                        type="file"
-                        onChange={handleImageChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
-                <button
-                    type="submit"
-                    className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                    Submit
-                </button>
-            </form>
+                )}
+            </Modal>
+
+
         </div>
     );
 };
