@@ -54,6 +54,7 @@ const AppRouter: React.FC = () => {
             <Route path={PUBLIC.BLOG} element={<BlogPage />} />
             <Route path={PUBLIC.BLOG_DETAIL} element={<BlogDetail />} />
             <Route path={PUBLIC.PROFILE} element={<Profile />} />
+            
             <Route path={PUBLIC.CARD_DRAW} element={<ShuffleCard />} />
             <Route path={PUBLIC.CARD_MEANING} element={<CardMeaning />} />
 

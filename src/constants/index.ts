@@ -39,7 +39,7 @@ export const PUBLIC = {
     LIST_READERS: '/list-tarot-reader',
     BLOG: '/blog',
     READER_DETAIL: '/reader-detail/:readerId',
-    PROFILE: '/my-profile',
+    PROFILE: '/profile/me',
     CARD_DRAW: '/card-draw',
     CARD_MEANING: '/card-meaning',
     BLOG_DETAIL: '/post-detail/:id',

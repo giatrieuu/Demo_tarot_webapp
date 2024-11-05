@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const { Header } = Layout;
-const { Search } = Input;
+
 
 const AppHeader: React.FC = () => {
   const dispatch = useDispatch();
@@ -199,7 +199,7 @@ const AppHeader: React.FC = () => {
     },
     {
       key: "profile",
-      label: <Link to="/my-profile">My Profile</Link>,
+      label: <Link to="/profile/me">My Profile</Link>,
     },
     role === 2
       ? {

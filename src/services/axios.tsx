@@ -135,6 +135,22 @@ const ApiService = {
     }
   },
 
+  // Function to fetch followed readers for a user
+  getFollowedReaders: async (userId: string, pageNumber = 1, pageSize = 10) => {
+    try {
+      const response = await api.get("/api/FollowWeb/get-followed", {
+        params: {
+          userId,
+          pageNumber,
+          pageSize,
+        },
+      });
+      return response.data; // Return the list of followed readers from the API
+    } catch (error) {
+      console.error("Error fetching followed readers", error);
+      throw error;
+    }
+  },
   // Function to get notifications for a reader
   getReaderNotifications: async (readerId: string) => {
     try {
@@ -418,10 +434,10 @@ const ApiService = {
           const imageFormData = new FormData();
           imageFormData.append("File", card.img);
           imageFormData.append("GroupId", card.groupId); // Pass GroupId if needed for image upload
-  
+
           // Call updateImage API to upload the image and retrieve the URL or identifier
           const uploadedImage = await ApiService.updateImage(imageFormData);
-  
+
           // Return the card data with the uploaded image URL/ID
           return {
             groupId: card.groupId,
@@ -432,7 +448,7 @@ const ApiService = {
           };
         })
       );
-  
+
       // Prepare FormData for the createListCard API
       const formData = new FormData();
       cardDataList.forEach((card, index) => {
@@ -442,7 +458,7 @@ const ApiService = {
         formData.append(`createListCardModel[${index}][message]`, card.message);
         formData.append(`createListCardModel[${index}][img]`, card.img); // Use the uploaded image URL/ID
       });
-  
+
       // Call the API to create the list of cards
       const response = await api.post(
         "/api/CardWeb/create-list-card",
@@ -453,14 +469,13 @@ const ApiService = {
           },
         }
       );
-  
+
       return response.data; // Return the response from the API
     } catch (error) {
       console.error("Error creating list of cards", error);
       throw error;
     }
   },
-  
 
   // Function to delete a card by cardId
   deleteCard: async (cardId: string) => {
@@ -682,14 +697,14 @@ const ApiService = {
           "Content-Type": "multipart/form-data",
         },
       });
-  
+
       return response.data; // Return the response data from the API
     } catch (error) {
       console.error("Error updating image", error);
       throw error;
     }
   },
-  
+
   // Block/Unblock User
   blockUser: async (userId: string) => {
     try {
