@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 import Loader from "../loader/Loader";
 
 interface FollowUser {
-  id: number;
+  id: string;
   name: string;
 }
 
@@ -37,18 +37,22 @@ const Profile: React.FC = () => {
       setLoading(true);
       try {
         let response;
-        if (role === "3") {
-          response = await ApiService.fetchReaderWithImages(userId);
-          setFollows([
-            { id: 1, name: "Glucozo10" },
-            { id: 2, name: "Glucozo10" },
-            { id: 3, name: "Glucozo10" },
-          ]);
-        } else {
+        if (role === "1") { // User role
           response = await ApiService.getUserWithImages(userId);
+          
+          // Fetch followed readers
+          const followedReadersResponse = await ApiService.getFollowedReaders(userId);
+          const followedReaders = followedReadersResponse?.readers?.map((reader: any) => ({
+            id: reader.reader.id,
+            name: reader.reader.name,
+          }));
+          setFollows(followedReaders || []);
+          
+        } else if (role === "3") { // Reader role
+          response = await ApiService.fetchReaderWithImages(userId);
         }
 
-        const user = response?.user;
+        const user = response?.user || response?.reader;
         setFullName(user?.name || "");
         setEmail(user?.email || "");
         setPhone(user?.phone || "");
@@ -77,11 +81,10 @@ const Profile: React.FC = () => {
         dob: dob || undefined,
       };
 
-      // Check role before calling the appropriate API
       if (role === "3") {
-        await ApiService.updateReader(updateData); // Call updateReader for readers
+        await ApiService.updateReader(updateData);
       } else {
-        await ApiService.updateUser(updateData); // Call updateUser for regular users
+        await ApiService.updateUser(updateData);
       }
       message.success("Profile updated successfully");
     } catch (error) {
@@ -97,9 +100,9 @@ const Profile: React.FC = () => {
       formData.append("File", file);
 
       if (role === "3") {
-        formData.append("ReaderId", userId); // For tarot readers
+        formData.append("ReaderId", userId);
       } else {
-        formData.append("UserId", userId); // For regular users
+        formData.append("UserId", userId);
       }
 
       const response = await ApiService.updateImage(formData, {
@@ -257,9 +260,9 @@ const Profile: React.FC = () => {
               placeholder="Write something about yourself..."
             ></textarea>
           </div>
-          {role === "3" && (
+          {role === "1" && follows.length > 0 && (
             <div>
-              <h3 className="font-semibold mb-4">Follow</h3>
+              <h3 className="font-semibold mb-4">Followed Readers</h3>
               {follows.map((user) => (
                 <div
                   key={user.id}
@@ -274,9 +277,6 @@ const Profile: React.FC = () => {
                   <HeartFilled className="text-red-500" />
                 </div>
               ))}
-              <Button type="link" className="mt-2">
-                More
-              </Button>
             </div>
           )}
         </div>

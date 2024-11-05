@@ -135,6 +135,22 @@ const ApiService = {
     }
   },
 
+  // Function to fetch followed readers for a user
+  getFollowedReaders: async (userId: string, pageNumber = 1, pageSize = 10) => {
+    try {
+      const response = await api.get("/api/FollowWeb/get-followed", {
+        params: {
+          userId,
+          pageNumber,
+          pageSize,
+        },
+      });
+      return response.data; // Return the list of followed readers from the API
+    } catch (error) {
+      console.error("Error fetching followed readers", error);
+      throw error;
+    }
+  },
   // Function to get notifications for a reader
   getReaderNotifications: async (readerId: string) => {
     try {
@@ -460,7 +476,6 @@ const ApiService = {
       throw error;
     }
   },
-
 
   // Function to delete a card by cardId
   deleteCard: async (cardId: string) => {
