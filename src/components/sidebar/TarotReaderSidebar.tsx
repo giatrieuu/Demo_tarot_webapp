@@ -2,13 +2,10 @@ import React from 'react';
 import { Menu } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import {
-    AppstoreOutlined,
-    UserOutlined,
-    DollarOutlined,
-    CalendarOutlined,
-    FileTextOutlined,
-    ToolOutlined,
-    LogoutOutlined
+  AppstoreOutlined,
+  BookOutlined,
+  CalendarOutlined,
+  ToolOutlined
 } from '@ant-design/icons';
 import { TarotReaderSidebarData } from '../../constants';
 
@@ -20,15 +17,12 @@ interface SidebarProps {
     label: string;
     icon?: string;
   }
-const iconComponents: { [key: string]: JSX.Element } = {
+  const iconComponents: { [key: string]: JSX.Element } = {
     AppstoreOutlined: <AppstoreOutlined />,
-    UserOutlined: <UserOutlined />,
-    DollarOutlined: <DollarOutlined />,
+    BookOutlined: <BookOutlined />,
     CalendarOutlined: <CalendarOutlined />,
-    FileTextOutlined: <FileTextOutlined />,
-    ToolOutlined: <ToolOutlined />,
-    LogoutOutlined: <LogoutOutlined />
-};
+    ToolOutlined: <ToolOutlined />
+  };
 
 const renderMenuItems = (items: MenuItem[], navigate: (path: string) => void) =>
     items.map((item) => (

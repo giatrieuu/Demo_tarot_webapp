@@ -7,10 +7,9 @@ interface PrivateRouteProps {
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ element: Component, allowedRoles }) => {
-    const userData = localStorage.getItem('userData');
-    const userRole = userData ? JSON.parse(userData).role : null;
+    const userRole = localStorage.getItem('userRole');
 
     return userRole && allowedRoles.includes(userRole) ? <Component /> : <Navigate to="/homepage" />;
-}
+};
 
 export default PrivateRoute;

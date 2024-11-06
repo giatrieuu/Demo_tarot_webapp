@@ -1,7 +1,7 @@
 export const ROLES = {
-    ADMIN: "admin",
-    CUSTOMER: "customer",
-    TAROT_READER: "tarot-reader",
+    ADMIN: "2",
+    CUSTOMER: "1",
+    TAROT_READER: "3",
 };
 
 export const ERROR = {
@@ -49,23 +49,22 @@ export const PUBLIC = {
 };
 
 export const AdminSidebarData = {
-    MenuAdminItems: [
-        { "key": "/admin/admin-dashboard", "label": "Dashboard", "icon": "AppstoreOutlined" },
-        { "key": "/admin/manage-users", "label": "User Management", "icon": "UserOutlined" },
-        { "key": "/admin/manage-topic", "label": "Topic Management", "icon": "DollarOutlined" },
-        { "key": "/admin/manage-blogs", "label": "Blogs ", "icon": "FileTextOutlined" },
-    ],
+  MenuAdminItems: [
+    { key: "/admin/admin-dashboard", label: "Dashboard", icon: "DashboardOutlined" },
+    { key: "/admin/manage-users", label: "User Management", icon: "UserOutlined" },
+    { key: "/admin/manage-topic", label: "Topic Management", icon: "TagsOutlined" },
+    { key: "/admin/manage-blogs", label: "Blogs", icon: "FileTextOutlined" },
+  ],
 };
 
 export const TarotReaderSidebarData = {
     MenuTarotReaderItems: [
-
-        { "key": "/tarot-reader/tarot-reader-dashboard", "label": "Dashboard", "icon": "AppstoreOutlined" },
-        { "key": "/tarot-reader/manage-topic", "label": "Topic Management", "icon": "DollarOutlined" },
-        { "key": "/tarot-reader/manage-bookings", "label": "Bookings", "icon": "CalendarOutlined" },
-        { "key": "/tarot-reader/card-deck-manager", "label": "Sign Out ", "icon": "LogoutOutlined" },
+      { "key": "/tarot-reader/tarot-reader-dashboard", "label": "Dashboard", "icon": "AppstoreOutlined" },
+      { "key": "/tarot-reader/manage-topic", "label": "Topic Management", "icon": "BookOutlined" },
+      { "key": "/tarot-reader/manage-bookings", "label": "Bookings Manage", "icon": "CalendarOutlined" },
+      { "key": "/tarot-reader/card-deck-manager", "label": "Card Management", "icon": "ToolOutlined" },
     ]
-};
+  };
 
 export const CustomerSidebarData = {
     MenuCustomerItems: [
