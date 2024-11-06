@@ -1,12 +1,11 @@
 import React, { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import LayoutRoute from "../layout/LayoutRoute";
-
+import LayoutSidebarRoute from "../layout/LayoutSidebarRoute";
+import PrivateRoute from "./PrivateRouter";
+import { ADMIN, PUBLIC, TAROT_READER, USER, ROLES } from "../constants";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ADMIN, PUBLIC, TAROT_READER, USER } from "../constants";
-import LayoutSidebarRoute from "../layout/LayoutSidebarRoute";
-
 
 // Lazy-loaded pages
 const HomePage = lazy(() => import("../pages/HomePage"));
@@ -16,7 +15,6 @@ const ForgotPassword = lazy(() => import("../pages/ForgotPassword"));
 const ChangePassword = lazy(() => import("../pages/ChangePassword"));
 const ListReaders = lazy(() => import("../pages/ListTarotReader"));
 const ReaderDetail = lazy(() => import("../pages/ReaderDetail"));
-
 const BlogPage = lazy(() => import("../pages/Blog/Blog"));
 const BlogDetail = lazy(() => import("../pages/Blog/BlogDetail"));
 const BlogManagement = lazy(() => import("../pages/Admin/BlogManagement"));
@@ -36,12 +34,8 @@ const TopicManagement = lazy(() => import("../pages/Admin/TopicManagement"));
 const ShuffleCard = lazy(() => import("../pages/CardDrawGuide/ShuffleCard"));
 const CardMeaning = lazy(() => import("../pages/CardDrawGuide/CardMeaning"));
 const EditPost = lazy(() => import("../pages/Blog/EditBlog"));
-
-
-
-
-
 const MyBooking = lazy(() => import("../pages/MyBooking"));
+
 const AppRouter: React.FC = () => {
   return (
     <Router>
@@ -58,48 +52,56 @@ const AppRouter: React.FC = () => {
             <Route path={PUBLIC.BLOG} element={<BlogPage />} />
             <Route path={PUBLIC.BLOG_DETAIL} element={<BlogDetail />} />
             <Route path={PUBLIC.PROFILE} element={<Profile />} />
-            
             <Route path={PUBLIC.CARD_DRAW} element={<ShuffleCard />} />
             <Route path={PUBLIC.CARD_MEANING} element={<CardMeaning />} />
-
           </Route>
 
-          {/* Tarot Reader Routes with MainLayout */}
+          {/* Tarot Reader Routes with MainLayout and PrivateRoute for role restriction */}
           <Route element={<LayoutSidebarRoute />}>
-            <Route path={TAROT_READER.TAROT_READER_DASHBOARD} element={<TarotReaderDashboard />} />
-            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CALENDAR} element={<ManagerBooking />} />
-            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_POST} element={<PostManager />} />
-            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_ADD_POST} element={<NewPost />} />
-            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_DECK} element={<CardDeckManager />} />
-            <Route path={`${TAROT_READER.TAROT_READER_DASHBOARD_CARD_LIST}/:groupCardId`} element={<ListCardManage />} />
-            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_DECK_UPLOAD} element={<CardDeckUpload />} />
-            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_LIST} element={<CardDeckList />} />
-            <Route path={TAROT_READER.CREATE_BLOG} element={<CreateBlog />} />
+            <Route path={TAROT_READER.TAROT_READER_DASHBOARD}
+              element={<PrivateRoute element={TarotReaderDashboard} allowedRoles={[ROLES.TAROT_READER]} />} />
+            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CALENDAR}
+              element={<PrivateRoute element={ManagerBooking} allowedRoles={[ROLES.TAROT_READER]} />} />
+            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_POST}
+              element={<PrivateRoute element={PostManager} allowedRoles={[ROLES.TAROT_READER]} />} />
+            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_ADD_POST}
+              element={<PrivateRoute element={NewPost} allowedRoles={[ROLES.TAROT_READER]} />} />
+            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_DECK}
+              element={<PrivateRoute element={CardDeckManager} allowedRoles={[ROLES.TAROT_READER]} />} />
+            <Route path={`${TAROT_READER.TAROT_READER_DASHBOARD_CARD_LIST}/:groupCardId`}
+              element={<PrivateRoute element={ListCardManage} allowedRoles={[ROLES.TAROT_READER]} />} />
+            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_DECK_UPLOAD}
+              element={<PrivateRoute element={CardDeckUpload} allowedRoles={[ROLES.TAROT_READER]} />} />
+            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_LIST}
+              element={<PrivateRoute element={CardDeckList} allowedRoles={[ROLES.TAROT_READER]} />} />
           </Route>
 
-          {/* Admin Routes with MainLayout */}
+          {/* Admin Routes with MainLayout and PrivateRoute for role restriction */}
           <Route element={<LayoutSidebarRoute />}>
-            <Route path={ADMIN.ADMIN_DASHBOARD} element={<AdminDashboard />} />
-            <Route path={ADMIN.USER_MANAGEMENT} element={<UserManagement />} />
-            <Route path={ADMIN.TOPIC_MANAGEMENT} element={<TopicManagement />} />
-            <Route path={ADMIN.BLOG_MANAGEMENT} element={<BlogManagement />} />
-            {/* <Route path={`${ADMIN.BLOG_MANAGEMENT}/edit-blog/:id`} element={<EditPost />} /> */}
-            <Route path={ADMIN.ADD_BLOG} element={<NewPost />} />
-            <Route path={`${ADMIN.EDIT_BLOG}/:id`} element={<EditPost />} />
-
+            <Route path={ADMIN.ADMIN_DASHBOARD}
+              element={<PrivateRoute element={AdminDashboard} allowedRoles={[ROLES.ADMIN]} />} />
+            <Route path={ADMIN.USER_MANAGEMENT}
+              element={<PrivateRoute element={UserManagement} allowedRoles={[ROLES.ADMIN]} />} />
+            <Route path={ADMIN.TOPIC_MANAGEMENT}
+              element={<PrivateRoute element={TopicManagement} allowedRoles={[ROLES.ADMIN]} />} />
+            <Route path={ADMIN.BLOG_MANAGEMENT}
+              element={<PrivateRoute element={BlogManagement} allowedRoles={[ROLES.ADMIN]} />} />
+            <Route path={ADMIN.ADD_BLOG}
+              element={<PrivateRoute element={CreateBlog} allowedRoles={[ROLES.ADMIN]} />} />
+            <Route path={`${ADMIN.EDIT_BLOG}/:id`}
+              element={<PrivateRoute element={EditPost} allowedRoles={[ROLES.ADMIN]} />} />
           </Route>
+
+          {/* User-specific routes */}
           <Route element={<LayoutRoute />}>
             <Route path={USER.MY_BOOKING} element={<MyBooking />} />
-
           </Route>
 
           {/* Auth Routes with No Sidebar Layout */}
-
           <Route path={PUBLIC.LOGIN} element={<Login />} />
           <Route path={PUBLIC.REGISTER} element={<Register />} />
           <Route path={PUBLIC.FORGOT_PASSWORD} element={<ForgotPassword />} />
           <Route path={PUBLIC.CHANGE_PASSWORD} element={<ChangePassword />} />
-
         </Routes>
       </Suspense>
       <ToastContainer />

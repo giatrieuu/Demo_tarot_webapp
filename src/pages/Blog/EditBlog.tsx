@@ -154,7 +154,7 @@ const EditBlog: React.FC = () => {
     }
 
     return (
-        <div className="max-w-6xl mx-auto p-6 bg-light shadow-lg rounded-md mt-10">
+        <div className="max-w-6xl mx-auto p-1 bg-light rounded-md mt-10">
             <h2 className="text-2xl font-bold mb-6">Edit Post</h2>
 
             <Card>

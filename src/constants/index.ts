@@ -1,7 +1,7 @@
 export const ROLES = {
-    ADMIN: "admin",
-    CUSTOMER: "customer",
-    TAROT_READER: "tarot-reader",
+    ADMIN: "2",
+    CUSTOMER: "1",
+    TAROT_READER: "3",
 };
 
 export const ERROR = {
@@ -14,8 +14,8 @@ export const ADMIN = {
     USER_MANAGEMENT: '/admin/manage-users',
     TOPIC_MANAGEMENT: '/admin/manage-topic',
     BLOG_MANAGEMENT: '/admin/manage-blogs',
-    ADD_BLOG: 'create-blog',
-    EDIT_BLOG: 'edit-blog',
+    ADD_BLOG: '/admin/manage-blogs/create-blog',
+    EDIT_BLOG: '/admin/manage-blogs/edit-blog',
 
 
 }
@@ -28,7 +28,6 @@ export const TAROT_READER = {
     TAROT_READER_DASHBOARD_LIST_CARD: '/tarot-reader/card-deck-manager',
     TAROT_READER_DASHBOARD_CARD_DECK_UPLOAD: '/tarot-reader/card-deck-upload',
     TAROT_READER_DASHBOARD_CARD_LIST: '/tarot-reader/card-list-manage',
-    CREATE_BLOG: '/create-blog',
 };
 export const USER = {
     MY_BOOKING: '/my-booking',
@@ -50,23 +49,22 @@ export const PUBLIC = {
 };
 
 export const AdminSidebarData = {
-    MenuAdminItems: [
-        { "key": "/admin/admin-dashboard", "label": "Dashboard", "icon": "AppstoreOutlined" },
-        { "key": "/admin/manage-users", "label": "User Management", "icon": "UserOutlined" },
-        { "key": "/admin/manage-topic", "label": "Topic Management", "icon": "DollarOutlined" },
-        { "key": "/admin/manage-blogs", "label": "Blogs ", "icon": "FileTextOutlined" },
-    ],
+  MenuAdminItems: [
+    { key: "/admin/admin-dashboard", label: "Dashboard", icon: "DashboardOutlined" },
+    { key: "/admin/manage-users", label: "User Management", icon: "UserOutlined" },
+    { key: "/admin/manage-topic", label: "Topic Management", icon: "TagsOutlined" },
+    { key: "/admin/manage-blogs", label: "Blogs", icon: "FileTextOutlined" },
+  ],
 };
 
 export const TarotReaderSidebarData = {
     MenuTarotReaderItems: [
-
-        { "key": "/tarot-reader/tarot-reader-dashboard", "label": "Dashboard", "icon": "AppstoreOutlined" },
-        { "key": "/tarot-reader/manage-topic", "label": "Topic Management", "icon": "DollarOutlined" },
-        { "key": "/tarot-reader/manage-bookings", "label": "Bookings", "icon": "CalendarOutlined" },
-        { "key": "/tarot-reader/card-deck-manager", "label": "Sign Out ", "icon": "LogoutOutlined" },
+      { "key": "/tarot-reader/tarot-reader-dashboard", "label": "Dashboard", "icon": "AppstoreOutlined" },
+      { "key": "/tarot-reader/manage-topic", "label": "Topic Management", "icon": "BookOutlined" },
+      { "key": "/tarot-reader/manage-bookings", "label": "Bookings Manage", "icon": "CalendarOutlined" },
+      { "key": "/tarot-reader/card-deck-manager", "label": "Card Management", "icon": "ToolOutlined" },
     ]
-};
+  };
 
 export const CustomerSidebarData = {
     MenuCustomerItems: [

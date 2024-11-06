@@ -3,11 +3,9 @@ import { Menu } from "antd";
 import { useNavigate } from "react-router-dom";
 import {
   UserOutlined,
-  AppstoreOutlined,
-  DollarOutlined,
   CalendarOutlined,
+  TagsOutlined,
   FileTextOutlined,
-  ToolOutlined,
 } from "@ant-design/icons";
 import { AdminSidebarData } from "../../constants";
 
@@ -21,9 +19,9 @@ interface MenuItem {
   icon?: string;
 }
 const iconComponents: { [key: string]: JSX.Element } = {
-  AppstoreOutlined: <AppstoreOutlined />,
+  DashboardOutlined: <CalendarOutlined />,
   UserOutlined: <UserOutlined />,
-  DollarOutlined: <DollarOutlined />,
+  TagsOutlined: <TagsOutlined />,
   FileTextOutlined: <FileTextOutlined />,
 };
 const renderMenuItems = (items: MenuItem[], navigate: (path: string) => void) =>
