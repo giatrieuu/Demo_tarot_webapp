@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Input, Button, Row, Col, Card, Modal, message } from 'antd'; // Import Modal and message
-import ReactQuill from 'react-quill'; // Import Quill
-import 'react-quill/dist/quill.snow.css'; // Import CSS for Quill
+import { Input, Button, Row, Col, Card, Modal, message } from 'antd';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import ApiService from '../../services/axios';
-import Loader from '../../loader/Loader'; // Import component Loader
+import Loader from '../../loader/Loader';
 
 const { TextArea } = Input;
 
@@ -12,9 +12,9 @@ const CreateBlog: React.FC = () => {
     const [shortText, setShortText] = useState("");
     const [content, setContent] = useState("");
     const [image, setImage] = useState<File | null>(null);
-    const [isModalVisible, setIsModalVisible] = useState(false); // Trạng thái hiển thị modal
-    const [loading, setLoading] = useState(false); // Trạng thái loading
-    const [isPreviewVisible, setIsPreviewVisible] = useState(false); // Trạng thái hiển thị preview modal
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [isPreviewVisible, setIsPreviewVisible] = useState(false);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -24,70 +24,66 @@ const CreateBlog: React.FC = () => {
     };
 
     const handleSubmit = async () => {
-        setLoading(true); // Bắt đầu loading
+        setLoading(true);
 
-        // Kiểm tra các trường bắt buộc
         if (!title || !shortText || !content || !image) {
-            message.warning("Please fill in all fields and upload an image."); // Hiển thị thông báo nếu thiếu trường
-            setLoading(false); // Dừng loading
-            return; // Thoát hàm
+            message.warning("Please fill in all fields and upload an image.");
+            setLoading(false);
+            return;
         }
 
         try {
-            const response = await ApiService.createPost(title, shortText, content, image); // Gọi API để tạo bài viết
+            const response = await ApiService.createPost(title, shortText, content, image);
             console.log("Post created successfully:", response);
             message.success("Post created successfully!");
-            // Reset form fields after successful submission
             setTitle("");
             setShortText("");
             setContent("");
             setImage(null);
-            setIsModalVisible(false); // Đóng modal sau khi tạo thành công
+            setIsModalVisible(false);
         } catch (error) {
             console.error("Error creating post:", error);
             message.error("Failed to create post. Please try again.");
         } finally {
-            setLoading(false); // Kết thúc loading
+            setLoading(false);
         }
     };
 
     const showConfirmModal = () => {
-        setIsModalVisible(true); // Hiện modal xác nhận
+        setIsModalVisible(true);
     };
 
     const handleOk = () => {
-        handleSubmit(); // Gọi hàm tạo bài viết
+        handleSubmit();
     };
 
     const handleCancel = () => {
-        setIsModalVisible(false); // Đóng modal
+        setIsModalVisible(false);
     };
 
     const handlePreview = () => {
-        setIsPreviewVisible(true); // Hiện modal preview
+        setIsPreviewVisible(true);
     };
 
     const handlePreviewCancel = () => {
-        setIsPreviewVisible(false); // Đóng modal preview
+        setIsPreviewVisible(false);
     };
 
-    // Nếu đang loading, hiện loader
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-screen">
-                <Loader /> {/* Loader sẽ xuất hiện ở chính giữa */}
+                <Loader />
             </div>
         );
     }
 
     return (
-        <div className="max-w-6xl mx-auto p-6 bg-light shadow-lg rounded-md mt-10">
+        <>
             <h2 className="text-2xl font-bold mb-6">New Post</h2>
 
             <Card>
                 <Row gutter={16}>
                     <Col span={16}>
-                        {/* Title Input */}
                         <Input
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
@@ -95,7 +91,6 @@ const CreateBlog: React.FC = () => {
                             placeholder="Enter post title"
                             size="large"
                         />
-                        {/* Short Text Area for additional text */}
                         <TextArea
                             value={shortText}
                             onChange={(e) => setShortText(e.target.value)}
@@ -103,7 +98,6 @@ const CreateBlog: React.FC = () => {
                             placeholder="Short description here...."
                             rows={2}
                         />
-                        {/* Image Input */}
                         <input
                             type="file"
                             accept="image/*"
@@ -114,12 +108,10 @@ const CreateBlog: React.FC = () => {
                             <img
                                 src={URL.createObjectURL(image)}
                                 alt="Current Post"
-                                style={{ width: '300px', height: '200px', objectFit: 'contain' }} // Kích thước cố định
+                                style={{ width: '300px', height: '200px', objectFit: 'contain' }}
                                 className="mb-4"
                             />
                         )}
-
-                        {/* Content Editor */}
                         <ReactQuill
                             value={content}
                             onChange={setContent}
@@ -130,7 +122,6 @@ const CreateBlog: React.FC = () => {
                     </Col>
                     <Col span={8}>
                         <div className="border-l pl-4">
-                            {/* Buttons for Save and Preview */}
                             <div className="flex justify-end mt-4">
                                 <Button type="primary" onClick={showConfirmModal} className="mr-2">
                                     Save
@@ -141,14 +132,13 @@ const CreateBlog: React.FC = () => {
                             </div>
                             <h3 className="text-lg font-semibold mb-2">Newest comment</h3>
                             <div className="comment mb-2">
-                                <strong>Your post not have any comment</strong>
+                                <strong>Your post does not have any comments</strong>
                             </div>
                         </div>
                     </Col>
                 </Row>
             </Card>
 
-            {/* Modal xác nhận */}
             <Modal
                 title="Confirm Save"
                 visible={isModalVisible}
@@ -181,9 +171,7 @@ const CreateBlog: React.FC = () => {
                     />
                 )}
             </Modal>
-
-
-        </div>
+        </>
     );
 };
 

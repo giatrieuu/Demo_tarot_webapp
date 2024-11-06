@@ -74,7 +74,6 @@ const AppRouter: React.FC = () => {
             <Route path={`${TAROT_READER.TAROT_READER_DASHBOARD_CARD_LIST}/:groupCardId`} element={<ListCardManage />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_DECK_UPLOAD} element={<CardDeckUpload />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_LIST} element={<CardDeckList />} />
-            <Route path={TAROT_READER.CREATE_BLOG} element={<CreateBlog />} />
           </Route>
 
           {/* Admin Routes with MainLayout */}
@@ -84,7 +83,7 @@ const AppRouter: React.FC = () => {
             <Route path={ADMIN.TOPIC_MANAGEMENT} element={<TopicManagement />} />
             <Route path={ADMIN.BLOG_MANAGEMENT} element={<BlogManagement />} />
             {/* <Route path={`${ADMIN.BLOG_MANAGEMENT}/edit-blog/:id`} element={<EditPost />} /> */}
-            <Route path={ADMIN.ADD_BLOG} element={<NewPost />} />
+            <Route path={ADMIN.ADD_BLOG} element={<CreateBlog />} />
             <Route path={`${ADMIN.EDIT_BLOG}/:id`} element={<EditPost />} />
 
           </Route>

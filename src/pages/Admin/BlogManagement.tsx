@@ -92,7 +92,7 @@ const BlogManagement: React.FC = () => {
 
     // Hàm xử lý khi nhấn Edit
     const handleEdit = (post: Post) => {
-        navigate(`/edit-blog/${post.id}`); // Điều hướng đến trang EditPost
+        navigate(`/admin/manage-blogs/edit-blog/${post.id}`); // Điều hướng đến trang EditPost
     };
 
     // Open delete confirmation modal
