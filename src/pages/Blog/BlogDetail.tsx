@@ -28,10 +28,24 @@ interface CommentData {
   datetime: string;
   id: string; // Include ID for each comment to handle edits/deletes
 }
+interface BlogData {
+  post: {
+    id: string;
+    userId: string;
+    text: string;
+    createAt: string;
+    status: string;
+    title: string;
+    content: string;
+  };
+  url: string;
+  name: string;
+}
+
 
 const BlogDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [blog, setBlog] = useState<any>(null);
+  const [blog, setBlog] = useState<BlogData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [commentList, setCommentList] = useState<CommentData[]>([]);
   const [newComment, setNewComment] = useState<string>("");
@@ -95,6 +109,9 @@ const BlogDetail: React.FC = () => {
   // Handle comment submission
   const handleCommentSubmit = async () => {
     if (newComment.trim() === "") {
+      return;
+    }
+    if (!userId) {
       return;
     }
 
@@ -212,7 +229,13 @@ const BlogDetail: React.FC = () => {
         - by {blog?.name}
       </Paragraph>
 
-      <Paragraph>{blog?.post?.text}</Paragraph>
+      <Paragraph className="text-lg font-semibold">
+        {blog?.post?.text}
+      </Paragraph>
+      <Paragraph className="text-base text-gray-700">
+        {blog?.post?.content}
+      </Paragraph>
+
 
       <div className="mt-8">
         <Title level={4}>Comments</Title>
