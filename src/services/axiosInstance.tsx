@@ -8,7 +8,7 @@ interface ErrorResponse {
   errors?: { message?: string }[];
 }
 
-let setLoading: (loading: boolean) => void = () => {};
+let setLoading: (loading: boolean) => void = () => { };
 
 export const setGlobalLoadingHandler = (loadingHandler: (loading: boolean) => void) => {
   setLoading = loadingHandler;
@@ -84,7 +84,7 @@ tokenAxiosInstance.interceptors.response.use(
     const { response } = err;
     if (response) {
       handleErrorByToast(err);
-      
+
       if (response.data.message !== 'Token is expired') {
         handleHttpErrors(response.status);
       } else {

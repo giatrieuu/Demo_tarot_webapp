@@ -35,6 +35,8 @@ const ShuffleCard = lazy(() => import("../pages/CardDrawGuide/ShuffleCard"));
 const CardMeaning = lazy(() => import("../pages/CardDrawGuide/CardMeaning"));
 const EditPost = lazy(() => import("../pages/Blog/EditBlog"));
 const MyBooking = lazy(() => import("../pages/MyBooking"));
+const NotFoundPage = lazy(() => import("../Error/NotFoundPage"));
+
 
 const AppRouter: React.FC = () => {
   return (
@@ -102,6 +104,10 @@ const AppRouter: React.FC = () => {
           <Route path={PUBLIC.REGISTER} element={<Register />} />
           <Route path={PUBLIC.FORGOT_PASSWORD} element={<ForgotPassword />} />
           <Route path={PUBLIC.CHANGE_PASSWORD} element={<ChangePassword />} />
+
+          <Route path="*" element={<NotFoundPage />} />
+
+
         </Routes>
       </Suspense>
       <ToastContainer />
