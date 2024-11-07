@@ -1,20 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import {
-  Avatar,
-  List,
-  Typography,
-  Breadcrumb,
-  Alert,
-  Button,
-  Input,
-  Form,
-  Dropdown,
-  Menu,
-  Modal,
-} from "antd";
+import { Avatar, List, Typography, Breadcrumb, Alert, Button, Input, Form, Dropdown, Menu, Modal } from "antd";
 import { EllipsisOutlined } from "@ant-design/icons";
-import ApiService from "../../services/axios"; // Import the ApiService to call APIs
+import ApiService from "../../services/axios"; 
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 
@@ -213,6 +201,7 @@ const BlogDetail: React.FC = () => {
       </Paragraph>
 
       <Paragraph>{blog?.post?.text}</Paragraph>
+      <Paragraph>{blog?.post?.content}</Paragraph>
 
       <div className="mt-8">
         <Title level={4}>Comments</Title>

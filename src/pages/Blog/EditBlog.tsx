@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import ApiService from "../../services/axios";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 interface EditPostProps {
-    postId: string; // ID of the post to be edited
+    postId: string;
 }
 
 const EditBlog: React.FC<EditPostProps> = ({ postId }) => {
@@ -29,6 +31,10 @@ const EditBlog: React.FC<EditPostProps> = ({ postId }) => {
 
         fetchPostDetails();
     }, [postId]);
+
+    const handleEditorChange = (newContent: string) => {
+        setContent(newContent);
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -73,12 +79,10 @@ const EditBlog: React.FC<EditPostProps> = ({ postId }) => {
                 </div>
                 <div>
                     <label className="block text-gray-700">Content</label>
-                    <textarea
+                    <ReactQuill
                         value={content}
-                        onChange={(e) => setContent(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Enter post content"
-                        rows={4}
+                        onChange={handleEditorChange}
+                        theme="snow" // You can customize the theme
                     />
                 </div>
                 <button

@@ -84,8 +84,8 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Reader Carousel Section */}
-      <section className="py-20 px-16 bg-[#e9f2ef] flex justify-center items-center">
+      {/* Section 2 */}
+      <section className="py-20 px-16 bg-black flex justify-center items-center">
         <div className="w-full md:w-3/4 flex flex-col md:flex-row items-center justify-between">
           {readers.length > 0 && currentReader && (
             <>
@@ -136,30 +136,33 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Statistics Section */}
-      <section className="bg-[#CCF4D9] py-20 px-16 text-center">
-        <div className="flex justify-around items-center">
+      {/* Section 3 */}
+      <section
+        className="bg-black py-20 px-16 text-center relative flex items-center justify-center h-screen bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('src/assets/home3.jpg')" }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+        <div className="relative z-10 flex justify-around items-center">
           <div className="flex flex-col items-center">
-            <img src="src\assets\Reader-icon.svg" alt="Total Readers Icon" className="w-16 h-16 mb-4" />
+            <img src="src/assets/Reader-icon.svg" alt="Total Readers Icon" className="w-16 h-16 mb-4" />
             <h2 className="text-5xl font-bold text-[#4a044e]">{totalReaders}</h2>
             <p className="text-lg text-gray-600">Total readers</p>
           </div>
           <div className="flex flex-col items-center">
-            <img src="src\assets\Users-icon.svg" alt="Number of Users Icon" className="w-16 h-16 mb-4" />
+            <img src="src/assets/Users-icon.svg" alt="Number of Users Icon" className="w-16 h-16 mb-4" />
             <h2 className="text-5xl font-bold text-[#4a044e]">100+</h2>
             <p className="text-lg text-gray-600">Number of users</p>
           </div>
           <div className="flex flex-col items-center">
-            <img src="src\assets\Task-icon.svg" alt="Fortune Tellings Icon" className="w-16 h-16 mb-4" />
+            <img src="src/assets/Task-icon.svg" alt="Fortune Tellings Icon" className="w-16 h-16 mb-4" />
             <h2 className="text-5xl font-bold text-[#4a044e]">300+</h2>
             <p className="text-lg text-gray-600">Number of fortune tellings performed</p>
           </div>
         </div>
       </section>
 
-
-      {/* About Us Section */}
-      <section className="bg-[#edf3e8] py-20 px-16 text-center">
+      {/* Section 4 */}
+      <section className="bg-black py-20 px-16 text-center">
         <h2 className="text-4xl font-bold text-[#4a044e] mb-10">About Us</h2>
         <div className="flex justify-center items-center">
           {/* Team Member */}

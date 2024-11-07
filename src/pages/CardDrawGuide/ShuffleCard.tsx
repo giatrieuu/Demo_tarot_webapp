@@ -48,9 +48,9 @@ const ShuffleCard: React.FC = () => {
         <div className="min-h-screen flex flex-col justify-center items-center ">
             {/* Section 1 */}
             <section
-                className="w-full bg-[#eef7f6] text-gray-800 p-12 lg:p-16 h-screen bg-cover bg-center bg-no-repeat"
+                className="w-full bg-[#eef7f6] text-gray-800 p-12 lg:p-16 bg-cover bg-center bg-no-repeat"
                 style={{
-                    backgroundImage: `url('src/assets/home1.jpg')`,
+                    backgroundImage: `url('src/assets/home1.jpg')`, 
                 }}
             >
                 <div className="grid grid-cols-1 lg:grid-cols-2 items-center bg-opacity-75 w-full h-full bg-white p-8 shadow-md">
