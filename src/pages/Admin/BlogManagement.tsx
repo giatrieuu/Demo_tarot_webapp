@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Space } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import ApiService from '../../services/axios';
-import EditPost from '../../components/Blog/EditPost';
-import CreatePost from '../../components/Blog/CreatePost';
 import DeletePost from '../../components/Blog/DeletePost';
 
 interface GetPostsResponse {
@@ -23,11 +22,9 @@ interface Post {
 }
 
 const BlogManagement: React.FC = () => {
+    const navigate = useNavigate(); // Khai báo navigate
     const [data, setData] = useState<Post[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-    const [isCreateModalVisible, setIsCreateModalVisible] = useState<boolean>(false);
-    const [currentPost, setCurrentPost] = useState<Post | null>(null);
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState<boolean>(false);
     const [postIdToDelete, setPostIdToDelete] = useState<string | null>(null);
 
@@ -95,24 +92,7 @@ const BlogManagement: React.FC = () => {
 
     // Hàm xử lý khi nhấn Edit
     const handleEdit = (post: Post) => {
-        setCurrentPost(post);
-        setIsModalVisible(true);
-    };
-
-    // Xử lý khi đóng modal
-    const handleCancel = () => {
-        setIsModalVisible(false);
-        setCurrentPost(null);
-    };
-
-    // Xử lý khi lưu thay đổi từ modal
-    const handleOk = (updatedPost: Post) => {
-        const updatedData = data.map((post) =>
-            post.id === updatedPost.id ? updatedPost : post
-        );
-        setData(updatedData); // Cập nhật dữ liệu mới vào state
-        setIsModalVisible(false); // Đóng modal
-        setCurrentPost(null); // Đặt lại currentPost
+        navigate(`/admin/manage-blogs/edit-blog/${post.id}`); // Điều hướng đến trang EditPost
     };
 
     // Open delete confirmation modal
@@ -133,42 +113,18 @@ const BlogManagement: React.FC = () => {
         setIsDeleteModalVisible(false); // Close modal
     };
 
-    // Mở modal tạo blog mới
-    const showCreateModal = () => {
-        setIsCreateModalVisible(true);
-    };
-
-    // Xử lý khi đóng modal create
-    const handleCreateCancel = () => {
-        setIsCreateModalVisible(false);
-    };
-
-    // Xử lý khi nhận dữ liệu bài viết mới từ CreatePost
-    const handleCreateBlog = (newPost: Post) => {
-        setData([newPost, ...data]);
-        setIsCreateModalVisible(false);
+    // Mở trang tạo blog mới
+    const showCreatePost = () => {
+        navigate('create-blog'); // Điều hướng đến trang CreatePost
     };
 
     return (
         <div>
             <h1 className="text-xl font-bold mb-8">Blog Management</h1>
-            <Button type="primary" icon={<PlusOutlined />} onClick={showCreateModal} style={{ marginBottom: 16 }}>
+            <Button type="primary" icon={<PlusOutlined />} onClick={showCreatePost} style={{ marginBottom: 16 }}>
                 New Post
             </Button>
             <Table columns={columns} dataSource={data} rowKey="id" loading={loading} />
-
-            <EditPost
-                visible={isModalVisible}
-                post={currentPost}
-                onCancel={handleCancel}
-                onOk={handleOk}
-            />
-
-            <CreatePost
-                visible={isCreateModalVisible}
-                onCancel={handleCreateCancel}
-                onOk={handleCreateBlog}
-            />
 
             <DeletePost
                 visible={isDeleteModalVisible}
