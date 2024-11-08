@@ -5,7 +5,8 @@ import {
   AppstoreOutlined,
   BookOutlined,
   CalendarOutlined,
-  ToolOutlined
+  ToolOutlined,
+  FileTextOutlined
 } from '@ant-design/icons';
 import { TarotReaderSidebarData } from '../../constants';
 
@@ -21,7 +22,8 @@ interface SidebarProps {
     AppstoreOutlined: <AppstoreOutlined />,
     BookOutlined: <BookOutlined />,
     CalendarOutlined: <CalendarOutlined />,
-    ToolOutlined: <ToolOutlined />
+    ToolOutlined: <ToolOutlined />,
+    FileTextOutlined: <FileTextOutlined />,
   };
 
 const renderMenuItems = (items: MenuItem[], navigate: (path: string) => void) =>

@@ -553,6 +553,7 @@ const ApiService = {
   },
 
   createPost: async (
+    readerId: string,
     title: string,
     text: string,
     content: string,
@@ -560,6 +561,7 @@ const ApiService = {
   ) => {
     try {
       const formData = new FormData();
+      formData.append("ReaderId", readerId); // Add ReaderId to the form data
       formData.append("Title", title);
       formData.append("Text", text);
       formData.append("Content", content);
@@ -577,6 +579,7 @@ const ApiService = {
       throw error;
     }
   },
+
 
   updatePost: async (
     id: string,
@@ -617,7 +620,26 @@ const ApiService = {
       throw error;
     }
   },
-
+  // Function to fetch paged posts by reader
+  fetchPostsByReader: async (
+    readerId: string,
+    pageNumber = 1,
+    pageSize = 10
+  ) => {
+    try {
+      const response = await api.get("/api/PostWeb/paged-posts-by-reader", {
+        params: {
+          readerId,
+          pageNumber,
+          pageSize,
+        },
+      });
+      return response.data; // Return the paged posts data from the API
+    } catch (error) {
+      console.error("Error fetching posts by reader", error);
+      throw error;
+    }
+  },
   // Function to update user data
   updateUser: async (data: any) => {
     try {

@@ -1,6 +1,6 @@
 export const ROLES = {
-    ADMIN: "2",
     CUSTOMER: "1",
+    ADMIN: "2",
     TAROT_READER: "3",
 };
 
@@ -23,11 +23,14 @@ export const TAROT_READER = {
     TAROT_READER_DASHBOARD: '/tarot-reader/tarot-reader-dashboard',
     TAROT_READER_DASHBOARD_CALENDAR: '/tarot-reader/manage-bookings',
     TAROT_READER_DASHBOARD_POST: '/tarot-reader/post-manager',
-    TAROT_READER_DASHBOARD_ADD_POST: '/tarot-reader/add-post',
+    TAROT_READER_DASHBOARD_ADD_BLOG: '/tarot-reader/manage-blog/create-blog',
+    TAROT_READER_DASHBOARD_EDIT_BLOG: '/tarot-reader/manage-blog/edit-blog',
     TAROT_READER_DASHBOARD_CARD_DECK: '/tarot-reader/card-deck-manager',
     TAROT_READER_DASHBOARD_LIST_CARD: '/tarot-reader/card-deck-manager',
     TAROT_READER_DASHBOARD_CARD_DECK_UPLOAD: '/tarot-reader/card-deck-upload',
     TAROT_READER_DASHBOARD_CARD_LIST: '/tarot-reader/card-list-manage',
+    TAROT_READER_DASHBOARD_BLOG: '/tarot-reader/manage-blog',
+    
 };
 export const USER = {
     MY_BOOKING: '/my-booking',
@@ -63,6 +66,7 @@ export const TarotReaderSidebarData = {
       { "key": "/tarot-reader/manage-topic", "label": "Topic Management", "icon": "BookOutlined" },
       { "key": "/tarot-reader/manage-bookings", "label": "Bookings Manage", "icon": "CalendarOutlined" },
       { "key": "/tarot-reader/card-deck-manager", "label": "Card Management", "icon": "ToolOutlined" },
+      { "key": "/tarot-reader/manage-blog", "label": "Blog Manage", "icon": "FileTextOutlined" },
     ]
   };
 
