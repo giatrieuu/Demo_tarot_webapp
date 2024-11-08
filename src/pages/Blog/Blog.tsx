@@ -129,7 +129,7 @@ const BlogPage: React.FC = () => {
             </Col>
           ))
         ) : (
-          <div className="text-center text-white mt-4">No blogs found</div>
+          <div className="text-center text-2xl text-white mt-4">No blogs found</div>
         )}
       </Row>
 
