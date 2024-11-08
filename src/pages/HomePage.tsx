@@ -5,6 +5,7 @@ import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import Loader from '../loader/Loader'; // Import the Loader component
 import ApiService from '../services/axios';
 
+
 interface Reader {
   reader: {
     id: string;
@@ -226,40 +227,32 @@ const HomePage = () => {
       {/* Section 4 */}
       <section className="bg-black py-20 px-16 text-center">
         <h2 className="text-4xl font-bold text-white mb-10">About Us</h2>
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center flex-wrap">
           {/* Team Member */}
-          <div className="w-1/6 p-4">
-            <img src="https://via.placeholder.com/100" alt="Team member" className="w-full h-auto rounded-lg mb-2" />
-            <h3 className="text-lg font-semibold text-white">Yến Thảo</h3>
-            <p className="text-gray-500">FE Dev</p>
-          </div>
-          <div className="w-1/6 p-4">
-            <img src="https://via.placeholder.com/100" alt="Team member" className="w-full h-auto rounded-lg mb-2" />
-            <h3 className="text-lg font-semibold text-white">Gia Triều</h3>
-            <p className="text-gray-500">FE Dev</p>
-          </div>
-          <div className="w-1/6 p-4">
-            <img src="https://via.placeholder.com/100" alt="Team member" className="w-full h-auto rounded-lg mb-2" />
-            <h3 className="text-lg font-semibold text-white">Quang Huy</h3>
-            <p className="text-gray-500">FE Dev - Leader</p>
-          </div>
-          <div className="w-1/6 p-4">
-            <img src="https://via.placeholder.com/100" alt="Team member" className="w-full h-auto rounded-lg mb-2" />
-            <h3 className="text-lg font-semibold text-white">Gia Phong</h3>
-            <p className="text-gray-500">BE Dev</p>
-          </div>
-          <div className="w-1/6 p-4">
-            <img src="https://via.placeholder.com/100" alt="Team member" className="w-full h-auto rounded-lg mb-2" />
-            <h3 className="text-lg font-semibold text-white">Hoàng Anh</h3>
-            <p className="text-gray-500">MB Dev</p>
-          </div>
-          <div className="w-1/6 p-4">
-            <img src="https://via.placeholder.com/100" alt="Team member" className="w-full h-auto rounded-lg mb-2" />
-            <h3 className="text-lg font-semibold text-white">Kiến Hòa</h3>
-            <p className="text-gray-500">Designer</p>
-          </div>
+          {[
+            { name: 'Yến Thảo', role: 'FE Dev', image: 'src/assets/Thảo.jpg', facebook: 'https://www.facebook.com/yenthao.phan.7?mibextid=LQQJ4d' },
+            { name: 'Gia Triều', role: 'FE Dev', image: 'src/assets/Triều.jpg', facebook: 'https://www.facebook.com/trieu.gia.9469' },
+            { name: 'Quang Huy', role: 'FE Dev - Leader', image: 'src/assets/Huy.jpg', facebook: 'https://www.facebook.com/vilad.huy/' },
+            { name: 'Gia Phong', role: 'BE Dev', image: 'src/assets/Phong.jpg', facebook: 'https://www.facebook.com/thus.gios.3' },
+            { name: 'Hoàng Anh', role: 'MB Dev', image: 'src/assets/Hoàng Anh.jpg', facebook: 'https://www.facebook.com/profile.php?id=100010488452873' },
+            { name: 'Kiến Hòa', role: 'Designer', image: 'src/assets/Hòa.jpg', facebook: 'https://www.facebook.com/hoa.dong.31945243' },
+          ].map((member, index) => (
+            <div key={index} className="w-1/6 p-4">
+              <a href={member.facebook} target="_blank" rel="noopener noreferrer">
+                <img
+                  src={member.image}
+                  alt="Team member"
+                  className="w-24 h-24 object-cover rounded-lg mb-2"
+                  style={{ width: '200px', height: '200px' }}
+                />
+              </a>
+              <h3 className="text-lg font-semibold text-white">{member.name}</h3>
+              <p className="text-gray-500">{member.role}</p>
+            </div>
+          ))}
         </div>
       </section>
+
 
     </div>
   );
