@@ -5,6 +5,7 @@ import { EllipsisOutlined } from "@ant-design/icons";
 import ApiService from "../../services/axios";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import parse from 'html-react-parser';
 
 const { Title, Paragraph } = Typography;
 const { TextArea } = Input;
@@ -220,9 +221,8 @@ const BlogDetail: React.FC = () => {
         {blog?.post?.text}
       </Paragraph>
       <Paragraph className="text-base text-gray-700">
-        {blog?.post?.content}
+        {parse(blog?.post?.content || '')}
       </Paragraph>
-
 
       <div className="mt-8">
         <Title level={4}>Comments</Title>
