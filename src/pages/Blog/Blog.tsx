@@ -1,11 +1,12 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Card, Typography, Input, Row, Col } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Card, Typography, Input, Row, Col, Pagination } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import ApiService from '../../services/axios';
 import Loader from '../../loader/Loader';
 
 const { Title, Paragraph } = Typography;
+const { Search } = Input;
 
 interface Blog {
   post: {
@@ -24,12 +25,10 @@ const BlogPage: React.FC = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const isDragging = useRef(false);
-  const startX = useRef(0);
-  const scrollLeft = useRef(0);
+  const [filteredBlogs, setFilteredBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [suggestions, setSuggestions] = useState<Blog[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const blogsPerPage = 12;
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -40,6 +39,7 @@ const BlogPage: React.FC = () => {
           new Date(b.post.createAt).getTime() - new Date(a.post.createAt).getTime()
         );
         setBlogs(sortedBlogs);
+        setFilteredBlogs(sortedBlogs); // Khởi tạo giá trị cho filteredBlogs
       } catch (err) {
         console.error("Error fetching blog list:", err);
         setError("Failed to fetch blogs");
@@ -50,19 +50,22 @@ const BlogPage: React.FC = () => {
     fetchBlogs();
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-
-    if (query.length > 0) {
-      const filteredSuggestions = blogs.filter(blog =>
-        blog.post.title && blog.post.title.toLowerCase().includes(query.toLowerCase())
-      );
-      setSuggestions(filteredSuggestions);
-    } else {
-      setSuggestions([]);
-    }
+  const handleSearch = (value: string) => {
+    setSearchQuery(value);
+    const results = blogs.filter(blog =>
+      blog.post.title.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredBlogs(results);
+    setCurrentPage(1); // Reset về trang đầu tiên khi tìm kiếm
   };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  // Xác định các blog sẽ hiển thị trên trang hiện tại
+  const startIndex = (currentPage - 1) * blogsPerPage;
+  const currentBlogs = filteredBlogs.slice(startIndex, startIndex + blogsPerPage);
 
   if (loading) {
     return (
@@ -75,175 +78,72 @@ const BlogPage: React.FC = () => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="min-h-screen bg-black p-6">
-      {/* Search Input */}
-      <div className="relative mb-6">
-        <Input
-          type="text"
-          placeholder="Search blogs..."
-          value={searchQuery}
-          onChange={handleInputChange}
-          className="w-full border px-4 py-2"
-          prefix={<SearchOutlined />}
-        />
+    <div className="min-h-screen bg-black text-white">
+      {/* Header Section */}
+      <header
+        className="relative flex items-center justify-between px-16 py-20 h-screen bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('src/assets/blog.jpg')" }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+        <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center">
+          <h1 className="text-white text-7xl font-bold" style={{ fontFamily: "'Uncial Antiqua'" }}>Blog</h1>
+          <p className="text-white text-center max-w-2xl mt-4 text-xl mb-8">
+            Dive into a world of insights and inspiration. Discover our latest articles, stay updated on trends, and uncover valuable knowledge that fuels your creativity.
+          </p>
+          <Search
+            placeholder="Search blogs..."
+            enterButton={<SearchOutlined />}
+            onSearch={handleSearch}
+            className="w-3/4 max-w-lg mt-4 px-4 py-2"
+          />
+        </div>
+      </header>
 
-        {/* Suggestions Dropdown */}
-        {suggestions.length > 0 && (
-          <div className="absolute z-10 w-full bg-white border border-gray-300 rounded mt-1 max-h-60 overflow-y-auto">
-            {suggestions.map((suggestion) => (
-              <div
-                key={suggestion.post.id}
-                onClick={() => navigate(`/post-detail/${suggestion.post.id}`)}
-                className="p-2 cursor-pointer hover:bg-gray-100"
-              >
-                <Title level={5} className="m-0 text-black">{suggestion.post.title}</Title>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <Row gutter={16} justify="center">
-        {/* Main Content: Latest Post */}
-        <Col span={24} style={{ display: 'flex', justifyContent: 'center' }}>
-          {blogs.length > 0 && (
-            <Card
-              hoverable
-              className="bg-white text-black"
-              onClick={() => navigate(`/post-detail/${blogs[0].post.id}`)}
-              style={{ width: '60%', marginBottom: '20px' }}
-            >
-              <img
-                src={blogs[0].url || 'https://via.placeholder.com/150'}
-                className="object-cover h-48 w-full mb-4"
-                alt={blogs[0].post.title}
-              />
-              <Title level={5}>{blogs[0].post.title}</Title>
-              <Paragraph className="text-sm">
-                {new Date(blogs[0].post.createAt).toLocaleDateString()}
-              </Paragraph>
-              <Paragraph>
-                {blogs[0].post.text}
-              </Paragraph>
-            </Card>
-          )}
-        </Col>
-
-        {/* Other Posts: Drag-to-Scroll */}
-        <Col span={24}>
-          <div
-            ref={scrollRef}
-            className="horizontal-scroll-container"
-            onMouseDown={(e) => {
-              isDragging.current = true;
-              startX.current = e.pageX - (scrollRef.current?.offsetLeft || 0);
-              scrollLeft.current = scrollRef.current?.scrollLeft || 0;
-            }}
-            onMouseLeave={() => isDragging.current = false}
-            onMouseUp={() => isDragging.current = false}
-            onMouseMove={(e) => {
-              if (!isDragging.current) return;
-              e.preventDefault();
-              const x = e.pageX - (scrollRef.current?.offsetLeft || 0);
-              const walk = (x - startX.current) * 1.5;
-              if (scrollRef.current) {
-                scrollRef.current.scrollLeft = scrollLeft.current - walk;
-              }
-            }}
-          >
-            {blogs.slice(1).map((blog, index) => (
+      {/* Blog Cards */}
+      <Row gutter={[16, 16]} className="p-6">
+        {currentBlogs.length > 0 ? (
+          currentBlogs.map((blog, index) => (
+            <Col key={index} xs={24} sm={12} md={8} lg={6}>
               <Card
-                key={index}
                 hoverable
-                className="bg-white text-black uniform-card"
-                onDoubleClick={() => navigate(`/post-detail/${blog.post.id}`)}
+                className="bg-white text-black h-[450px] flex flex-col justify-between"
+                onClick={() => navigate(`/post-detail/${blog.post.id}`)}
               >
-                <div className="card-image-container">
+                <div className="h-[200px] overflow-hidden">
                   <img
-                    src={blog.url || 'https://via.placeholder.com/100'}
+                    src={blog.url || 'https://via.placeholder.com/150'}
                     alt={blog.post.title}
-                    className="object-cover"
+                    className="object-cover w-full h-full"
                   />
                 </div>
-                <div className="card-content">
-                  <Title level={5} className="card-title">{blog.post.title}</Title>
-                  <Paragraph className="card-text">{blog.post.text}</Paragraph>
-                  <Paragraph className="card-date">
+                <div className="p-4 flex flex-col flex-grow">
+                  <Title level={5} className="mb-2 truncate">{blog.post.title}</Title>
+                  <Paragraph className="text-sm mb-2 text-gray-600">
                     {new Date(blog.post.createAt).toLocaleDateString()}
+                  </Paragraph>
+                  <Paragraph className="truncate text-sm flex-grow">
+                    {blog.post.text}
                   </Paragraph>
                 </div>
               </Card>
-            ))}
-          </div>
-        </Col>
+            </Col>
+          ))
+        ) : (
+          <div className="text-center text-white mt-4">No blogs found</div>
+        )}
       </Row>
 
-      {/* CSS Styles */}
-      <style>{`
-        .horizontal-scroll-container {
-          display: flex;
-          overflow-x: auto;
-          padding-bottom: 10px;
-          gap: 16px;
-          cursor: grab;
-          scrollbar-width: none;
-        }
-        .horizontal-scroll-container::-webkit-scrollbar {
-          display: none;
-        }
-        .uniform-card {
-          min-width: 200px;
-          width: 200px;
-          height: 300px;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          cursor: pointer;
-        }
-        .card-image-container {
-          width: 100%;
-          height: 150px;
-          overflow: hidden;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .card-image-container img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-        .card-content {
-          padding: 10px;
-          text-align: center;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          height: 150px;
-        }
-        .card-title {
-          font-size: 16px;
-          font-weight: bold;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          height: 20px;
-        }
-        .card-text {
-          font-size: 14px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          height: 40px;
-        }
-        .card-date {
-          font-size: 12px;
-          color: gray;
-          height: 20px;
-        }
-      `}</style>
+      {/* Pagination */}
+      <div className="flex justify-center mt-4">
+        <div className="pb-12">
+          <Pagination
+            current={currentPage}
+            pageSize={blogsPerPage}
+            total={filteredBlogs.length}
+            onChange={handlePageChange}
+          />
+        </div>
+      </div>
     </div>
   );
 };
