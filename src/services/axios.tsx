@@ -535,7 +535,7 @@ const ApiService = {
   },
   getPosts: async () => {
     try {
-      const response = await api.get("/api/PostWeb/GetPagedPostsNew");
+      const response = await api.get("/api/PostWeb/GetPagedPostsNew?pageNumber=1&pageSize=100");
       return response.data; // Trả về dữ liệu bài đăng từ API
     } catch (error) {
       console.error("Error fetching posts list", error);

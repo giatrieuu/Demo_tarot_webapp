@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Space } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
+import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import ApiService from '../../services/axios';
 import DeletePost from '../../components/Blog/DeletePost';
 
@@ -22,19 +22,28 @@ interface Post {
 }
 
 const BlogManagement: React.FC = () => {
-    const navigate = useNavigate(); // Khai báo navigate
-    const [data, setData] = useState<Post[]>([]);
+    const navigate = useNavigate();
+    const [allPosts, setAllPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [pagination, setPagination] = useState<TablePaginationConfig>({
+        current: 1,
+        pageSize: 10,
+        total: 0,
+    });
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState<boolean>(false);
     const [postIdToDelete, setPostIdToDelete] = useState<string | null>(null);
 
-    // Gọi API lấy danh sách bài viết
     const fetchPosts = async () => {
         try {
             setLoading(true);
             const response: GetPostsResponse = await ApiService.getPosts();
             const formattedData: Post[] = response.posts.map((item) => item.post);
-            setData(formattedData);
+            setAllPosts(formattedData);
+
+            setPagination((prev) => ({
+                ...prev,
+                total: response.totalItems,
+            }));
         } catch (error) {
             console.error("Error fetching posts", error);
         } finally {
@@ -46,7 +55,16 @@ const BlogManagement: React.FC = () => {
         fetchPosts();
     }, []);
 
-    // Định nghĩa các cột cho bảng
+    const handleTableChange = (paginationConfig: TablePaginationConfig) => {
+        const { current, pageSize } = paginationConfig;
+        if (current && pageSize) {
+            setPagination({
+                ...pagination,
+                current,
+            });
+        }
+    };
+
     const columns: ColumnsType<Post> = [
         {
             title: 'ID',
@@ -90,32 +108,31 @@ const BlogManagement: React.FC = () => {
         },
     ];
 
-    // Hàm xử lý khi nhấn Edit
     const handleEdit = (post: Post) => {
-        navigate(`/admin/manage-blogs/edit-blog/${post.id}`); // Điều hướng đến trang EditPost
+        navigate(`/admin/manage-blogs/edit-blog/${post.id}`);
     };
 
-    // Open delete confirmation modal
     const openDeleteModal = (id: string) => {
         setPostIdToDelete(id);
         setIsDeleteModalVisible(true);
     };
 
-    // Close delete confirmation modal
     const closeDeleteModal = () => {
         setIsDeleteModalVisible(false);
         setPostIdToDelete(null);
     };
 
-    // Confirm deletion and update data
     const handleDeleteConfirm = (id: string) => {
-        setData(data.filter((post) => post.id !== id)); // Remove post from state
-        setIsDeleteModalVisible(false); // Close modal
+        setAllPosts(allPosts.filter((post) => post.id !== id));
+        setPagination((prev) => ({
+            ...prev,
+            total: prev.total ? prev.total - 1 : 0,
+        }));
+        setIsDeleteModalVisible(false);
     };
 
-    // Mở trang tạo blog mới
     const showCreatePost = () => {
-        navigate('create-blog'); // Điều hướng đến trang CreatePost
+        navigate('create-blog');
     };
 
     return (
@@ -124,8 +141,17 @@ const BlogManagement: React.FC = () => {
             <Button type="primary" icon={<PlusOutlined />} onClick={showCreatePost} style={{ marginBottom: 16 }}>
                 New Post
             </Button>
-            <Table columns={columns} dataSource={data} rowKey="id" loading={loading} />
-
+            <Table
+                columns={columns}
+                dataSource={allPosts.slice(
+                    (pagination.current! - 1) * pagination.pageSize!,
+                    pagination.current! * pagination.pageSize!
+                )}
+                rowKey="id"
+                loading={loading}
+                pagination={pagination}
+                onChange={handleTableChange}
+            />
             <DeletePost
                 visible={isDeleteModalVisible}
                 id={postIdToDelete}
