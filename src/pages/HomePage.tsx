@@ -119,7 +119,7 @@ const HomePage = () => {
           </p>
           <Button
             onClick={() => navigate("/card-draw")}
-            className="bg-white text-[#4a044e] font-bold px-8 py-4 mt-10 text-lg rounded-md"
+            className="bg-[#8fd0ba] text-white font-bold px-8 py-4 mt-10 text-lg"
           >
             Free Tarot Reading
           </Button>
@@ -192,6 +192,7 @@ const HomePage = () => {
                   <div
                     key={index}
                     className="bg-white rounded-lg overflow-hidden shadow-md flex flex-col h-full w-80"
+                    onClick={() => navigate(`/post-detail/${blog.post.id}`)}
                   >
                     <img
                       src={blog.url || "https://via.placeholder.com/300"}
@@ -206,9 +207,9 @@ const HomePage = () => {
                         </p>
                       </div>
                       <p className="text-gray-800">
-                        {blog.post.content.length > 100
-                          ? `${blog.post.content.substring(0, 100)}...`
-                          : blog.post.content}
+                        {blog.post.text.length > 100
+                          ? `${blog.post.text.substring(0, 100)}...`
+                          : blog.post.text}
                       </p>
                     </div>
                   </div>
@@ -261,8 +262,6 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-
-
 
     </div>
   );
