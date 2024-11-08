@@ -1,6 +1,5 @@
 import {
   Layout,
-  Input,
   Avatar,
   Dropdown,
   Menu,
@@ -26,42 +25,50 @@ const AppHeader: React.FC = () => {
   const userId = useSelector((state: RootState) => state.auth.userId);
   const [userData, setUserData] = useState<any>(null);
   const [notifications, setNotifications] = useState<any[]>([]);
-  const [loadingNotifications, setLoadingNotifications] =
-    useState<boolean>(true);
-  const [loadingUserData, setLoadingUserData] = useState<boolean>(true); // Loader for user data
+  const [loadingNotifications, setLoadingNotifications] = useState<boolean>(true);
+  const [loadingUserData, setLoadingUserData] = useState<boolean>(true);
   const [unreadCount, setUnreadCount] = useState<number>(0);
-  const [role, setRole] = useState<number | null>(null);
+
+  // Retrieve userRole from localStorage
+  const userRole = localStorage.getItem("userRole");
 
   useEffect(() => {
     const fetchUserData = async () => {
-      setLoadingUserData(true); // Start loading user data
+      setLoadingUserData(true);
       try {
         if (userId) {
-          const response = await ApiService.getUserWithImages(userId);
-          setUserData(response);
-          setRole(response.user?.role);
+          let response;
+          if (userRole === "1") {
+            response = await ApiService.getUserWithImages(userId);
+          } else if (userRole === "3") {
+            response = await ApiService.fetchReaderWithImages(userId);
+          }
+
+          if (response) {
+            setUserData(response);
+          }
         }
       } catch (error) {
         message.error("Failed to fetch user data.");
       } finally {
-        setLoadingUserData(false); // Stop loading user data
+        setLoadingUserData(false);
       }
     };
 
     if (userId) {
       fetchUserData();
     }
-  }, [userId]);
+  }, [userId, userRole]);
 
   useEffect(() => {
     const fetchNotifications = async () => {
-      setLoadingNotifications(true); // Start loading notifications
+      setLoadingNotifications(true);
       try {
-        if (userId && role !== null) {
+        if (userId && userRole) {
           let response;
-          if (role === 1) {
+          if (userRole === "1") {
             response = await ApiService.getUserNotifications(userId);
-          } else if (role === 22) {
+          } else if (userRole === "3") {
             response = await ApiService.getReaderNotifications(userId);
           }
 
@@ -76,14 +83,14 @@ const AppHeader: React.FC = () => {
       } catch (error) {
         message.error("Failed to fetch notifications.");
       } finally {
-        setLoadingNotifications(false); // Stop loading notifications
+        setLoadingNotifications(false);
       }
     };
 
-    if (userId && role !== null) {
+    if (userId && userRole) {
       fetchNotifications();
     }
-  }, [userId, role]);
+  }, [userId, userRole]);
 
   const handleLogout = async () => {
     try {
@@ -92,7 +99,7 @@ const AppHeader: React.FC = () => {
         await ApiService.logoutUser();
         localStorage.removeItem("authToken");
         sessionStorage.removeItem("authToken");
-        toast.success("Logged out successfully from Google.");
+        toast.success("Logged out successfully.");
       }
       dispatch(logout());
       localStorage.removeItem("persist:root");
@@ -139,7 +146,7 @@ const AppHeader: React.FC = () => {
     >
       {loadingNotifications ? (
         <div className="flex justify-center items-center">
-          <Spin /> {/* Loader for notifications */}
+          <Spin />
         </div>
       ) : notifications.length === 0 ? (
         <p>No new notifications</p>
@@ -198,8 +205,10 @@ const AppHeader: React.FC = () => {
   );
 
   const handleDashboardClick = () => {
-    if (role === 2) {
-      navigate("/admin-dashboard");
+    if (userRole === "2") {
+      navigate("/admin/admin-dashboard");
+    } else if (userRole === "3") {
+      navigate("/tarot-reader/tarot-reader-dashboard");
     }
   };
 
@@ -214,22 +223,18 @@ const AppHeader: React.FC = () => {
       ),
       disabled: true,
     },
-    {
+    (userRole === "1" || userRole === "3") && {
       key: "profile",
       label: <Link to="/profile/me">My Profile</Link>,
     },
-    role === 2
-      ? {
-          key: "dashboard",
-          label: <span onClick={handleDashboardClick}>Dashboard</span>,
-        }
-      : null,
-    role === 1
-      ? {
-          key: "my-booking",
-          label: <Link to="/my-booking">My Booking</Link>,
-        }
-      : null,
+    (userRole === "2" || userRole === "3") && {
+      key: "dashboard",
+      label: <span onClick={handleDashboardClick}>Dashboard</span>,
+    },
+    userRole === "1" && {
+      key: "my-booking",
+      label: <Link to="/my-booking">My Booking</Link>,
+    },
     {
       key: "logout",
       label: <span onClick={handleLogout}>Logout</span>,
@@ -277,7 +282,7 @@ const AppHeader: React.FC = () => {
               trigger={["hover"]}
             >
               {loadingUserData ? (
-                <Spin /> // Show loader if user data is loading
+                <Spin />
               ) : (
                 <Avatar
                   size="large"

@@ -37,18 +37,23 @@ const Profile: React.FC = () => {
       setLoading(true);
       try {
         let response;
-        if (role === "1") { // User role
+        if (role === "1") {
+          // User role
           response = await ApiService.getUserWithImages(userId);
-          
+
           // Fetch followed readers
-          const followedReadersResponse = await ApiService.getFollowedReaders(userId);
-          const followedReaders = followedReadersResponse?.readers?.map((reader: any) => ({
-            id: reader.reader.id,
-            name: reader.reader.name,
-          }));
+          const followedReadersResponse = await ApiService.getFollowedReaders(
+            userId
+          );
+          const followedReaders = followedReadersResponse?.readers?.map(
+            (reader: any) => ({
+              id: reader.reader.id,
+              name: reader.reader.name,
+            })
+          );
           setFollows(followedReaders || []);
-          
-        } else if (role === "3") { // Reader role
+        } else if (role === "3") {
+          // Reader role
           response = await ApiService.fetchReaderWithImages(userId);
         }
 
@@ -99,12 +104,14 @@ const Profile: React.FC = () => {
       const formData = new FormData();
       formData.append("File", file);
 
+      // Append correct ID based on the role
       if (role === "3") {
         formData.append("ReaderId", userId);
-      } else {
+      } else if (role === "1") {
         formData.append("UserId", userId);
       }
 
+      // Make the API call
       const response = await ApiService.updateImage(formData, {
         onUploadProgress: (progressEvent: ProgressEvent) => {
           const progress = Math.round(
@@ -114,14 +121,16 @@ const Profile: React.FC = () => {
         },
       });
 
+      // Check if the response has a URL and set the image URL
       if (response?.url) {
-        setImageUrl(response.url);
+        setImageUrl(response.url); // Update the profile image
         message.success("Image updated successfully");
       } else {
         message.error("Failed to get image URL");
       }
     } catch (error) {
       message.error("Failed to upload image");
+      console.error("Error updating image", error);
     } finally {
       setUploadProgress(null);
     }

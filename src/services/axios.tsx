@@ -418,64 +418,7 @@ const ApiService = {
     }
   },
 
-  createListCard: async (
-    cards: {
-      groupId: string;
-      element: string;
-      name: string;
-      message: string;
-      img: File;
-    }[]
-  ) => {
-    try {
-      const cardDataList = await Promise.all(
-        cards.map(async (card) => {
-          // Prepare FormData for the image upload
-          const imageFormData = new FormData();
-          imageFormData.append("File", card.img);
-          imageFormData.append("GroupId", card.groupId); // Pass GroupId if needed for image upload
 
-          // Call updateImage API to upload the image and retrieve the URL or identifier
-          const uploadedImage = await ApiService.updateImage(imageFormData);
-
-          // Return the card data with the uploaded image URL/ID
-          return {
-            groupId: card.groupId,
-            element: card.element,
-            name: card.name,
-            message: card.message,
-            img: uploadedImage.url || uploadedImage.id, // Use the correct property from the response
-          };
-        })
-      );
-
-      // Prepare FormData for the createListCard API
-      const formData = new FormData();
-      cardDataList.forEach((card, index) => {
-        formData.append(`createListCardModel[${index}][groupId]`, card.groupId);
-        formData.append(`createListCardModel[${index}][element]`, card.element);
-        formData.append(`createListCardModel[${index}][name]`, card.name);
-        formData.append(`createListCardModel[${index}][message]`, card.message);
-        formData.append(`createListCardModel[${index}][img]`, card.img); // Use the uploaded image URL/ID
-      });
-
-      // Call the API to create the list of cards
-      const response = await api.post(
-        "/api/CardWeb/create-list-card",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      return response.data; // Return the response from the API
-    } catch (error) {
-      console.error("Error creating list of cards", error);
-      throw error;
-    }
-  },
 
   // Function to delete a card by cardId
   deleteCard: async (cardId: string) => {

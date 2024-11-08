@@ -44,6 +44,8 @@ const BlogManagement: React.FC = () => {
                 ...prev,
                 total: response.totalItems,
             }));
+
+
         } catch (error) {
             console.error("Error fetching posts", error);
         } finally {

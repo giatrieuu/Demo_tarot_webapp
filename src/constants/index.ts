@@ -63,7 +63,6 @@ export const AdminSidebarData = {
 export const TarotReaderSidebarData = {
     MenuTarotReaderItems: [
       { "key": "/tarot-reader/tarot-reader-dashboard", "label": "Dashboard", "icon": "AppstoreOutlined" },
-      { "key": "/tarot-reader/manage-topic", "label": "Topic Management", "icon": "BookOutlined" },
       { "key": "/tarot-reader/manage-bookings", "label": "Bookings Manage", "icon": "CalendarOutlined" },
       { "key": "/tarot-reader/card-deck-manager", "label": "Card Management", "icon": "ToolOutlined" },
       { "key": "/tarot-reader/manage-blog", "label": "Blog Manage", "icon": "FileTextOutlined" },
