@@ -20,14 +20,14 @@ import { toast } from "react-toastify";
 
 const { Header } = Layout;
 
-
 const AppHeader: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userId = useSelector((state: RootState) => state.auth.userId);
   const [userData, setUserData] = useState<any>(null);
   const [notifications, setNotifications] = useState<any[]>([]);
-  const [loadingNotifications, setLoadingNotifications] = useState<boolean>(true);
+  const [loadingNotifications, setLoadingNotifications] =
+    useState<boolean>(true);
   const [loadingUserData, setLoadingUserData] = useState<boolean>(true); // Loader for user data
   const [unreadCount, setUnreadCount] = useState<number>(0);
   const [role, setRole] = useState<number | null>(null);
@@ -118,8 +118,12 @@ const AppHeader: React.FC = () => {
     }
   };
 
-  const unreadNotifications = notifications.filter((notification) => !notification.isRead);
-  const readNotifications = notifications.filter((notification) => notification.isRead);
+  const unreadNotifications = notifications.filter(
+    (notification) => !notification.isRead
+  );
+  const readNotifications = notifications.filter(
+    (notification) => notification.isRead
+  );
 
   const notificationDropdown = (
     <div
@@ -143,7 +147,9 @@ const AppHeader: React.FC = () => {
         <>
           {unreadNotifications.length > 0 && (
             <div>
-              <h4 style={{ fontWeight: "bold", marginBottom: "8px" }}>Unread Notifications</h4>
+              <h4 style={{ fontWeight: "bold", marginBottom: "8px" }}>
+                Unread Notifications
+              </h4>
               {unreadNotifications.map((notification) => (
                 <div
                   key={notification.id}
@@ -156,14 +162,18 @@ const AppHeader: React.FC = () => {
                   }}
                 >
                   <p>{notification.description}</p>
-                  <small>{new Date(notification.createAt).toLocaleString()}</small>
+                  <small>
+                    {new Date(notification.createAt).toLocaleString()}
+                  </small>
                 </div>
               ))}
             </div>
           )}
           {readNotifications.length > 0 && (
             <div style={{ marginTop: "10px" }}>
-              <h4 style={{ fontWeight: "normal", marginBottom: "8px" }}>Read Notifications</h4>
+              <h4 style={{ fontWeight: "normal", marginBottom: "8px" }}>
+                Read Notifications
+              </h4>
               {readNotifications.map((notification) => (
                 <div
                   key={notification.id}
@@ -175,7 +185,9 @@ const AppHeader: React.FC = () => {
                   }}
                 >
                   <p>{notification.description}</p>
-                  <small>{new Date(notification.createAt).toLocaleString()}</small>
+                  <small>
+                    {new Date(notification.createAt).toLocaleString()}
+                  </small>
                 </div>
               ))}
             </div>
@@ -194,7 +206,12 @@ const AppHeader: React.FC = () => {
   const menuItems = [
     {
       key: "welcome",
-      label: <span>Welcome, {loadingUserData ? <Spin /> : userData?.user?.name || "Guest"}</span>,
+      label: (
+        <span>
+          Welcome,{" "}
+          {loadingUserData ? <Spin /> : userData?.user?.name || "Guest"}
+        </span>
+      ),
       disabled: true,
     },
     {
@@ -218,7 +235,6 @@ const AppHeader: React.FC = () => {
       label: <span onClick={handleLogout}>Logout</span>,
     },
   ].filter(Boolean);
-  
 
   const menu = <Menu items={menuItems} />;
 
@@ -244,13 +260,22 @@ const AppHeader: React.FC = () => {
 
         {userId ? (
           <>
-            <Dropdown overlay={notificationDropdown} trigger={["click"]} placement="bottomRight">
+            <Dropdown
+              overlay={notificationDropdown}
+              trigger={["click"]}
+              placement="bottomRight"
+            >
               <Badge count={unreadCount} offset={[10, 0]}>
                 <BellOutlined className="text-[#4a044e] text-2xl cursor-pointer" />
               </Badge>
             </Dropdown>
 
-            <Dropdown overlay={menu} placement="bottomRight" arrow trigger={["hover"]}>
+            <Dropdown
+              overlay={menu}
+              placement="bottomRight"
+              arrow
+              trigger={["hover"]}
+            >
               {loadingUserData ? (
                 <Spin /> // Show loader if user data is loading
               ) : (
@@ -266,7 +291,8 @@ const AppHeader: React.FC = () => {
         ) : (
           <Link
             to="/login"
-            className="text-white bg-[#91a089] px-4 py-2 rounded hover:bg-[#72876e]"
+            className="text-[#4a044e] hover:text-[#a21caf] hover:scale-105"
+            style={{ fontFamily: "Uncial Antiqua" }}
           >
             Sign In
           </Link>
