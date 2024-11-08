@@ -22,7 +22,7 @@ interface Booking {
   end: string;
   tarotReader: string;
   topic: string;
-  status: "success" | "fail";
+  status: "success" | "error";
   note: string;
 }
 
@@ -34,27 +34,27 @@ const MyBooking: React.FC = () => {
 
   // Fetch user bookings
   useEffect(() => {
-    const fetchUserBookings = async () => {
-      setLoading(true);
-      try {
-        const response = await ApiService.fetchBookingsByUserId(userId);
-        const userBookings = response.map((item: any) => ({
-          id: item.booking.id,
-          day: dayjs(item.booking.timeStart).format("YYYY-MM-DD"),
-          start: dayjs(item.booking.timeStart).format("HH:mm"),
-          end: dayjs(item.booking.timeEnd).format("HH:mm"),
-          tarotReader: item.userName,
-          topic: item.booking.note,
-          note: item.booking.note,
-          status: item.booking.status === 1 ? "success" : "fail", // Map status correctly
-        }));
-        setBookings(userBookings);
-      } catch (error) {
-        message.error("Failed to load user bookings");
-      } finally {
-        setLoading(false);
-      }
-    };
+   const fetchUserBookings = async () => {
+  setLoading(true);
+  try {
+    const response = await ApiService.fetchBookingsByUserId(userId);
+    const userBookings = response.map((item: any) => ({
+      id: item.booking.id,
+      day: dayjs(item.booking.timeStart).format("YYYY-MM-DD"),
+      start: dayjs(item.booking.timeStart).format("HH:mm"),
+      end: dayjs(item.booking.timeEnd).format("HH:mm"),
+      tarotReader: item.userName,
+      topic: item.booking.note,
+      note: item.booking.note,
+      status: item.booking.status === 1 ? "success" : "error", // Correctly map status
+    }));
+    setBookings(userBookings);
+  } catch (error) {
+    message.error("Failed to load user bookings");
+  } finally {
+    setLoading(false);
+  }
+};
 
     fetchUserBookings();
   }, [userId]);
@@ -91,7 +91,7 @@ const MyBooking: React.FC = () => {
       key: "status",
       render: (status: string) => (
         <span style={{ color: status === "success" ? "green" : "red" }}>
-          {status === "success" ? "Success" : "Fail"}
+          {status === "success" ? "Confirmed" : "Canceled"}
         </span>
       ),
     },
@@ -112,29 +112,12 @@ const MyBooking: React.FC = () => {
     if (!selectedBooking) return;
 
     try {
-      // Make the GET request to the create-payment API with the booking ID
-      const response = await fetch(
-        `https://www.bookingtarot.somee.com/api/Payment/create-payment?bookingId=${selectedBooking.id}`,
-        {
-          method: "GET",
-          headers: {
-            accept: "application/json",
-          },
-        }
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.approvalUrl) {
-          // Redirect user to PayPal for payment approval
-          window.location.href = data.approvalUrl;
-        } else {
-          message.error("Payment initiation failed. Please try again.");
-        }
+      const response = await ApiService.createPayment(selectedBooking.id);
+      if (response.approvalUrl) {
+        // Redirect user to PayPal for payment approval
+        window.location.href = response.approvalUrl;
       } else {
-        message.error(
-          "Failed to initiate payment. Please check the booking details."
-        );
+        message.error("Failed to initiate payment. Please try again.");
       }
     } catch (error) {
       message.error(
@@ -175,7 +158,7 @@ const MyBooking: React.FC = () => {
             visible={!!selectedBooking}
             onCancel={handleModalClose}
             footer={
-              selectedBooking.status === "fail" ? (
+              selectedBooking.status === "error" ? (
                 <Button type="primary" onClick={handleRetryPayment}>
                   Retry Payment
                 </Button>
@@ -201,10 +184,14 @@ const MyBooking: React.FC = () => {
               <Descriptions.Item label="Status">
                 <Badge
                   status={
-                    selectedBooking.status === "success" ? "success" : "error"
+                    selectedBooking.status === "success"
+                      ? "processing"
+                      : "error"
                   }
                   text={
-                    selectedBooking.status === "success" ? "Success" : "Fail"
+                    selectedBooking.status === "success"
+                      ? "Confirmed"
+                      : "Canceled"
                   }
                 />
               </Descriptions.Item>

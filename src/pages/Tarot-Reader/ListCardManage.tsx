@@ -5,7 +5,6 @@ import { Layout, Table, Button, Tooltip, message, Modal, Image } from "antd";
 import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import ApiService from "../../services/axios";
 import CardModal from "./CardModal";
-import AddListCardModal from "./AddListCardModal";
 
 const { Content } = Layout;
 
@@ -16,7 +15,7 @@ const ListCardManage: React.FC = () => {
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [editingCard, setEditingCard] = useState<any>(null);
-  const [isAddListModalVisible, setIsAddListModalVisible] = useState(false);
+
   useEffect(() => {
     const fetchCards = async () => {
       setLoading(true);
@@ -55,7 +54,13 @@ const ListCardManage: React.FC = () => {
       return;
     }
     try {
-      await ApiService.createCard(groupCardId!, values.element, values.name, values.message, imageFile);
+      await ApiService.createCard(
+        groupCardId!,
+        values.element,
+        values.name,
+        values.message,
+        imageFile
+      );
       message.success("Card added successfully");
       setIsAddModalVisible(false);
       const data = await ApiService.fetchCardsByGroupCardId(groupCardId!);
@@ -64,21 +69,17 @@ const ListCardManage: React.FC = () => {
       message.error("Failed to add card");
     }
   };
-  const handleAddListCards = async (cardDataList: any[]) => {
-    try {
-      await ApiService.createListCard(cardDataList.map(card => ({ ...card, groupId: groupCardId! })));
-      setIsAddListModalVisible(false);
-      const data = await ApiService.fetchCardsByGroupCardId(groupCardId!);
-      setCards(data);
-    } catch (error) {
-      message.error("Failed to add list of cards");
-    }
-  };
-
 
   const handleEditCard = async (values: any, imageFile: File | null) => {
     try {
-      await ApiService.updateCard(editingCard.id, groupCardId!, values.element, values.name, values.message, imageFile || undefined);
+      await ApiService.updateCard(
+        editingCard.id,
+        groupCardId!,
+        values.element,
+        values.name,
+        values.message,
+        imageFile || undefined
+      );
       message.success("Card updated successfully");
       setIsEditModalVisible(false);
       setEditingCard(null);
@@ -159,13 +160,12 @@ const ListCardManage: React.FC = () => {
       <h1 className="text-2xl font-bold mb-4">Card List Management</h1>
       
       <div className="mb-4 flex space-x-2">
-        <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsAddModalVisible(true)}>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => setIsAddModalVisible(true)}
+        >
           Add Card
-        </Button>
-      </div>
-      <div className="mb-4 flex space-x-2">
-        <Button type="dashed" icon={<PlusOutlined />} onClick={() => setIsAddListModalVisible(true)}>
-          Add List Card
         </Button>
       </div>
 
@@ -191,12 +191,6 @@ const ListCardManage: React.FC = () => {
         initialValues={editingCard}
         title="Edit Card"
         okText="Update"
-      />
-       <AddListCardModal
-        visible={isAddListModalVisible}
-        onCancel={() => setIsAddListModalVisible(false)}
-        onSubmit={handleAddListCards}
-        groupId={groupCardId!}
       />
     </Content>
   );
