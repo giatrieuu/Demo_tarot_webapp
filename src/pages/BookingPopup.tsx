@@ -11,7 +11,6 @@ import {
   message,
   Checkbox,
 } from "antd";
-import QRCodeImage from "../assets/qr-code.jpg";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -156,7 +155,7 @@ const BookingPopup: React.FC<BookingPopupProps> = ({
       message.error("User ID is required. Please log in.");
       return;
     }
-
+  
     try {
       const [startStr, endStr] = (formValues.time || "").split(" - ");
       const timeStartFormatted = `${formValues.date}T${convertTo24HourFormat(
@@ -165,7 +164,7 @@ const BookingPopup: React.FC<BookingPopupProps> = ({
       const timeEndFormatted = `${formValues.date}T${convertTo24HourFormat(
         endStr
       )}:00.000Z`;
-
+  
       const formData = new FormData();
       formData.append("UserId", userId);
       formData.append("ReaderId", readerData!.id);
@@ -175,29 +174,49 @@ const BookingPopup: React.FC<BookingPopupProps> = ({
         formData.append("ListTopicId", topicId);
       });
       formData.append("Note", formValues.note || "");
-
-      const response = await fetch(
+  
+      // Create booking and payment concurrently
+      const bookingResponse = await fetch(
         "https://www.bookingtarot.somee.com/api/BookingWeb/create-booking",
         {
           method: "POST",
           headers: {
-            accept: "text/plain",
+            accept: "application/json",
           },
           body: formData,
-          mode: "no-cors",
         }
       );
-
-      if (response.ok) {
-        message.success("Booking created successfully!");
-        handleFinish();
+  
+      if (!bookingResponse.ok) {
+        throw new Error("Failed to create booking");
+      }
+  
+      const bookingData = await bookingResponse.json();
+      const bookingId = bookingData.id; // Ensure bookingData contains the correct booking ID field
+  
+      // Create the PayPal payment with the bookingId
+      const paymentResponse = await fetch(
+        `https://www.bookingtarot.somee.com/api/Payment/create-payment?bookingId=${bookingId}`,
+        {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+          },
+        }
+      );
+  
+      if (paymentResponse.ok) {
+        const paymentData = await paymentResponse.json();
+        const approvalUrl = paymentData.approvalUrl;
+  
+        // Redirect the user to PayPal to approve the payment
+        window.location.href = approvalUrl;
       } else {
-        throw new Error("Booking may have failed, please check.");
+        throw new Error("Failed to create payment. Please try again.");
       }
     } catch (error) {
-      console.error("Error creating booking:", error);
-      message.success("Booking created successfully!");
-      handleFinish();
+      console.error("Error creating booking and payment:", error);
+      message.error("Could not complete booking and payment process. Please try again.");
     }
   };
 
@@ -356,10 +375,10 @@ const BookingPopup: React.FC<BookingPopupProps> = ({
             <Paragraph>
               <b>Total:</b> ${totalPrice.toFixed(2)}
             </Paragraph>
-            <div className="flex justify-center">
-              <img src={QRCodeImage} alt="QR Code" className="my-4 w-24 h-24" />
-            </div>
-            <Paragraph>190293102323131 - TarotF - Momo</Paragraph>
+            <Divider />
+            <Paragraph className="text-center">
+              You will be redirected to PayPal to complete your payment.
+            </Paragraph>
           </div>
         )}
       </Form>

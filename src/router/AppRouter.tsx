@@ -4,8 +4,7 @@ import LayoutRoute from "../layout/LayoutRoute";
 import LayoutSidebarRoute from "../layout/LayoutSidebarRoute";
 import PrivateRoute from "./PrivateRouter";
 import { ADMIN, PUBLIC, TAROT_READER, USER, ROLES } from "../constants";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
 
 // Lazy-loaded pages
 const HomePage = lazy(() => import("../pages/HomePage"));
@@ -22,7 +21,7 @@ const CreateBlog = lazy(() => import("../pages/Blog/CreateBlog"));
 const TarotReaderDashboard = lazy(() => import("../pages/Tarot-Reader/TarotReaderDashboard"));
 const ManagerBooking = lazy(() => import("../pages/Tarot-Reader/CalendarPage"));
 const PostManager = lazy(() => import("../pages/Tarot-Reader/PostManager"));
-const NewPost = lazy(() => import("../pages/Tarot-Reader/NewPost"));
+const CreatePostByReader = lazy(() => import("../pages/Blog/CreatePostByReader"));
 const CardDeckManager = lazy(() => import("../pages/Tarot-Reader/CardDeckManager"));
 const ListCardManage = lazy(() => import("../pages/Tarot-Reader/ListCardManage"));
 const CardDeckUpload = lazy(() => import("../pages/Tarot-Reader/CardDeckUpload"));
@@ -34,9 +33,10 @@ const TopicManagement = lazy(() => import("../pages/Admin/TopicManagement"));
 const ShuffleCard = lazy(() => import("../pages/CardDrawGuide/ShuffleCard"));
 const CardMeaning = lazy(() => import("../pages/CardDrawGuide/CardMeaning"));
 const EditPost = lazy(() => import("../pages/Blog/EditBlog"));
+const EditBlogByReader = lazy(() => import("../pages/Blog/EditBlogByReader"));
 const MyBooking = lazy(() => import("../pages/MyBooking"));
 const NotFoundPage = lazy(() => import("../Error/NotFoundPage"));
-
+const BlogManagementByReader = lazy(() => import("../pages/Tarot-Reader/BlogManagementByReader"));
 
 const AppRouter: React.FC = () => {
   return (
@@ -66,8 +66,6 @@ const AppRouter: React.FC = () => {
               element={<PrivateRoute element={ManagerBooking} allowedRoles={[ROLES.TAROT_READER]} />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_POST}
               element={<PrivateRoute element={PostManager} allowedRoles={[ROLES.TAROT_READER]} />} />
-            <Route path={TAROT_READER.TAROT_READER_DASHBOARD_ADD_POST}
-              element={<PrivateRoute element={NewPost} allowedRoles={[ROLES.TAROT_READER]} />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_DECK}
               element={<PrivateRoute element={CardDeckManager} allowedRoles={[ROLES.TAROT_READER]} />} />
             <Route path={`${TAROT_READER.TAROT_READER_DASHBOARD_CARD_LIST}/:groupCardId`}
@@ -76,6 +74,13 @@ const AppRouter: React.FC = () => {
               element={<PrivateRoute element={CardDeckUpload} allowedRoles={[ROLES.TAROT_READER]} />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_CARD_LIST}
               element={<PrivateRoute element={CardDeckList} allowedRoles={[ROLES.TAROT_READER]} />} />
+              <Route path={TAROT_READER.TAROT_READER_DASHBOARD_BLOG}
+              element={<PrivateRoute element={BlogManagementByReader} allowedRoles={[ROLES.TAROT_READER]} />} />
+                <Route path={TAROT_READER.TAROT_READER_DASHBOARD_ADD_BLOG}
+              element={<PrivateRoute element={CreatePostByReader} allowedRoles={[ROLES.TAROT_READER]} />} />
+               <Route path={`${TAROT_READER.TAROT_READER_DASHBOARD_EDIT_BLOG}/:id`}
+              element={<PrivateRoute element={EditBlogByReader} allowedRoles={[ROLES.TAROT_READER]} />} />
+              
           </Route>
 
           {/* Admin Routes with MainLayout and PrivateRoute for role restriction */}
@@ -110,7 +115,7 @@ const AppRouter: React.FC = () => {
 
         </Routes>
       </Suspense>
-      <ToastContainer />
+
     </Router>
   );
 };
