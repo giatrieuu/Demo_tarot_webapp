@@ -63,7 +63,6 @@ const BlogDetail: React.FC = () => {
   }, [id]);
 
   // Fetch comments by postId
-  // Fetch comments by postId
   useEffect(() => {
     const fetchComments = async () => {
       if (id) {
