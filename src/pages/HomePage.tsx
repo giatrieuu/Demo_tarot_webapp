@@ -33,7 +33,6 @@ const HomePage = () => {
   const [readers, setReaders] = useState<Reader[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [totalReaders, setTotalReaders] = useState<number>(0); // State to hold total readers count
   const [blogs, setBlogs] = useState<BlogData[]>([]);
   const [currentBlogGroupIndex, setCurrentBlogGroupIndex] = useState(0);
 
@@ -44,7 +43,6 @@ const HomePage = () => {
         if (!response.ok) throw new Error('Failed to fetch readers');
         const data = await response.json();
         setReaders(data.readers || []);
-        setTotalReaders(data.readers.length); // Set total readers count
 
       } catch (error) {
         console.error('Error fetching readers:', error);
