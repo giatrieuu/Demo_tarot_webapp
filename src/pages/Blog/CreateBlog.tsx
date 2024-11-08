@@ -4,10 +4,13 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import ApiService from '../../services/axios';
 import Loader from '../../loader/Loader';
+import { useNavigate } from 'react-router-dom';
 
 const { TextArea } = Input;
 
 const CreateBlog: React.FC = () => {
+    const navigate = useNavigate();
+
     const [title, setTitle] = useState("");
     const [shortText, setShortText] = useState("");
     const [content, setContent] = useState("");
@@ -36,11 +39,13 @@ const CreateBlog: React.FC = () => {
             const response = await ApiService.createPost(title, shortText, content, image);
             console.log("Post created successfully:", response);
             message.success("Post created successfully!");
+
             setTitle("");
             setShortText("");
             setContent("");
             setImage(null);
             setIsModalVisible(false);
+            navigate("/admin/manage-blogs");
         } catch (error) {
             console.error("Error creating post:", error);
             message.error("Failed to create post. Please try again.");

@@ -5,6 +5,8 @@ import 'react-quill/dist/quill.snow.css';
 import ApiService from '../../services/axios';
 import Loader from '../../loader/Loader';
 import { useParams } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+
 
 const { TextArea } = Input;
 interface Comment {
@@ -16,6 +18,8 @@ interface Comment {
 }
 
 const EditBlog: React.FC = () => {
+    const navigate = useNavigate();
+
     const { id } = useParams<{ id: string }>(); // Lấy ID bài viết từ URL
     const [title, setTitle] = useState<string>("");
     const [shortText, setShortText] = useState<string>("");
@@ -86,31 +90,35 @@ const EditBlog: React.FC = () => {
             setImage(file);
         }
     };
-
+    const convertUrlToFile = async (url: string, fileName: string): Promise<File> => {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const file = new File([blob], fileName, { type: blob.type });
+        return file;
+    };
     const handleSubmit = async () => {
         setLoading(true);
 
-        if (!title || !shortText || !content || !image) {
+        if (!id || !title || !shortText || !content) {
             message.warning("Please fill in all fields.");
             setLoading(false);
             return;
         }
 
-        if (!id) {
-            message.error("Post ID is required.");
-            setLoading(false);
-            return;
-        }
-
         try {
-            await ApiService.updatePost(id, title, shortText, content, image);
+            let finalImage: File | null = image as File;
+
+            // Nếu image là một URL (string), chuyển đổi nó thành File
+            if (typeof image === 'string') {
+                finalImage = await convertUrlToFile(image, 'old-image.jpg');
+            }
+
+
+
+            await ApiService.updatePost(id, title, shortText, content, finalImage);
             message.success("Post updated successfully!");
-            setTitle("");
-            setShortText("");
-            setContent("");
-            setImage(null);
-            setImageUrl(null);
-            setIsModalVisible(false);
+            navigate("/admin/manage-blogs");
+
         } catch (error) {
             console.error("Error updating post:", error);
             message.error("Failed to update post. Please try again.");
@@ -118,6 +126,8 @@ const EditBlog: React.FC = () => {
             setLoading(false);
         }
     };
+
+
 
     const showConfirmModal = () => {
         setIsModalVisible(true);
