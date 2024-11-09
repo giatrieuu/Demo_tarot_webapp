@@ -25,6 +25,7 @@
     "axios": "^1.7.7",
     "dayjs": "^1.11.13",
     "firebase": "^10.14.0",
+    "html-react-parser": "^5.1.18",
     "jwt-decode": "^4.0.0",
     "lottie-react": "^2.4.0",
     "qrcode.react": "^4.0.1",
