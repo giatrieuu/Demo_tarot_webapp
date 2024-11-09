@@ -154,7 +154,7 @@ const BookingPopup: React.FC<BookingPopupProps> = ({
       message.error("User ID is required. Please log in.");
       return;
     }
-  
+
     try {
       const [startStr, endStr] = (formValues.time || "").split(" - ");
       const timeStartFormatted = `${formValues.date}T${convertTo24HourFormat(
@@ -163,7 +163,7 @@ const BookingPopup: React.FC<BookingPopupProps> = ({
       const timeEndFormatted = `${formValues.date}T${convertTo24HourFormat(
         endStr
       )}:00.000Z`;
-  
+
       const formData = new FormData();
       formData.append("UserId", userId);
       formData.append("ReaderId", readerData!.id);
@@ -173,7 +173,7 @@ const BookingPopup: React.FC<BookingPopupProps> = ({
         formData.append("ListTopicId", topicId);
       });
       formData.append("Note", formValues.note || "");
-  
+
       // Create booking and payment concurrently
       const bookingResponse = await fetch(
         "https://www.bookingtarot.somee.com/api/BookingWeb/create-booking",
@@ -185,14 +185,14 @@ const BookingPopup: React.FC<BookingPopupProps> = ({
           body: formData,
         }
       );
-  
+
       if (!bookingResponse.ok) {
         throw new Error("Failed to create booking");
       }
-  
+
       const bookingData = await bookingResponse.json();
       const bookingId = bookingData.id; // Ensure bookingData contains the correct booking ID field
-  
+
       // Create the PayPal payment with the bookingId
       const paymentResponse = await fetch(
         `https://www.bookingtarot.somee.com/api/Payment/create-payment?bookingId=${bookingId}`,
@@ -203,11 +203,11 @@ const BookingPopup: React.FC<BookingPopupProps> = ({
           },
         }
       );
-  
+
       if (paymentResponse.ok) {
         const paymentData = await paymentResponse.json();
         const approvalUrl = paymentData.approvalUrl;
-  
+
         // Redirect the user to PayPal to approve the payment
         window.location.href = approvalUrl;
       } else {
@@ -291,7 +291,7 @@ const BookingPopup: React.FC<BookingPopupProps> = ({
             className="text-yellow-500 mb-2"
           />
           <Paragraph className="text-gray-700 text-lg mb-4">
-            ${readerData.price}/Hour
+            {readerData.price} VND/Hour
           </Paragraph>
           <Paragraph className="text-gray-500 mb-4">
             {readerData.description}
@@ -352,7 +352,7 @@ const BookingPopup: React.FC<BookingPopupProps> = ({
               <Input.TextArea className="w-full" rows={4} />
             </Form.Item>
             <div className="mt-4">
-              <Text strong>Total Cost: </Text> ${totalPrice.toFixed(2)}
+              <Text strong>Total Cost: </Text> {totalPrice.toFixed(2)} VND
             </div>
           </>
         )}
@@ -372,7 +372,7 @@ const BookingPopup: React.FC<BookingPopupProps> = ({
               <b>Topics:</b> {getTopicNames(formValues.topics).join(", ")}
             </Paragraph>
             <Paragraph>
-              <b>Total:</b> ${totalPrice.toFixed(2)}
+              <b>Total:</b> {totalPrice.toFixed(2)} VND
             </Paragraph>
             <Divider />
             <Paragraph className="text-center">
