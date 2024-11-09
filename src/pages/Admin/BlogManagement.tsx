@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Space } from 'antd';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
-import {  DeleteOutlined,  } from '@ant-design/icons';
+import { DeleteOutlined, } from '@ant-design/icons';
 import ApiService from '../../services/axios';
 import DeletePost from '../../components/Blog/DeletePost';
 
@@ -21,7 +21,7 @@ interface Post {
 }
 
 const BlogManagement: React.FC = () => {
-  
+
     const [allPosts, setAllPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -98,7 +98,7 @@ const BlogManagement: React.FC = () => {
             key: 'actions',
             render: (_, record) => (
                 <Space size="middle">
-                   
+
                     <Button icon={<DeleteOutlined />} danger onClick={() => openDeleteModal(record.id)}>
                         Delete
                     </Button>
@@ -130,7 +130,7 @@ const BlogManagement: React.FC = () => {
     return (
         <div>
             <h1 className="text-xl font-bold mb-8">Blog Management</h1>
-         
+
             <Table
                 columns={columns}
                 dataSource={allPosts.slice(

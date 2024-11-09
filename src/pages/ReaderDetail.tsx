@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Button, Tag, Rate, Typography, Divider} from "antd";
+import { Card, Button, Tag, Rate, Typography, Divider } from "antd";
 import { HeartOutlined, HeartFilled, ShareAltOutlined } from "@ant-design/icons";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -219,7 +219,7 @@ const ReaderDetail: React.FC = () => {
           </div>
           <div className="flex justify-between items-center mt-4">
             <Text className="text-2xl font-bold text-[#72876e]">
-              ${readerData.price}/Hour
+              {readerData.price} VND/Hour
             </Text>
             <Button
               type="primary"
