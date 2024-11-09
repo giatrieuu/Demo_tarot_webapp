@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, Modal, message, Tag } from "antd";
+import { Table, Button, Modal, message, Tag, Popconfirm } from "antd";
 import ApiService from "../../services/axios"; // Ensure this import is correct
 
 const AdminDashboard: React.FC = () => {
@@ -21,7 +21,21 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
-  // Show modal for editing/viewing booking details
+  // API call to change booking status to 4 (canceled)
+  const cancelBooking = async (bookingId: string) => {
+    try {
+      setLoading(true);
+      await ApiService.changeBookingStatus(bookingId, 4); // Assuming status 4 represents 'canceled'
+      message.success("Booking canceled successfully");
+      fetchBookings(); // Refresh bookings list
+    } catch (error) {
+      message.error("Failed to cancel booking");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Show modal for viewing booking details
   const handleViewBooking = (record: any) => {
     setSelectedBooking(record);
     setIsModalVisible(true);
@@ -73,8 +87,8 @@ const AdminDashboard: React.FC = () => {
       dataIndex: "status",
       key: "status",
       render: (status: number) => (
-        <Tag color={status === 1 ? "green" : "red"}>
-          {status === 1 ? "Confirmed" : "Pending"}
+        <Tag color={status === 1 ? "green" : status === 4 ? "red" : "orange"}>
+          {status === 1 ? "Confirmed" : status === 4 ? "Canceled" : "Pending"}
         </Tag>
       ),
     },
@@ -82,7 +96,25 @@ const AdminDashboard: React.FC = () => {
       title: "Actions",
       key: "actions",
       render: (record: any) => (
-        <Button onClick={() => handleViewBooking(record)}>View Details</Button>
+        <div className="flex space-x-2">
+          <Button className="text-blue-500 hover:text-blue-700" onClick={() => handleViewBooking(record)}>
+            View Details
+          </Button>
+          {record.status !== 4 && (
+            <Popconfirm
+              title="Are you sure you want to cancel this booking?"
+              onConfirm={() => cancelBooking(record.id)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-red-300"
+              >
+                Cancel Booking
+              </Button>
+            </Popconfirm>
+          )}
+        </div>
       ),
     },
   ];
@@ -128,7 +160,7 @@ const AdminDashboard: React.FC = () => {
               {new Date(selectedBooking.timeEnd).toLocaleString()}
             </p>
             <p><strong>Total:</strong> {selectedBooking.total} VND</p>
-            <p><strong>Status:</strong> {selectedBooking.status === 1 ? "Confirmed" : "Pending"}</p>
+            <p><strong>Status:</strong> {selectedBooking.status === 1 ? "Confirmed" : "Canceled"}</p>
             <p><strong>Note:</strong> {selectedBooking.note}</p>
           </div>
         )}
