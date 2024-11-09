@@ -79,6 +79,19 @@ const ApiService = {
       throw error;
     }
   },
+  // Function to create a reader-topic association
+  createReaderTopic: async ({ readerId, topicId }: { readerId: string; topicId: string }) => {
+    try {
+      const response = await api.post("/api/ReaderWeb/create-reader-topic", {
+        readerId,
+        topicId,
+      });
+      return response.data; // Return the response from the API
+    } catch (error) {
+      console.error("Error creating reader-topic association", error);
+      throw error;
+    }
+  },
   createReader: async (name: string, email: string, password: string) => {
     try {
       const formData = new FormData();
@@ -112,7 +125,21 @@ const ApiService = {
       throw error;
     }
   },
-
+  getReaderTopics: async (readerId: string, pageNumber = 1, pageSize = 10) => {
+    try {
+      const response = await api.get(`/api/ReaderWeb/reader-topic/${readerId}`, {
+        params: {
+          pageNumber,
+          pageSize,
+        },
+      });
+      return response.data; // Make sure to return the data properly
+    } catch (error) {
+      console.error("Error fetching reader topics", error);
+      throw error;
+    }
+  },
+  
   // Function to fetch user data with images by userId
   getUserWithImages: async (userId: string) => {
     try {
