@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserOutlined, HeartFilled, LeftOutlined } from "@ant-design/icons";
-import { Upload, message, Button, Input, Avatar, Progress } from "antd";
+import { Upload, message, Button, Input, Avatar, Progress, Select } from "antd";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import ApiService from "../services/axios";
@@ -9,7 +9,14 @@ import ImgCrop from "antd-img-crop";
 import dayjs from "dayjs";
 import Loader from "../loader/Loader";
 
+const { Option } = Select;
+
 interface FollowUser {
+  id: string;
+  name: string;
+}
+
+interface Topic {
   id: string;
   name: string;
 }
@@ -28,6 +35,8 @@ const Profile: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [follows, setFollows] = useState<FollowUser[]>([]);
+  const [topics, setTopics] = useState<Topic[]>([]);
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
 
   useEffect(() => {
     if (!userId || role === null) return;
@@ -50,6 +59,8 @@ const Profile: React.FC = () => {
           setFollows(followedReaders || []);
         } else if (role === "3") {
           response = await ApiService.fetchReaderWithImages(userId);
+          const topicsResponse = await ApiService.fetchTopicsList();
+          setTopics(topicsResponse);
         }
 
         const user = response?.user || response?.reader;
@@ -70,24 +81,28 @@ const Profile: React.FC = () => {
   }, [userId, role]);
 
   const handleSave = async () => {
+    if (!userId) {
+      message.error("User ID is missing.");
+      return;
+    }
+
     setLoading(true);
     try {
-      const updateData = {
-        id: userId,
-        name: fullName || undefined,
-        phone: phone || undefined,
-        description: biography || undefined,
-        dob: dob || undefined,
-      };
-
       if (role === "3") {
-        await ApiService.updateReader(updateData);
+        await Promise.all(
+          selectedTopics.map(async (topicId) => {
+            await ApiService.createReaderTopic({
+              readerId: userId,
+              topicId: topicId,
+            });
+          })
+        );
+        message.success("Topics associated with the reader successfully");
       } else {
-        await ApiService.updateUser(updateData);
+        message.info("No changes made.");
       }
-      message.success("Profile updated successfully");
     } catch (error) {
-      message.error("Failed to save profile.");
+      message.error("Failed to associate topics with the reader.");
     } finally {
       setLoading(false);
     }
@@ -102,7 +117,6 @@ const Profile: React.FC = () => {
     try {
       let response;
 
-      // Pass the appropriate ID based on the user role
       if (role === "3") {
         response = await ApiService.updateImage(
           file,
@@ -111,13 +125,13 @@ const Profile: React.FC = () => {
           undefined,
           undefined,
           userId
-        ); // for reader role
+        );
       } else if (role === "1") {
-        response = await ApiService.updateImage(file, undefined, userId); // for user role
+        response = await ApiService.updateImage(file, undefined, userId);
       }
 
       if (response?.url) {
-        setImageUrl(response.url); // Update the profile image
+        setImageUrl(response.url);
         message.success("Image updated successfully");
       } else {
         message.error("Failed to get image URL");
@@ -230,6 +244,21 @@ const Profile: React.FC = () => {
                   onChange={(e) => setDob(e.target.value)}
                 />
               </div>
+              {role === "3" && (
+                <Select
+                  mode="multiple"
+                  placeholder="Select topics"
+                  value={selectedTopics}
+                  onChange={(value) => setSelectedTopics(value)}
+                  style={{ width: "100%", marginTop: "10px" }}
+                >
+                  {topics.map((topic) => (
+                    <Option key={topic.id} value={topic.id}>
+                      {topic.name}
+                    </Option>
+                  ))}
+                </Select>
+              )}
             </div>
 
             <div className="mt-6 flex justify-start">
