@@ -15,7 +15,6 @@ import Logo from "../Logo";
 import ApiService from "../../services/axios";
 import { RootState } from "../../redux/store";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import type { MenuProps } from "antd"; // Importing the correct type
 
 const { Header } = Layout;
@@ -92,13 +91,13 @@ const AppHeader: React.FC = () => {
         await ApiService.logoutUser();
         localStorage.removeItem("authToken");
         sessionStorage.removeItem("authToken");
-        toast.success("Logged out successfully.");
+        message.success("Logged out successfully.");
       }
       dispatch(logout());
       localStorage.removeItem("persist:root");
       navigate("/");
     } catch (error) {
-      toast.error("Failed to log out.");
+      message.error("Failed to log out.");
     }
   };
 
@@ -114,7 +113,7 @@ const AppHeader: React.FC = () => {
       );
       setUnreadCount((count) => count - 1);
     } catch (error) {
-      toast.error("Failed to mark notification as read.");
+      message.error("Failed to mark notification as read.");
     }
   };
 
