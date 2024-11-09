@@ -67,7 +67,7 @@ const CardDeckList: React.FC = () => {
     {
       title: '',
       key: 'action',
-      render: (text: any, record: any) => (
+      render: (_: any, record: any) => (
         <Dropdown
           overlay={
             <Menu

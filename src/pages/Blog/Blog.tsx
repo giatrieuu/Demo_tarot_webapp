@@ -24,7 +24,6 @@ const BlogPage: React.FC = () => {
   const navigate = useNavigate();
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
   const [filteredBlogs, setFilteredBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -51,12 +50,11 @@ const BlogPage: React.FC = () => {
   }, []);
 
   const handleSearch = (value: string) => {
-    setSearchQuery(value);
     const results = blogs.filter(blog =>
       blog.post.title.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredBlogs(results);
-    setCurrentPage(1); // Reset về trang đầu tiên khi tìm kiếm
+    setCurrentPage(1);
   };
 
   const handlePageChange = (page: number) => {

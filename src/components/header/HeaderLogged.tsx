@@ -16,6 +16,7 @@ import ApiService from "../../services/axios";
 import { RootState } from "../../redux/store";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import type { MenuProps } from "antd"; // Importing the correct type
 
 const { Header } = Layout;
 
@@ -37,12 +38,9 @@ const AppHeader: React.FC = () => {
       setLoadingUserData(true);
       try {
         if (userId) {
-          let response;
-          if (userRole === "1") {
-            response = await ApiService.getUserWithImages(userId);
-          } else if (userRole === "3") {
-            response = await ApiService.fetchReaderWithImages(userId);
-          }
+          const response = userRole === "1"
+            ? await ApiService.getUserWithImages(userId)
+            : await ApiService.fetchReaderWithImages(userId);
 
           if (response) {
             setUserData(response);
@@ -65,18 +63,13 @@ const AppHeader: React.FC = () => {
       setLoadingNotifications(true);
       try {
         if (userId && userRole) {
-          let response;
-          if (userRole === "1") {
-            response = await ApiService.getUserNotifications(userId);
-          } else if (userRole === "3") {
-            response = await ApiService.getReaderNotifications(userId);
-          }
+          const response = userRole === "1"
+            ? await ApiService.getUserNotifications(userId)
+            : await ApiService.getReaderNotifications(userId);
 
           if (response) {
             setNotifications(response);
-            const unread = response.filter(
-              (notification: any) => !notification.isRead
-            ).length;
+            const unread = response.filter((n: any) => !n.isRead).length;
             setUnreadCount(unread);
           }
         }
@@ -119,7 +112,7 @@ const AppHeader: React.FC = () => {
             : notification
         )
       );
-      setUnreadCount((prevCount) => prevCount - 1);
+      setUnreadCount((count) => count - 1);
     } catch (error) {
       toast.error("Failed to mark notification as read.");
     }
@@ -205,20 +198,20 @@ const AppHeader: React.FC = () => {
   );
 
   const handleDashboardClick = () => {
-    if (userRole === "2") {
-      navigate("/admin/admin-dashboard");
-    } else if (userRole === "3") {
-      navigate("/tarot-reader/tarot-reader-dashboard");
-    }
+    navigate(
+      userRole === "2"
+        ? "/admin/admin-dashboard"
+        : "/tarot-reader/tarot-reader-dashboard"
+    );
   };
 
+  // Explicitly cast menu items as ItemType<MenuProps["items"]>
   const menuItems = [
     {
       key: "welcome",
       label: (
         <span>
-          Welcome,{" "}
-          {loadingUserData ? <Spin /> : userData?.user?.name || "Guest"}
+          Welcome, {loadingUserData ? <Spin /> : userData?.user?.name || "Guest"}
         </span>
       ),
       disabled: true,
@@ -239,9 +232,7 @@ const AppHeader: React.FC = () => {
       key: "logout",
       label: <span onClick={handleLogout}>Logout</span>,
     },
-  ].filter(Boolean);
-
-  const menu = <Menu items={menuItems} />;
+  ].filter(Boolean) as MenuProps["items"];
 
   return (
     <Header className="flex justify-between items-center bg-white shadow-md p-4">
@@ -265,32 +256,19 @@ const AppHeader: React.FC = () => {
 
         {userId ? (
           <>
-            <Dropdown
-              overlay={notificationDropdown}
-              trigger={["click"]}
-              placement="bottomRight"
-            >
+            <Dropdown overlay={notificationDropdown} trigger={["click"]} placement="bottomRight">
               <Badge count={unreadCount} offset={[10, 0]}>
                 <BellOutlined className="text-[#4a044e] text-2xl cursor-pointer" />
               </Badge>
             </Dropdown>
 
-            <Dropdown
-              overlay={menu}
-              placement="bottomRight"
-              arrow
-              trigger={["hover"]}
-            >
-              {loadingUserData ? (
-                <Spin />
-              ) : (
-                <Avatar
-                  size="large"
-                  src={userData?.url?.[0]}
-                  icon={!userData?.url ? <UserOutlined /> : undefined}
-                  className="cursor-pointer bg-[#5F8D8D]"
-                />
-              )}
+            <Dropdown overlay={<Menu items={menuItems} />} placement="bottomRight" arrow trigger={["hover"]}>
+              <Avatar
+                size="large"
+                src={userData?.url?.[0]}
+                icon={!userData?.url ? <UserOutlined /> : undefined}
+                className="cursor-pointer bg-[#5F8D8D]"
+              />
             </Dropdown>
           </>
         ) : (

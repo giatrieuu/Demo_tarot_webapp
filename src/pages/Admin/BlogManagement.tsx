@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Space } from 'antd';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
-import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import {  DeleteOutlined,  } from '@ant-design/icons';
 import ApiService from '../../services/axios';
 import DeletePost from '../../components/Blog/DeletePost';
 
@@ -22,7 +21,7 @@ interface Post {
 }
 
 const BlogManagement: React.FC = () => {
-    const navigate = useNavigate();
+  
     const [allPosts, setAllPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -99,9 +98,7 @@ const BlogManagement: React.FC = () => {
             key: 'actions',
             render: (_, record) => (
                 <Space size="middle">
-                    <Button icon={<EditOutlined />} onClick={() => handleEdit(record)}>
-                        Edit
-                    </Button>
+                   
                     <Button icon={<DeleteOutlined />} danger onClick={() => openDeleteModal(record.id)}>
                         Delete
                     </Button>
@@ -109,10 +106,6 @@ const BlogManagement: React.FC = () => {
             ),
         },
     ];
-
-    const handleEdit = (post: Post) => {
-        navigate(`/admin/manage-blogs/edit-blog/${post.id}`);
-    };
 
     const openDeleteModal = (id: string) => {
         setPostIdToDelete(id);
@@ -133,16 +126,11 @@ const BlogManagement: React.FC = () => {
         setIsDeleteModalVisible(false);
     };
 
-    const showCreatePost = () => {
-        navigate('create-blog');
-    };
 
     return (
         <div>
             <h1 className="text-xl font-bold mb-8">Blog Management</h1>
-            <Button type="primary" icon={<PlusOutlined />} onClick={showCreatePost} style={{ marginBottom: 16 }}>
-                New Post
-            </Button>
+         
             <Table
                 columns={columns}
                 dataSource={allPosts.slice(

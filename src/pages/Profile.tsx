@@ -19,7 +19,6 @@ const Profile: React.FC = () => {
   const userId = useSelector((state: RootState) => state.auth.userId);
   const role = useSelector((state: RootState) => state.auth.role);
 
-  const [userData, setUserData] = useState<any>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [fullName, setFullName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -38,10 +37,7 @@ const Profile: React.FC = () => {
       try {
         let response;
         if (role === "1") {
-          // User role
           response = await ApiService.getUserWithImages(userId);
-
-          // Fetch followed readers
           const followedReadersResponse = await ApiService.getFollowedReaders(
             userId
           );
@@ -53,7 +49,6 @@ const Profile: React.FC = () => {
           );
           setFollows(followedReaders || []);
         } else if (role === "3") {
-          // Reader role
           response = await ApiService.fetchReaderWithImages(userId);
         }
 
@@ -64,7 +59,6 @@ const Profile: React.FC = () => {
         setDob(user?.dob ? dayjs(user.dob).format("YYYY-MM-DD") : "");
         setBiography(user?.description || "");
         setImageUrl(response?.url?.[0] || null);
-        setUserData(response);
       } catch (error) {
         message.error("Failed to fetch profile data.");
       } finally {
@@ -100,28 +94,28 @@ const Profile: React.FC = () => {
   };
 
   const handleImageUpload = async (file: File) => {
-    try {
-      const formData = new FormData();
-      formData.append("File", file);
+    if (!userId) {
+      message.error("User ID is missing.");
+      return;
+    }
 
-      // Append correct ID based on the role
+    try {
+      let response;
+
+      // Pass the appropriate ID based on the user role
       if (role === "3") {
-        formData.append("ReaderId", userId);
+        response = await ApiService.updateImage(
+          file,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          userId
+        ); // for reader role
       } else if (role === "1") {
-        formData.append("UserId", userId);
+        response = await ApiService.updateImage(file, undefined, userId); // for user role
       }
 
-      // Make the API call
-      const response = await ApiService.updateImage(formData, {
-        onUploadProgress: (progressEvent: ProgressEvent) => {
-          const progress = Math.round(
-            (progressEvent.loaded * 100) / progressEvent.total
-          );
-          setUploadProgress(progress);
-        },
-      });
-
-      // Check if the response has a URL and set the image URL
       if (response?.url) {
         setImageUrl(response.url); // Update the profile image
         message.success("Image updated successfully");
@@ -146,10 +140,6 @@ const Profile: React.FC = () => {
       message.error("Image must be smaller than 2MB!");
     }
     return isJpgOrPng && isLt2M;
-  };
-
-  const handleChangePassword = () => {
-    navigate("/change-password");
   };
 
   if (loading) {
@@ -178,7 +168,7 @@ const Profile: React.FC = () => {
             />
             <div className="absolute -bottom-10 left-6">
               <div className="p-2 rounded-full border-4 border-white relative">
-                <ImgCrop rotate>
+                <ImgCrop>
                   <Upload
                     showUploadList={false}
                     beforeUpload={beforeUpload}
@@ -247,14 +237,6 @@ const Profile: React.FC = () => {
                 Save
               </Button>
             </div>
-
-            {role === "3" && (
-              <div className="mt-4">
-                <Button type="default" onClick={handleChangePassword}>
-                  Change Password
-                </Button>
-              </div>
-            )}
           </div>
         </div>
 

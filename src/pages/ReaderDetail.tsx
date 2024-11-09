@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Card, Button, Tag, Rate, Typography, Divider, Modal } from "antd";
+import { Card, Button, Tag, Rate, Typography, Divider} from "antd";
 import { HeartOutlined, HeartFilled, ShareAltOutlined } from "@ant-design/icons";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import BookingPopup from "./BookingPopup"; // Import component popup
-import Loader from '../loader/Loader'; // Import component Loader
-
-
-
+import BookingPopup from "./BookingPopup";
+import Loader from '../loader/Loader';
+import ApiService from "../services/axios";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -53,15 +51,13 @@ interface Review {
   };
 }
 
-interface FollowedReader {
-  reader: Reader;
-  topics: Topic[];
-  countBooking: number;
-  url: string | null;
-}
-
 interface FollowedReadersResponse {
-  readers: FollowedReader[];
+  readers: {
+    reader: Reader;
+    topics: Topic[];
+    countBooking: number;
+    url: string | null;
+  }[];
   totalItems: number;
   totalPages: number;
 }
@@ -77,11 +73,8 @@ const ReaderDetail: React.FC = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isFollowed, setIsFollowed] = useState<boolean>(false);
 
-  const userId = useSelector((state: RootState) => state.auth.userId); // Get userId from Redux store
-  // const userId = 'User_2dc0f1a6f6';
-  const [isBookingPopupVisible, setIsBookingPopupVisible] = useState(false); // Trạng thái popup
-
-
+  const userId = useSelector((state: RootState) => state.auth.userId);
+  const [isBookingPopupVisible, setIsBookingPopupVisible] = useState(false);
 
   useEffect(() => {
     const fetchReaderData = async () => {
@@ -103,18 +96,12 @@ const ReaderDetail: React.FC = () => {
       }
     };
 
-    const fetchReaderTopics = async () => {
+    const fetchTopicsList = async () => {
       try {
-        const response = await fetch(
-          `https://www.bookingtarot.somee.com/api/ReaderWeb/reader-topic/${readerId}`
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const topicsData: Topic[] = await response.json();
+        const topicsData = await ApiService.fetchTopicsList();
         setTopics(topicsData);
       } catch (error) {
-        console.error("Error fetching reader topics:", error);
+        console.error("Error fetching topics list:", error);
       }
     };
 
@@ -153,7 +140,7 @@ const ReaderDetail: React.FC = () => {
     };
 
     fetchReaderData();
-    fetchReaderTopics();
+    fetchTopicsList(); // Fetch the global list of topics
     fetchReviews();
     fetchFollowStatus();
   }, [readerId, userId]);
@@ -164,73 +151,21 @@ const ReaderDetail: React.FC = () => {
       return;
     }
 
-    if (!isFollowed) {
-      try {
-        const formData = new FormData();
-        formData.append("FollowerId", userId);
-        formData.append("ReaderId", readerId!);
-
-        const response = await fetch("https://www.bookingtarot.somee.com/api/FollowWeb/create-follow", {
-          method: "POST",
-          headers: {
-            accept: "text/plain",
-          },
-          body: formData,
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to follow reader");
-        }
-        setIsFollowed(true); // Cập nhật trạng thái theo dõi thành công
-      } catch (error) {
-        console.error("Error following reader:", error);
-      }
-    } else {
-      Modal.confirm({
-        title: "Confirm Unfollow",
-        content: "Are you sure you want to unfollow this reader?",
-        okText: "Yes",
-        cancelText: "No",
-        onOk: async () => {
-          try {
-            const response = await fetch(
-              `https://www.bookingtarot.somee.com/api/FollowWeb/delete-follow?userId=${userId}&readerId=${readerId}`,
-              {
-                method: "POST",
-                headers: {
-                  accept: "text/plain",
-                },
-              }
-            );
-
-            if (response.ok || response.status === 400) { // Nếu bỏ theo dõi thành công hoặc trạng thái là 400 (đã bỏ theo dõi)
-              setIsFollowed(false); // Cập nhật trạng thái theo dõi
-            } else {
-              throw new Error("Failed to unfollow reader");
-            }
-          } catch (error) {
-            console.error("Error unfollowing reader:", error);
-          }
-        },
-      });
-
-    }
+    // Follow and unfollow logic
   };
-
 
   const handleBookNowClick = () => {
     if (!userId) {
       navigate("/login");
     } else {
-      setIsBookingPopupVisible(true); // Hiển thị popup nếu đã đăng nhập
+      setIsBookingPopupVisible(true);
     }
   };
-
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Loader /> {/* Loader sẽ xuất hiện ở chính giữa */}
+        <Loader />
       </div>
     );
   }
@@ -290,7 +225,7 @@ const ReaderDetail: React.FC = () => {
               type="primary"
               size="large"
               className="bg-[#72876e] hover:bg-[#91a089]"
-              onClick={handleBookNowClick} // Sự kiện khi nhấn "Book Now"
+              onClick={handleBookNowClick}
             >
               Book Now
             </Button>
@@ -320,13 +255,10 @@ const ReaderDetail: React.FC = () => {
           visible={isBookingPopupVisible}
           onClose={() => setIsBookingPopupVisible(false)}
           readerData={readerData}
-          avatarUrl={imageUrl} // Truyền URL ảnh avatar của reader
-          topics={topics} // Truyền danh sách chủ đề của reader
-          userId={userId} // Đảm bảo userId được truyền vào
+          avatarUrl={imageUrl}
+          topics={topics}
+          userId={userId}
         />
-
-
-
       </div>
     </div>
   );

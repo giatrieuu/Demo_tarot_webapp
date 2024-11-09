@@ -1,5 +1,5 @@
 import axios from "axios";
-import { defaultAxiosInstance, tokenAxiosInstance } from "./axiosInstance";
+import { defaultAxiosInstance } from "./axiosInstance";
 
 const API_URL = "https://www.bookingtarot.somee.com";
 
@@ -797,6 +797,19 @@ const ApiService = {
       throw error;
     }
   },
+    // Function to delete a comment by commentId
+    deleteComment: async (commentId: string) => {
+      try {
+        const response = await api.post(`/api/CommentWeb/delete-comment`, null, {
+          params: { commentId },
+        });
+        return response.data; // Return the response from the API
+      } catch (error) {
+        console.error("Error deleting comment", error);
+        throw error;
+      }
+    },
 };
+
 
 export default ApiService;

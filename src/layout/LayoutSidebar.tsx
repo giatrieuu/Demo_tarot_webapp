@@ -9,13 +9,13 @@ import TarotReaderSidebar from '../components/sidebar/TarotReaderSidebar';
 const { Content } = Layout;
 
 const LayoutSidebar: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [showMenu, setShowMenu] = useState(true);
+  const [showMenu] = useState(true);
   const location = useLocation();
 
-  // Toggle sidebar menu visibility
-  const toggleMenu = () => {
-    setShowMenu(!showMenu);
-  };
+  // // Toggle sidebar menu visibility
+  // const toggleMenu = () => {
+  //   setShowMenu(!showMenu);
+  // };
 
   // Conditionally render the sidebar based on the page (tarot reader or admin)
   const renderSidebar = () => {
@@ -35,7 +35,7 @@ const LayoutSidebar: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       {/* Main content area */}
       <Layout className="flex-1">
         {/* Single Header */}
-        <HeaderLogged toggleMenu={toggleMenu} />
+        <HeaderLogged />
 
         <Content className={`transition-all duration-300 overflow-auto ${showMenu ? 'ml-56' : 'ml-0'}`}>
           <div className="flex flex-col min-h-screen">

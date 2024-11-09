@@ -1,285 +1,102 @@
-import React, { useState, useEffect } from "react";
-import {
-  Table,
-  Button,
-  Dropdown,
-  Menu,
-  Modal,
-  Form,
-  Input,
-  Tabs,
-  message,
-} from "antd";
-import {
-  CheckCircleOutlined,
-  MoreOutlined,
-  StopOutlined,
-  UserAddOutlined,
-} from "@ant-design/icons";
-import ApiService from "../../services/axios"; // Make sure this is correctly set up
+import React, { useState, useEffect } from 'react';
+import { Table, Button, Tooltip, Modal, message } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
+import ApiService from '../../services/axios';
 
-const { TabPane } = Tabs;
+const TopicManagement: React.FC = () => {
+  const [topics, setTopics] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
-const UserManagement: React.FC = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<any>(null);
-  const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
-  const [users, setUsers] = useState([]); // Regular users data
-  const [tarotReaders, setTarotReaders] = useState([]); // Tarot readers data
-  const [loading, setLoading] = useState(false); // Loading state for the table
-  const [activeTab, setActiveTab] = useState("users"); // Track active tab
-
-  // Fetch users data
-  const fetchUsers = async () => {
-    setLoading(true);
-    try {
-      const response = await ApiService.fetchUsersList();
-      setUsers(response); // Update users state with API response
-    } catch (error) {
-      message.error("Failed to load users");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fetch tarot readers data
-  const fetchTarotReaders = async () => {
-    setLoading(true);
-    try {
-      const response = await ApiService.fetchReadersList();
-      setTarotReaders(response); // Update tarot readers state with API response
-    } catch (error) {
-      message.error("Failed to load tarot readers");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fetch data based on active tab
   useEffect(() => {
-    if (activeTab === "users") {
-      fetchUsers();
-    } else {
-      fetchTarotReaders();
-    }
-  }, [activeTab]);
-
-  // Handle actions for user rows
-  const handleMenuClick = (key: string, record: any) => {
-    if (key === "assign") {
-      setSelectedUser(record);
-      setIsModalVisible(true);
-    }
-  };
-
-  // Handle the OK action for the assign modal
-  const handleModalOk = () => {
-    console.log("Assigning email and password for:", selectedUser);
-    setIsModalVisible(false);
-  };
-
-  // Cancel the assign modal
-  const handleModalCancel = () => {
-    setIsModalVisible(false);
-  };
-
-  // Show the modal for creating a new tarot reader
-  const handleCreateModal = () => {
-    setIsCreateModalVisible(true);
-  };
-
-  // Handle account creation form submission
-  const handleCreateAccount = async (values: any) => {
-    try {
+    const fetchData = async () => {
       setLoading(true);
-      const { name, email, password } = values;
-      await ApiService.createReader(name, email, password);
-      message.success("Tarot Reader account created successfully");
-      setIsCreateModalVisible(false);
-      if (activeTab === "tarotReaders") {
-        fetchTarotReaders(); // Refresh tarot readers list after creation
+      try {
+        const data = await ApiService.fetchTopicsList();
+        setTopics(data);
+      } catch (error) {
+        message.error("Failed to load topics");
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      message.error("Failed to create Tarot Reader account");
-    } finally {
-      setLoading(false);
-    }
-  };
-  // Handle block/unblock action
-  // Handle actions for user rows
-  const handleBlockUnblock = async (record: any) => {
-    const { id, status } = record;
-    const isBlocked = status === "Blocked";
-    try {
-      setLoading(true);
-      if (activeTab === "users") {
-        if (isBlocked) {
-          await ApiService.unblockUser(id);
-          message.success("User unblocked successfully");
-        } else {
-          await ApiService.blockUser(id);
-          message.success("User blocked successfully");
+    };
+    fetchData();
+  }, []);
+
+  // Function to handle topic deletion
+  const handleDelete = async (id: string) => {
+    Modal.confirm({
+      title: 'Are you sure you want to delete this topic?',
+      onOk: async () => {
+        try {
+          await ApiService.deleteTopic(id);
+          setTopics(topics.filter((topic) => topic.id !== id));
+          message.success('Topic deleted successfully');
+        } catch (error) {
+          message.error('Failed to delete topic');
         }
-        fetchUsers(); // Refresh the users list
-      } else {
-        if (isBlocked) {
-          await ApiService.unblockReader(id);
-          message.success("Reader unblocked successfully");
-        } else {
-          await ApiService.blockReader(id);
-          message.success("Reader blocked successfully");
-        }
-        fetchTarotReaders(); // Refresh the tarot readers list
-      }
-    } catch (error) {
-      message.error("Failed to update status");
-    } finally {
-      setLoading(false);
-    }
+      },
+    });
   };
+
+  // Table column configuration without the "Edit" action
   const columns = [
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
+      title: 'STT',
+      dataIndex: 'id',
+      key: 'id',
+      align: 'center' as 'center',
+      width: '10%',
+      render: (_: any, __: any, index: number) => index + 1,
     },
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: 'Topic',
+      dataIndex: 'name',
+      key: 'name',
+      align: 'left' as 'left',
+      width: '70%',
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-    },
-    {
-      title: "Role",
-      dataIndex: "roleId",
-      key: "roleId",
-      render: (roleId: string) => (roleId === "user" ? "User" : "Tarot Reader"),
-    },
-    {
-      title: "Phone",
-      dataIndex: "phone",
-      key: "phone",
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: (record: any) => (
-        <Button
-          type="primary"
-          danger={record.status !== "Blocked"}
-          icon={
-            record.status === "Blocked" ? (
-              <CheckCircleOutlined />
-            ) : (
-              <StopOutlined />
-            )
-          }
-          onClick={() => handleBlockUnblock(record)}
-        >
-          {record.status === "Blocked" ? "Unblock" : "Block"}
-        </Button>
+      title: 'Action',
+      key: 'action',
+      align: 'center' as 'center',
+      width: '20%',
+      render: (_: any, record: any) => (
+        <div className="flex justify-center space-x-2">
+          <Tooltip title="Delete">
+            <Button
+              type="primary"
+              shape="round"
+              danger
+              icon={<DeleteOutlined />}
+              onClick={() => handleDelete(record.id)}
+            />
+          </Tooltip>
+        </div>
       ),
     },
   ];
+
   return (
-    <div>
-      <h1 className="text-xl font-bold">User Management</h1>
-      <p>Manage all your users from this panel.</p>
+    <div style={{ padding: '24px' }}>
+      <h1 className="text-2xl font-bold mb-6">Topic Management</h1>
+      <p className="text-gray-500 mb-6">Manage all your topics from this panel.</p>
 
-      {/* Tabs for Users and Tarot Readers */}
-      <Tabs activeKey={activeTab} onChange={setActiveTab}>
-        <TabPane tab="Users" key="users">
-          <Table
-            dataSource={users}
-            columns={columns}
-            pagination={false}
-            loading={loading}
-            className="bg-white shadow-sm rounded-lg"
-          />
-        </TabPane>
-        <TabPane tab="Tarot Readers" key="tarotReaders">
-          <div className="mb-4">
-            <Button
-              type="primary"
-              icon={<UserAddOutlined />}
-              onClick={handleCreateModal}
-              className="bg-[#1890ff]"
-            >
-              Create Tarot Reader Account
-            </Button>
-          </div>
-          <Table
-            dataSource={tarotReaders}
-            columns={columns}
-            pagination={false}
-            loading={loading}
-            className="bg-white shadow-sm rounded-lg"
-          />
-        </TabPane>
-      </Tabs>
-
-      {/* Modal for Assigning Email/Password */}
-      <Modal
-        title={`Assign Email and Password to ${selectedUser?.name}`}
-        visible={isModalVisible}
-        onOk={handleModalOk}
-        onCancel={handleModalCancel}
-      >
-        <Form layout="vertical">
-          <Form.Item label="Email">
-            <Input
-              placeholder="Enter email"
-              defaultValue={selectedUser?.email}
-            />
-          </Form.Item>
-          <Form.Item label="Password">
-            <Input.Password placeholder="Enter password" />
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      {/* Modal for Creating New Tarot Reader */}
-      <Modal
-        title="Create Tarot Reader Account"
-        visible={isCreateModalVisible}
-        onCancel={() => setIsCreateModalVisible(false)}
-        footer={null}
-      >
-        <Form layout="vertical" onFinish={handleCreateAccount}>
-          <Form.Item
-            name="name"
-            label="Name"
-            rules={[{ required: true, message: "Please input the name!" }]}
-          >
-            <Input placeholder="Enter name" />
-          </Form.Item>
-          <Form.Item
-            name="email"
-            label="Email"
-            rules={[{ required: true, message: "Please input the email!" }]}
-          >
-            <Input placeholder="Enter email" />
-          </Form.Item>
-          <Form.Item
-            name="password"
-            label="Password"
-            rules={[{ required: true, message: "Please input the password!" }]}
-          >
-            <Input.Password placeholder="Enter password" />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" className="w-full">
-              Create
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
+      {/* Topic List Table */}
+      <Table
+        dataSource={topics}
+        columns={columns}
+        rowKey="id"
+        rowSelection={{
+          selectedRowKeys,
+          onChange: setSelectedRowKeys,
+        }}
+        pagination={false}
+        loading={loading}
+        className="bg-white shadow-md rounded-lg"
+      />
     </div>
   );
 };
 
-export default UserManagement;
+export default TopicManagement;

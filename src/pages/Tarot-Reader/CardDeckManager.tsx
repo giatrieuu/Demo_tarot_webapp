@@ -11,8 +11,6 @@ import {
   Upload,
 } from "antd";
 import {
-  EditOutlined,
-  DeleteOutlined,
   PlusOutlined,
   UploadOutlined,
   PlusCircleOutlined,
@@ -57,13 +55,19 @@ const CardDeckManager: React.FC = () => {
       return;
     }
 
+    // Ensure userId is not null
+    if (!userId) {
+      message.error("User ID is required to create a card deck");
+      return;
+    }
+
     try {
       setLoading(true);
 
       const formData = new FormData();
       formData.append("Name", newCardDeckName);
       formData.append("image", imageFile);
-      formData.append("ReaderId", userId);
+      formData.append("ReaderId", userId); // TypeScript knows userId is a string here
       formData.append("Description", description);
 
       const response = await ApiService.createGroupCard(newCardDeckName, imageFile, userId, description);
@@ -127,23 +131,6 @@ const CardDeckManager: React.FC = () => {
       width: "20%",
       render: (_: any, record: any) => (
         <div className="flex justify-center space-x-2">
-          <Tooltip title="Edit">
-            <Button
-              type="primary"
-              shape="round"
-              icon={<EditOutlined />}
-              onClick={() => handleEdit(record.id, record.name)}
-            />
-          </Tooltip>
-          <Tooltip title="Delete">
-            <Button
-              type="primary"
-              shape="round"
-              danger
-              icon={<DeleteOutlined />}
-              onClick={() => handleDelete(record.id, record.name)}
-            />
-          </Tooltip>
           <Tooltip title="Add Card">
             <Button
               type="primary"

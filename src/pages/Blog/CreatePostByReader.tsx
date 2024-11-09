@@ -31,6 +31,12 @@ const CreatePostByReader: React.FC = () => {
     const handleSubmit = async () => {
         setLoading(true);
 
+        if (!userId) {
+            message.error("User ID is missing. Please log in.");
+            setLoading(false);
+            return;
+        }
+
         if (!title || !shortText || !content || !image) {
             message.warning("Please fill in all fields and upload an image.");
             setLoading(false);

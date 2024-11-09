@@ -32,7 +32,13 @@ const CreatePostByReader: React.FC<CreatePostProps> = ({ visible, onCancel, onOk
                 message.error('Please select an image for the post.');
                 return;
             }
-
+            
+            // Check if userId is not null before proceeding
+            if (!userId) {
+                message.error('User ID is missing. Please log in again.');
+                return;
+            }
+    
             const response = await ApiService.createPost(
                 userId, // Pass userId as ReaderId
                 values.title,
@@ -40,7 +46,7 @@ const CreatePostByReader: React.FC<CreatePostProps> = ({ visible, onCancel, onOk
                 values.content,
                 imageFile
             );
-
+    
             onOk(response); // Return API result to parent component
             form.resetFields(); // Reset form
             setImageFile(null); // Reset image file
@@ -50,7 +56,6 @@ const CreatePostByReader: React.FC<CreatePostProps> = ({ visible, onCancel, onOk
             console.error("Error creating post", error);
         }
     };
-
     return (
         <Modal
             title="Create Post"

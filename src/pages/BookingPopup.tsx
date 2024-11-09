@@ -59,7 +59,6 @@ const BookingPopup: React.FC<BookingPopupProps> = ({
 
   const handleNext = () => setCurrentStep(2);
   const handlePrevious = () => setCurrentStep(1);
-  const handleFinish = () => onClose();
   const handleCancel = () => onClose();
 
   const calculateTotalPrice = (selectedTime: string) => {
