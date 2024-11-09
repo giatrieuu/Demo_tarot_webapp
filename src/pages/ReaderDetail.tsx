@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Card, Button, Tag, Rate, Typography, Divider } from "antd";
-import { HeartOutlined, HeartFilled, ShareAltOutlined } from "@ant-design/icons";
+import {
+  HeartOutlined,
+  HeartFilled,
+  ShareAltOutlined,
+} from "@ant-design/icons";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import BookingPopup from "./BookingPopup";
-import Loader from '../loader/Loader';
+import Loader from "../loader/Loader";
 import ApiService from "../services/axios";
 
 const { Title, Paragraph, Text } = Typography;
@@ -69,7 +73,7 @@ const ReaderDetail: React.FC = () => {
   const [imageUrl, setImageUrl] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [topics, setTopics] = useState<Topic[]>([]);
+  const [topics, setTopics] = useState<Topic[]>([]); // Initialize as an empty array
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isFollowed, setIsFollowed] = useState<boolean>(false);
 
@@ -90,18 +94,27 @@ const ReaderDetail: React.FC = () => {
         setImageUrl(data.url[0] || "");
       } catch (error) {
         console.error("Error fetching reader data:", error);
-        setError(error instanceof Error ? error.message : "An unknown error occurred");
+        setError(
+          error instanceof Error ? error.message : "An unknown error occurred"
+        );
       } finally {
         setLoading(false);
       }
     };
 
-    const fetchTopicsList = async () => {
+    const fetchReaderTopics = async () => {
+      if (!readerId) return; // Ensure readerId is defined
       try {
-        const topicsData = await ApiService.fetchTopicsList();
-        setTopics(topicsData);
+        const response = await ApiService.getReaderTopics(readerId);
+        if (Array.isArray(response)) {
+          setTopics(response); // Directly use the response array as topics
+        } else if (response.topics) {
+          setTopics(response.topics); // Fallback if there's a nested `topics` key
+        } else {
+          setTopics([]); // Default to an empty array if no topics found
+        }
       } catch (error) {
-        console.error("Error fetching topics list:", error);
+        console.error("Error fetching reader topics:", error);
       }
     };
 
@@ -140,10 +153,11 @@ const ReaderDetail: React.FC = () => {
     };
 
     fetchReaderData();
-    fetchTopicsList(); // Fetch the global list of topics
+    fetchReaderTopics();
     fetchReviews();
     fetchFollowStatus();
   }, [readerId, userId]);
+
 
   const handleFollow = async () => {
     if (!userId) {
@@ -198,11 +212,16 @@ const ReaderDetail: React.FC = () => {
                   {formattedDob} (Phone: {readerData.phone})
                 </Paragraph>
                 <Paragraph className="mb-2 text-lg">
-                  Status: <Tag color={readerData.status === "Active" ? "green" : "red"}>{readerData.status}</Tag>
+                  Status:{" "}
+                  <Tag color={readerData.status === "Active" ? "green" : "red"}>
+                    {readerData.status}
+                  </Tag>
                 </Paragraph>
                 <div className="flex space-x-2">
-                  {topics.map((topic) => (
-                    <Tag key={topic.id} color="blue">{topic.name}</Tag>
+                  {topics?.map((topic) => (
+                    <Tag key={topic.id} color="blue">
+                      {topic.name}
+                    </Tag>
                   ))}
                 </div>
               </div>
@@ -210,7 +229,13 @@ const ReaderDetail: React.FC = () => {
             <div className="flex items-start space-x-4">
               <Button
                 type="text"
-                icon={isFollowed ? <HeartFilled style={{ color: "red" }} /> : <HeartOutlined />}
+                icon={
+                  isFollowed ? (
+                    <HeartFilled style={{ color: "red" }} />
+                  ) : (
+                    <HeartOutlined />
+                  )
+                }
                 onClick={handleFollow}
               />
               <Button type="text" icon={<ShareAltOutlined />} />
@@ -219,7 +244,7 @@ const ReaderDetail: React.FC = () => {
           </div>
           <div className="flex justify-between items-center mt-4">
             <Text className="text-2xl font-bold text-[#72876e]">
-              {readerData.price} VND/Hour
+              ${readerData.price}/Hour
             </Text>
             <Button
               type="primary"
@@ -242,7 +267,8 @@ const ReaderDetail: React.FC = () => {
               <div key={index}>
                 <Divider />
                 <Paragraph>
-                  <Text strong>{review.userName}</Text> - {review.booking.feedback}
+                  <Text strong>{review.userName}</Text> -{" "}
+                  {review.booking.feedback}
                 </Paragraph>
                 <Rate disabled defaultValue={review.booking.rating} />
               </div>
