@@ -21,15 +21,14 @@
 }
 
 .custom-button {
-  border-radius: 50px;
-  background-color: #4a044e;
+  background-color: #382C59;
   color: white;
   font-weight: 500;
 }
 
 .custom-button:hover {
-  background-color: #000000 !important;
-  color: rgb(4, 254, 4) !important;
+  background-color: #CBB6DE !important;
+  color: #382C59;
   font-weight: 600;
 }
 
@@ -283,13 +282,16 @@ body,
     margin-right: 0;
   }
 }
+
 @keyframes float {
   0% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-15px);
   }
+
   100% {
     transform: translateY(0px);
   }
@@ -298,6 +300,7 @@ body,
 .animate-float {
   animation: float 2s ease-in-out infinite;
 }
+
 body {
   cursor: url('./assets/Mouse.png'), auto;
 }

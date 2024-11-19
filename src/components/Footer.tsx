@@ -5,7 +5,7 @@ const { Footer: AntFooter } = Layout;
 
 const Footer = () => {
   return (
-    <AntFooter className="p-4 sm:p-8 bg-white text-[#4a044e] w-full">
+    <AntFooter className="p-4 sm:p-8 bg-[#F7F7F7] text-[#4a044e] w-full">
       <div className="container mx-auto">
         {/* Newsletter Section */}
         <div className="flex flex-col sm:flex-row justify-between items-center py-6">
@@ -14,7 +14,7 @@ const Footer = () => {
           </h3>
           <div className="flex flex-col sm:flex-row items-center">
             <Input placeholder="Enter your email" className="mb-4 sm:mb-0 sm:mr-4" />
-            <Button type="primary" className="custom-button">
+            <Button type="primary" className="custom-button custom-button:hover">
               Subscribe
             </Button>
           </div>

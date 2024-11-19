@@ -42,8 +42,6 @@ const Profile = lazy(() => import("../pages/Profile"));
 const AdminDashboard = lazy(() => import("../pages/Admin/AdminDashboard"));
 const UserManagement = lazy(() => import("../pages/Admin/UserManagement"));
 const TopicManagement = lazy(() => import("../pages/Admin/TopicManagement"));
-const ShuffleCard = lazy(() => import("../pages/CardDrawGuide/ShuffleCard"));
-const CardMeaning = lazy(() => import("../pages/CardDrawGuide/CardMeaning"));
 const EditPost = lazy(() => import("../pages/Blog/EditBlog"));
 const EditBlogByReader = lazy(() => import("../pages/Blog/EditBlogByReader"));
 const MyBooking = lazy(() => import("../pages/MyBooking"));
@@ -68,8 +66,6 @@ const AppRouter: React.FC = () => {
             <Route path={PUBLIC.BLOG} element={<BlogPage />} />
             <Route path={PUBLIC.BLOG_DETAIL} element={<BlogDetail />} />
             <Route path={PUBLIC.PROFILE} element={<Profile />} />
-            <Route path={PUBLIC.CARD_DRAW} element={<ShuffleCard />} />
-            <Route path={PUBLIC.CARD_MEANING} element={<CardMeaning />} />
           </Route>
 
           {/* Tarot Reader Routes with MainLayout and PrivateRoute for role restriction */}
