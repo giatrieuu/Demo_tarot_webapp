@@ -39,21 +39,19 @@ const ListReaders: React.FC = () => {
 
   const navigate = useNavigate();
 
-  // Hàm để lấy các chủ đề độc nhất từ danh sách người đọc
-  const getUniqueTopics = (readers: Reader[]): Topic[] => {
-    const topicSet = new Set<string>();
+  const fetchTopics = async () => {
+    try {
+      const response = await fetch('https://www.bookingtarot.somee.com/api/TopicWeb/topics-list');
+      if (!response.ok) throw new Error('Failed to fetch topics');
 
-    readers.forEach(reader => {
-      reader.topics.forEach(topic => {
-        topicSet.add(topic.id);
-      });
-    });
-
-    return Array.from(topicSet).map(id => {
-      const foundTopic = readers.flatMap(reader => reader.topics).find(topic => topic.id === id);
-      return foundTopic ? { id: foundTopic.id, name: foundTopic.name } : null;
-    }).filter(Boolean) as Topic[]; // Lọc bỏ giá trị null
+      const data: Topic[] = await response.json();
+      setTopics(data);
+    } catch (error) {
+      console.error('Error fetching topics:', error);
+      message.error('Error fetching topics.');
+    }
   };
+
 
   // Hàm để fetch dữ liệu người đọc từ API
   const fetchReaders = async () => {
@@ -66,8 +64,6 @@ const ListReaders: React.FC = () => {
 
       if (data && Array.isArray(data.readers)) {
         setSortedReaders(data.readers);
-        const uniqueTopics = getUniqueTopics(data.readers);
-        setTopics(uniqueTopics);
         setTotalPage(data.totalPages || 0);
         setTotalReader(data.totalItems || 0);
       } else {
@@ -84,7 +80,7 @@ const ListReaders: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchReaders();
+    fetchReaders(); fetchTopics()
   }, []);
 
   if (loading) {
@@ -200,8 +196,8 @@ const ListReaders: React.FC = () => {
         <div className="mb-6">
           <h3 className="text-md font-medium mb-2">Price</h3>
           <div className="flex space-x-2 items-center mb-4">
-            <Input value={`From: $${priceRange[0]}`} disabled className="w-1/2 p-2 bg-[#dde5db] text-[#7a7a7a] text-center rounded-md border border-gray-300" />
-            <Input value={`To: $${priceRange[1]}`} disabled className="w-1/2 p-2 bg-[#dde5db] text-[#7a7a7a] text-center rounded-md border border-gray-300" />
+            <Input value={`From: ${priceRange[0]} VND`} disabled className="w-1/2 p-2 bg-[#dde5db] text-[#7a7a7a] text-center rounded-md border border-gray-300" />
+            <Input value={`To: ${priceRange[1]} VND`} disabled className="w-1/2 p-2 bg-[#dde5db] text-[#7a7a7a] text-center rounded-md border border-gray-300" />
           </div>
           <Slider range min={0} max={900000} step={1} value={priceRange} onChange={handlePriceChange} className="mt-2" />
         </div>
@@ -264,7 +260,7 @@ const ListReaders: React.FC = () => {
                     <img
                       src={reader.url}
                       alt={reader.reader.name}
-                      className="w-full h-32 object-cover rounded-t" // Hình chữ nhật nằm ngang
+                      className="w-full h-64 object-cover rounded-t" // Hình chữ nhật nằm ngang
                     />
                   ) : (
                     <div className="w-full h-32 bg-gray-300 rounded-t flex items-center justify-center">
@@ -275,7 +271,7 @@ const ListReaders: React.FC = () => {
                   <div className="p-4 flex flex-col items-start">
                     <Card.Meta
                       title={<span className="text-lg font-semibold">{reader.reader.name}</span>}
-                      description={<span className="text-md text-gray-700">Price: ${reader.reader.price}</span>}
+                      description={<span className="text-md text-gray-700">Price: {reader.reader.price} VND</span>}
                     />
                     <div className="mt-2 flex items-center">
                       <Rate allowHalf value={reader.reader.rating} disabled />

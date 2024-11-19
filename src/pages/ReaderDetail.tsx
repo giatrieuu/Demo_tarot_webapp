@@ -101,7 +101,7 @@ const ReaderDetail: React.FC = () => {
         setLoading(false);
       }
     };
-  
+
     const fetchReaderTopics = async () => {
       if (!readerId) return; // Ensure readerId is defined
       try {
@@ -117,7 +117,7 @@ const ReaderDetail: React.FC = () => {
         console.error("Error fetching reader topics:", error);
       }
     };
-  
+
     const fetchReviews = async () => {
       try {
         const response = await fetch(
@@ -132,7 +132,7 @@ const ReaderDetail: React.FC = () => {
         console.error("Error fetching reviews:", error);
       }
     };
-  
+
     const fetchFollowStatus = async () => {
       if (!userId) return;
       try {
@@ -151,13 +151,13 @@ const ReaderDetail: React.FC = () => {
         console.error("Error fetching follow status:", error);
       }
     };
-  
+
     fetchReaderData();
     fetchReaderTopics();
     fetchReviews();
     fetchFollowStatus();
   }, [readerId, userId]);
-  
+
 
   const handleFollow = async () => {
     if (!userId) {

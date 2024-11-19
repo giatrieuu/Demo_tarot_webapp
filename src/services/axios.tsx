@@ -45,6 +45,18 @@ const ApiService = {
       throw error;
     }
   },
+  changeBookingStatus: async (bookingId: string, status: number) => {
+    try {
+      const response = await api.post(`/api/BookingWeb/change-booking-status`, null, {
+        params: { bookingId, status },
+      });
+      return response.data; // Return the API response
+    } catch (error) {
+      console.error("Error changing booking status", error);
+      throw error;
+    }
+  },
+
   // Function to change password
   changePassword: async (
     readerId: string,
