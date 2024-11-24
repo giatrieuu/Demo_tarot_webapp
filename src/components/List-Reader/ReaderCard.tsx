@@ -10,22 +10,22 @@ interface ReaderCardProps {
     };
     url: string;
     countBooking: number;
-    onClick: () => void;
+    onClick: () => void; // Đảm bảo onClick được khai báo
 }
 
 const ReaderCard: React.FC<ReaderCardProps> = ({ reader, url, countBooking, onClick }) => {
     return (
-        <Card className="cursor-pointer" onClick={onClick}>
+        <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-300" onClick={onClick}>
             {url ? (
-                <img src={url} alt={reader.name} className="w-full h-64 object-cover" />
+                <img src={url} alt={reader.name} className="w-full h-64 object-cover rounded-t-lg" />
             ) : (
-                <div className="w-full h-32 bg-gray-300 flex items-center justify-center">
-                    <span>No Image</span>
+                <div className="w-full h-32 bg-gray-300 flex items-center justify-center rounded-t-lg">
+                    <span className="text-gray-500">No Image</span>
                 </div>
             )}
             <Card.Meta
                 title={<span>{reader.name}</span>}
-                description={`Price: ${reader.price} VND`}
+                description={`Price: ${reader.price.toLocaleString()} VND`}
             />
             <div className="mt-2">
                 <Rate allowHalf value={reader.rating} disabled />

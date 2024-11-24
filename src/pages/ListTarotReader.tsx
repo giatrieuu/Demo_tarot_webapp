@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import FilterSection from '../components/List-Reader/FilterSection';
 import ReadersList from '../components/List-Reader/ReadersList';
 
+
 const ListTarotReader: React.FC = () => {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 900000]);
   const [selectedTopicIds, setSelectedTopicIds] = useState<string[]>([]);
@@ -84,6 +85,7 @@ const ListTarotReader: React.FC = () => {
           selectedTopicIds={selectedTopicIds}
           priceRange={priceRange}
           topics={topics}
+          loading={loading} // Trạng thái loading
           onTopicChange={setSelectedTopicIds}
           onPriceChange={setPriceRange}
           onReset={() => {
@@ -92,8 +94,10 @@ const ListTarotReader: React.FC = () => {
           }}
           onApply={handleApply}
         />
-        <ReadersList readers={readers} loading={loading} onCardClick={(id) => console.log('Card clicked:', id)} />
-
+        <ReadersList
+          readers={readers}
+          loading={loading}
+        />
       </div>
       <div className="flex justify-end items-center mb-6 space-x-4">
         Total Readers: <span className="font-bold">{totalReader}</span>
@@ -103,4 +107,4 @@ const ListTarotReader: React.FC = () => {
   );
 };
 
-export default ListTarotReader;
+export default ListTarotReader;  
