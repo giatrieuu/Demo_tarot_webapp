@@ -6,6 +6,7 @@ import {jwtDecode} from "jwt-decode";
 import ApiService from "../services/axios";
 import { login } from "../redux/authSlice";
 import { FcGoogle } from "react-icons/fc";
+import  { getGoogleAuthUrl, getToken } from "../services/userService";
 
 const Login: React.FC = () => {
   const [isGoogleLogin, setIsGoogleLogin] = useState(true);
@@ -19,50 +20,15 @@ const Login: React.FC = () => {
 
   // Function to handle Google login
   const handleGoogleLogin = () => {
-    try {
-      window.location.href = "https://www.bookingtarot.somee.com/Auth/redirect";
-    } catch (error) {
-      console.error("Google login failed", error);
-    }
+    // Điều hướng đến URL Google Auth
+    window.location.href = getGoogleAuthUrl();
   };
 
-  // Call the API to fetch the token after Google login
-  const fetchGoogleToken = async () => {
-    try {
-      const response = await ApiService.getToken();
-      const token = response.token?.result;
 
-      if (token) {
-        const { userId, role } = decodeToken(token);
-
-        localStorage.setItem("authToken", token);
-        localStorage.setItem("userRole", role);
-
-        dispatch(login({ token, userId, role }));
-      } else {
-        console.error("Failed to retrieve Google token.");
-      }
-    } catch (error) {
-      console.error("Error fetching token", error);
-    }
-  };
-
-  // Helper function to decode JWT token and extract userId and role
-  const decodeToken = (token: string) => {
-    try {
-      const decodedToken: any = jwtDecode(token);
-      return {
-        userId: decodedToken.Id,
-        role: decodedToken.Role,
-      };
-    } catch (error) {
-      console.error("Failed to decode token", error);
-      return { userId: null, role: null };
-    }
-  };
+ 
 
   useEffect(() => {
-    fetchGoogleToken();
+    getToken();
   }, []);
 
   const handleReaderLogin = async (values: any) => {
