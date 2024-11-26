@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import FilterSection from '../components/List-Reader/FilterSection';
 import ReadersList from '../components/List-Reader/ReadersList';
+//import { fetchReadersList, } from '../services/userService'
+import ApiService from '../services/axios';
 
 
 const ListTarotReader: React.FC = () => {
@@ -19,8 +21,7 @@ const ListTarotReader: React.FC = () => {
 
   const fetchTopics = async () => {
     try {
-      const response = await fetch('https://www.bookingtarot.somee.com/api/TopicWeb/topics-list');
-      const data = await response.json();
+      const data = await ApiService.fetchTopicsList();
       setTopics(data);
     } catch (error) {
       console.error('Error fetching topics:', error);
@@ -32,18 +33,15 @@ const ListTarotReader: React.FC = () => {
     try {
       const minPrice = priceRange[0];
       const maxPrice = priceRange[1];
-      const topicIds = selectedTopicIds.map((id) => `topicIds=${id}`).join('&');
-
-      const apiUrl = `https://www.bookingtarot.somee.com/api/ReaderWeb/GetPagedReadersInfo?readerName=${keyword}&minPrice=${minPrice}&maxPrice=${maxPrice}${topicIds ? `&${topicIds}` : ''}`;
-
-      const response = await fetch(apiUrl);
-      const data = await response.json();
+      const data = await ApiService.fetchReadersList(keyword, minPrice, maxPrice, selectedTopicIds);
       setReaders(data.readers || []);
       setTotalReader(data.totalItems || 0);
+
     } catch (error) {
       console.error('Error fetching readers:', error);
     } finally {
       setLoading(false);
+      console.log(readers)
     }
   };
 
@@ -85,7 +83,7 @@ const ListTarotReader: React.FC = () => {
           selectedTopicIds={selectedTopicIds}
           priceRange={priceRange}
           topics={topics}
-          loading={loading} // Trạng thái loading
+          loading={loading}
           onTopicChange={setSelectedTopicIds}
           onPriceChange={setPriceRange}
           onReset={() => {

@@ -18,6 +18,7 @@ const defaultAxiosInstance: AxiosInstance = axios.create({
   baseURL: config.API_BASE_URL,
   headers: {
     'content-type': 'application/json; charset=UTF-8'
+
   },
   timeout: 300000,
   timeoutErrorMessage: 'Connection timeout exceeded'

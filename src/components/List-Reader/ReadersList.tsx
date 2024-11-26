@@ -1,24 +1,32 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate từ React Router
+import { useNavigate } from 'react-router-dom'; // Import useNavigate from React Router
 import ReaderCard from './ReaderCard';
-import Loader from '../../loader/Loader'; // Component Loader
+import Loader from '../../loader/Loader'; // Loader component
 
 interface ReadersListProps {
     readers: {
-        reader: { id: string; name: string; price: number; rating: number };
-        url: string;
+        reader: {
+            id: string;
+            name: string;
+            price: number;
+            rating: number | null; // Rating can be null
+            description?: string | null;
+            status: string;
+        };
+        topics: { id: string; name: string }[]; // Topics field is an array of objects with id and name
         countBooking: number;
+        url: string;
     }[];
     loading: boolean;
 }
 
 const ReadersList: React.FC<ReadersListProps> = ({ readers, loading }) => {
-    const navigate = useNavigate(); // Hook điều hướng
+    const navigate = useNavigate(); // Hook for navigation
 
     if (loading) {
         return (
             <div className="flex items-center justify-center w-full h-[calc(100vh-300px)]">
-                <Loader /> {/* Hiển thị Loader */}
+                <Loader /> {/* Show loader */}
             </div>
         );
     }
@@ -37,9 +45,10 @@ const ReadersList: React.FC<ReadersListProps> = ({ readers, loading }) => {
                 <ReaderCard
                     key={reader.reader.id}
                     reader={reader.reader}
+                    topics={reader.topics} // Pass topics here
                     url={reader.url}
                     countBooking={reader.countBooking}
-                    onClick={() => navigate(`/reader-detail/${reader.reader.id}`)} // Điều hướng đến trang chi tiết
+                    onClick={() => navigate(`/reader-detail/${reader.reader.id}`)} // Navigate to reader detail page
                 />
             ))}
         </div>

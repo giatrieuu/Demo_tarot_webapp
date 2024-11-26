@@ -128,15 +128,20 @@ const ApiService = {
     }
   },
 
-  fetchReadersList: async () => {
+  fetchReadersList: async (keyword: string, minPrice: number, maxPrice: number, selectedTopicIds: string[]) => {
     try {
-      const response = await api.get("/api/ReaderWeb/readers-list");
-      return response.data; // Return the readers data from the API
+      // Tạo các tham số query string
+      const topicIds = selectedTopicIds.map((id) => `topicIds=${id}`).join('&');
+      const apiUrl = `/api/ReaderWeb/GetPagedReadersInfo?readerName=${keyword}&minPrice=${minPrice}&maxPrice=${maxPrice}${topicIds ? `&${topicIds}` : ''}`;
+
+      const response = await api.get(apiUrl); // Gọi API để lấy danh sách readers
+      return response.data; // Trả về dữ liệu
     } catch (error) {
-      console.error("Error fetching readers list", error);
-      throw error;
+      console.error('Error fetching readers list', error);
+      throw error; // Ném lỗi nếu có
     }
   },
+
   getReaderTopics: async (readerId: string, pageNumber = 1, pageSize = 10) => {
     try {
       const response = await api.get(`/api/ReaderWeb/reader-topic/${readerId}`, {
@@ -151,7 +156,7 @@ const ApiService = {
       throw error;
     }
   },
-  
+
   // Function to fetch user data with images by userId
   getUserWithImages: async (userId: string) => {
     try {
@@ -290,18 +295,16 @@ const ApiService = {
   // Function to fetch the list of topics
   fetchTopicsList: async () => {
     try {
-      const token = localStorage.getItem("authToken");
-      const response = await api.get("/api/TopicWeb/topics-list", {
-        headers: {
-          Authorization: `bearer ${token}`, // Include the token in the Authorization header
-        },
-      });
+      const response = await api.get("/api/TopicWeb/topics-list");
       return response.data; // Return the list of topics from the API
     } catch (error) {
       console.error("Error fetching topics list", error);
       throw error;
     }
   },
+
+
+
   // Function to update a topic
   updateTopic: async (id: string, name: string) => {
     try {
@@ -836,18 +839,18 @@ const ApiService = {
       throw error;
     }
   },
-    // Function to delete a comment by commentId
-    deleteComment: async (commentId: string) => {
-      try {
-        const response = await api.post(`/api/CommentWeb/delete-comment`, null, {
-          params: { commentId },
-        });
-        return response.data; // Return the response from the API
-      } catch (error) {
-        console.error("Error deleting comment", error);
-        throw error;
-      }
-    },
+  // Function to delete a comment by commentId
+  deleteComment: async (commentId: string) => {
+    try {
+      const response = await api.post(`/api/CommentWeb/delete-comment`, null, {
+        params: { commentId },
+      });
+      return response.data; // Return the response from the API
+    } catch (error) {
+      console.error("Error deleting comment", error);
+      throw error;
+    }
+  },
 };
 
 

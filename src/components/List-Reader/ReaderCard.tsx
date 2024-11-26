@@ -6,14 +6,17 @@ interface ReaderCardProps {
         id: string;
         name: string;
         price: number;
-        rating: number;
+        rating: number | null;
+        description?: string | null;
+        status: string;
     };
+    topics: { id: string; name: string }[]; // Pass topics as an array of objects
     url: string;
     countBooking: number;
-    onClick: () => void; // Đảm bảo onClick được khai báo
+    onClick: () => void;
 }
 
-const ReaderCard: React.FC<ReaderCardProps> = ({ reader, url, countBooking, onClick }) => {
+const ReaderCard: React.FC<ReaderCardProps> = ({ reader, topics, url, countBooking, onClick }) => {
     return (
         <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-300" onClick={onClick}>
             {url ? (
@@ -23,14 +26,29 @@ const ReaderCard: React.FC<ReaderCardProps> = ({ reader, url, countBooking, onCl
                     <span className="text-gray-500">No Image</span>
                 </div>
             )}
+
             <Card.Meta
                 title={<span>{reader.name}</span>}
                 description={`Price: ${reader.price.toLocaleString()} VND`}
             />
+
             <div className="mt-2">
-                <Rate allowHalf value={reader.rating} disabled />
+                <Rate allowHalf value={reader.rating || 0} disabled />
                 <span>{countBooking} Reviews</span>
             </div>
+
+            {/* Displaying list of topics */}
+            {topics && topics.length > 0 && (
+                <div className="mt-2">
+                    <strong>Topics:</strong>
+                    <ul className="list-disc pl-5 mt-1">
+                        {topics.map((topic) => (
+                            <li key={topic.id} className="text-gray-700">{topic.name}</li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+
         </Card>
     );
 };
