@@ -10,12 +10,12 @@ interface TeamMember {
 
 const TeamSection: React.FC = () => {
     const teamMembers: TeamMember[] = [
-        { name: 'Yến Thảo', role: 'FE Dev', image: 'src/assets/Thảo.jpg', facebook: 'https://www.facebook.com/yenthao.phan.7?mibextid=LQQJ4d' },
-        { name: 'Gia Triều', role: 'FE Dev', image: 'src/assets/Triều.jpg', facebook: 'https://www.facebook.com/trieu.gia.9469' },
-        { name: 'Quang Huy', role: 'FE Dev - Leader', image: 'src/assets/Huy.jpg', facebook: 'https://www.facebook.com/vilad.huy/' },
-        { name: 'Gia Phong', role: 'BE Dev', image: 'src/assets/Phong.jpg', facebook: 'https://www.facebook.com/thus.gios.3' },
-        { name: 'Hoàng Anh', role: 'MB Dev', image: 'src/assets/Hoàng Anh.jpg', facebook: 'https://www.facebook.com/profile.php?id=100010488452873' },
-        { name: 'Kiến Hòa', role: 'Designer', image: 'src/assets/Hòa.jpg', facebook: 'https://www.facebook.com/hoa.dong.31945243' },
+        { name: 'Yến Thảo', role: 'FE Dev', image: 'public/assets/Thảo.jpg', facebook: 'https://www.facebook.com/yenthao.phan.7?mibextid=LQQJ4d' },
+        { name: 'Gia Triều', role: 'FE Dev', image: 'public/assets/Triều.jpg', facebook: 'https://www.facebook.com/trieu.gia.9469' },
+        { name: 'Quang Huy', role: 'FE Dev - Leader', image: 'public/assets/Huy.jpg', facebook: 'https://www.facebook.com/vilad.huy/' },
+        { name: 'Gia Phong', role: 'BE Dev', image: 'public/assets/Phong.jpg', facebook: 'https://www.facebook.com/thus.gios.3' },
+        { name: 'Hoàng Anh', role: 'MB Dev', image: 'public/assets/Hoàng Anh.jpg', facebook: 'https://www.facebook.com/profile.php?id=100010488452873' },
+        { name: 'Kiến Hòa', role: 'Designer', image: 'public/assets/Hòa.jpg', facebook: 'https://www.facebook.com/hoa.dong.31945243' },
     ];
 
     return (

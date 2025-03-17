@@ -1,0 +1,43 @@
+.ant-layout {
+    background: none;
+}
+.layout-dashboard {
+    height: 100vh !important;
+    overflow-y: scroll;
+    background: #f7f7f7 !important;
+    color: white;
+    .ant-layout-sider-children {
+        background-color: #1f1f1f !important;
+    }
+    .sider-toggle {
+    }
+}
+
+.drawer-sidebar .ant-drawer-body {
+    padding: 0;
+}
+
+.expand-icon {
+    border-radius: 100px;
+    border: #f7f7f7 7px solid;
+    color: var(--primaryColor);
+    font-size: 1.8em;
+    position: relative;
+    left: 286.5px;
+    top: 4em;
+    z-index: 1;
+    box-shadow: inset;
+    transition: all 0.5s ease-out;
+}
+.expand-icon.rotate {
+    left: 75px;
+    transform: rotate(180deg);
+}
+
+@media only screen and (max-width: 991px) {
+    .layout-dashboard {
+        .sider-toggle {
+            padding: 0;
+        }
+    }
+}

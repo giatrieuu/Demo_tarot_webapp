@@ -5,7 +5,7 @@ const Logo: React.FC = () => {
   return (
     <Link to="/" className="flex items-center space-x-2">
       <img
-        src="src/assets/logo.png"
+        src="/public/assets/logo.png"
         alt="Logo"
         className="w-12 h-12 rounded-full object-cover"
       />

@@ -4,8 +4,6 @@ import { SearchOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { getPagedPost } from "../../services/blogServices";
 
-// import Loader from '../../loader/Loader';
-
 const { Title, Paragraph } = Typography;
 const { Search } = Input;
 
@@ -24,7 +22,6 @@ interface Blog {
 const BlogPage: React.FC = () => {
   const navigate = useNavigate();
   const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [error, setError] = useState<string | null>(null);
   const [filteredBlogs, setFilteredBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -46,6 +43,9 @@ const BlogPage: React.FC = () => {
           setBlogs([]);
           setFilteredBlogs([]);
         }
+      })
+      .catch(() => {
+        console.error("Failed to load blogs.");
       })
       .finally(() => {
         setLoading(false);
@@ -70,7 +70,13 @@ const BlogPage: React.FC = () => {
     startIndex + blogsPerPage
   );
 
-  if (error) return <div>{error}</div>;
+  if (loading) {
+    return (
+      <div className="flex justify-center py-10 text-lg text-white">
+        Loading blogs...
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black text-white">

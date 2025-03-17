@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Typography, Breadcrumb, Alert } from "antd";
-// import { useSelector } from "react-redux";
-// import { RootState } from "../../redux/store";
-// import parse from "html-react-parser";
-import CommentSection from "../../components/comments/CommentSection";
+import parse from "html-react-parser"; // 🟢 Thêm import này
+
 import { getPostById } from "../../services/blogServices";
 
 const { Title, Paragraph } = Typography;
@@ -27,7 +25,6 @@ const BlogDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [blog, setBlog] = useState<BlogData | null>(null);
   const [error, setError] = useState<string | null>(null);
-  // const userId = useSelector((state: RootState) => state.auth.userId);
 
   useEffect(() => {
     getPostById(id!).then((blog) => {
@@ -53,12 +50,14 @@ const BlogDetail: React.FC = () => {
         <Breadcrumb.Item>{blog?.post?.title || "Blog Detail"}</Breadcrumb.Item>
       </Breadcrumb>
 
+      {/* 🖼 Ảnh Blog */}
       <img
         src={blog?.url || "https://via.placeholder.com/150"}
         className="w-full h-80 object-cover shadow-lg my-4 mt-8"
         alt="Blog post"
       />
 
+      {/* 📝 Tiêu đề & Thông tin */}
       <Title level={2}>{blog?.post?.title}</Title>
       <Paragraph className="text-sm text-gray-500">
         {blog?.post?.createAt
@@ -66,9 +65,16 @@ const BlogDetail: React.FC = () => {
           : ""}{" "}
         - by {blog?.name}
       </Paragraph>
-      <Paragraph>{blog?.post?.text}</Paragraph>
-      {/* <Paragraph>{parse(blog?.post?.content || "")}</Paragraph> */}
 
+      {/* 📝 Nội dung ngắn */}
+      <Paragraph>{blog?.post?.text}</Paragraph>
+
+      {/* 📝 Nội dung chi tiết từ ReactQuill */}
+      <div className="prose max-w-none">
+        {blog?.post?.content ? parse(blog.post.content) : ""}
+      </div>
+
+      {/* Bình luận (nếu cần) */}
       {/* <CommentSection postId={id!} userId={userId} /> */}
     </div>
   );

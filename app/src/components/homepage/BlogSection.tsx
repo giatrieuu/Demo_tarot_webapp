@@ -28,6 +28,9 @@ const BlogSection: React.FC = () => {
       .then((data) => {
         setBlogs(Array.isArray(data.posts) ? data.posts : []);
       })
+      .catch(() => {
+        console.error("Failed to load blogs.");
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -42,6 +45,7 @@ const BlogSection: React.FC = () => {
       prevIndex - 1 >= 0 ? prevIndex - 1 : Math.floor((blogs.length - 1) / 3)
     );
   };
+
   return (
     <section className="bg-white py-20 px-16 text-center">
       <h2 className="text-4xl font-serif text-center mb-8">Latest Blogs</h2>
@@ -50,7 +54,13 @@ const BlogSection: React.FC = () => {
         <span className="block w-[8%] h-1 bg-purple-800"></span>
         <span className="block w-[8%] h-1 bg-gray-300"></span>
       </div>
-      {blogs.length > 0 ? (
+
+      {/* 🟢 Hiển thị Loading nếu dữ liệu chưa tải xong */}
+      {loading ? (
+        <div className="flex justify-center py-10">
+          <span className="text-lg text-gray-600">Loading blogs...</span>
+        </div>
+      ) : blogs.length > 0 ? (
         <div className="relative">
           <div className="flex justify-between items-center mb-8 gap-4">
             <button
@@ -62,10 +72,10 @@ const BlogSection: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-16 mx-auto">
               {blogs
                 .slice(currentBlogGroupIndex * 3, currentBlogGroupIndex * 3 + 3)
-                .map((blog, index) => (
+                .map((blog) => (
                   <div
-                    key={index}
-                    className="bg-white rounded-lg overflow-hidden shadow-md flex flex-col h-[400px] w-[350px] transition-transform duration-300 hover:scale-105 hover:shadow-xl"
+                    key={blog.post.id}
+                    className="bg-white rounded-lg overflow-hidden shadow-md flex flex-col h-[400px] w-[350px] transition-transform duration-300 hover:scale-105 hover:shadow-xl cursor-pointer"
                     onClick={() => navigate(`/post-detail/${blog.post.id}`)}
                   >
                     <div className="w-full h-[200px] overflow-hidden flex items-center justify-center p-4">

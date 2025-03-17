@@ -1,5 +1,5 @@
 import { Layout } from 'antd';
-import HeaderLogged from '../components/header/HeaderLogged';
+import HeaderLogged from '../components/Header/HeaderLogged';
 import Footer from '../components/Footer';
 
 const { Content } = Layout;
