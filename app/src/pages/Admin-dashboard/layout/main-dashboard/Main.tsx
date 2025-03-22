@@ -52,8 +52,8 @@ function AdminMain() {
       <Layout>
         {/* ✅ Truyền đầy đủ props cho Header */}
         <Header 
-          name="Dashboard" 
-          subName="Admin Panel" 
+          name="" 
+         
           onPress={() => console.log("Header button clicked")} 
         />
         <div className="div-ant" style={{ height: "86vh", overflowY: "scroll" }}>

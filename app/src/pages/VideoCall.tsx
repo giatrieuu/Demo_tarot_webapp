@@ -11,10 +11,10 @@ import {
 import "@livekit/components-styles";
 import { Track } from "livekit-client";
 import { Typography, Spin, Button, message } from "antd";
-import { useSelector } from "react-redux"; // Import useSelector để lấy dữ liệu từ Redux
+import { useSelector } from "react-redux";
 import { fetchLiveKitToken } from "../services/livekitService";
 import { RootState } from "../redux/store";
-
+import FeedbackModal from "../components/FeedbackModal"; // component popup
 
 const { Title } = Typography;
 
@@ -25,12 +25,11 @@ const VideoCall: React.FC = () => {
   const [serverUrl, setServerUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [showFeedback, setShowFeedback] = useState(false); // hiển thị modal
+  const [hasDisconnected, setHasDisconnected] = useState(false); // tránh gọi nhiều lần
 
-  // Lấy userName và userId từ Redux
-
+  const role = useSelector((state: RootState) => state.auth.role);
   const userId = useSelector((state: RootState) => state.auth.userId);
-
-  // Tạo userName theo định dạng user_userId
   const formattedUserName = userId ? `user_${userId}` : "default_user";
 
   useEffect(() => {
@@ -66,11 +65,22 @@ const VideoCall: React.FC = () => {
 
   const handleDisconnected = (reason: string) => {
     if (reason.includes("invalid token")) {
-      setError("Token không hợp lệ! Vui lòng kiểm tra lại.");
       message.error("Token không hợp lệ! Vui lòng kiểm tra lại.");
-    } else {
-      message.info("Đã ngắt kết nối khỏi video call.");
+      navigate("/mybooking");
+      return;
     }
+
+    // 👉 Nếu là user role 1 thì show modal feedback
+    if (role === "1" && !hasDisconnected) {
+      setShowFeedback(true);
+      setHasDisconnected(true);
+    } else {
+      navigate("/mybooking");
+    }
+  };
+
+  const handleFeedbackSubmitted = () => {
+    setShowFeedback(false);
     navigate("/mybooking");
   };
 
@@ -116,12 +126,25 @@ const VideoCall: React.FC = () => {
         <ControlBar />
         <Button
           type="default"
-          onClick={() => navigate("/mybooking")}
+          onClick={() => {
+            if (role === "1") {
+              setShowFeedback(true);
+            } else {
+              navigate("/mybooking");
+            }
+          }}
           style={{ position: "absolute", bottom: "20px", left: "20px" }}
         >
           Thoát
         </Button>
       </LiveKitRoom>
+
+      {/* Popup Feedback */}
+      <FeedbackModal
+        visible={showFeedback}
+        bookingId={bookingId!}
+        onClose={handleFeedbackSubmitted}
+      />
     </div>
   );
 };

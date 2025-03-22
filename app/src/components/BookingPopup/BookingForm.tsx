@@ -65,7 +65,11 @@ const BookingForm: React.FC<BookingFormProps> = ({
     setSelectedDate(date);
     setSelectedSlot(null);
     setStartTime(null);
-    form.setFieldsValue({ slot: undefined, startTime: undefined, endTime: undefined });
+    form.setFieldsValue({
+      slot: undefined,
+      startTime: undefined,
+      endTime: undefined,
+    });
 
     try {
       const schedules = await fetchWorkScheduleByReaderId(safeReaderId);
@@ -74,18 +78,27 @@ const BookingForm: React.FC<BookingFormProps> = ({
           dayjs(schedule.workDate).format("YYYY-MM-DD") === date
       );
 
-      const slots: TimeSlot[] = selectedDaySchedules?.map((schedule: any) => ({
-        start: dayjs(schedule.startTime, "HH:mm:ss").format("HH:mm"),
-        end: dayjs(schedule.endTime, "HH:mm:ss").format("HH:mm"),
-      })) ?? [];
+      const slots: TimeSlot[] =
+        selectedDaySchedules?.map((schedule: any) => ({
+          start: dayjs(schedule.startTime, "HH:mm:ss").format("HH:mm"),
+          end: dayjs(schedule.endTime, "HH:mm:ss").format("HH:mm"),
+        })) ?? [];
 
       setTimeSlots(slots);
 
       const bookings = await fetchBookingsByReaderId(safeReaderId, 1, 100);
-      const bookedSlots: TimeSlot[] = bookings?.map((booking: any) => ({
-        start: dayjs(booking.booking.timeStart).format("HH:mm"),
-        end: dayjs(booking.booking.timeEnd).format("HH:mm"),
-      })) ?? [];
+
+      // 🔥 Lọc đúng ngày đang chọn
+      const selectedDateBookings = bookings?.filter(
+        (booking: any) =>
+          dayjs(booking.booking.timeStart).format("YYYY-MM-DD") === date
+      );
+
+      const bookedSlots: TimeSlot[] =
+        selectedDateBookings?.map((booking: any) => ({
+          start: dayjs(booking.booking.timeStart).format("HH:mm"),
+          end: dayjs(booking.booking.timeEnd).format("HH:mm"),
+        })) ?? [];
 
       setBookedTimes(bookedSlots.flatMap((slot) => [slot.start, slot.end]));
     } catch (error) {
@@ -210,7 +223,9 @@ const BookingForm: React.FC<BookingFormProps> = ({
           onChange={handleEndTimeChange}
         >
           {availableTimes
-            .filter((time) => dayjs(time, "HH:mm").isAfter(dayjs(startTime, "HH:mm")))
+            .filter((time) =>
+              dayjs(time, "HH:mm").isAfter(dayjs(startTime, "HH:mm"))
+            )
             .map((time, index) => (
               <Select.Option key={index} value={time}>
                 {time}

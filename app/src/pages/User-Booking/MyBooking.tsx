@@ -2,8 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Table, Typography, Spin, Button, message } from "antd";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { fetchBookingsByUserId, createPaymentQR } from "../../services/bookingServices";
+import {
+  fetchBookingsByUserId,
+  createPaymentQR,
+} from "../../services/bookingServices";
 import { RootState } from "../../redux/store";
+import dayjs from "dayjs";
 
 const { Title } = Typography;
 
@@ -11,6 +15,8 @@ interface Booking {
   booking: {
     id: string;
     timeStart: string;
+    timeEnd: string;
+    createAt: string;
     status: number;
     total: number;
   };
@@ -34,7 +40,24 @@ const MyBooking: React.FC = () => {
       setLoading(true);
       try {
         const data = await fetchBookingsByUserId(userId);
-        setBookings(data);
+
+        const filtered = data.filter((item: Booking) => {
+          const { status, timeEnd } = item.booking;
+          // ❌ Nếu status là 0 và đã qua thời gian end thì bỏ qua
+          if (status === 0 && dayjs().isAfter(dayjs(timeEnd))) {
+            return false;
+          }
+          return true;
+        });
+
+        // 🔽 Sắp xếp theo thời gian đặt lịch giảm dần (mới nhất lên đầu)
+        const sorted = filtered.sort(
+          (a, b) =>
+            dayjs(b.booking.createAt).valueOf() -
+            dayjs(a.booking.createAt).valueOf()
+        );
+
+        setBookings(sorted);
       } catch (error) {
         console.error("Lỗi khi tải danh sách booking!", error);
         message.error("Không thể tải danh sách booking!");
@@ -46,7 +69,10 @@ const MyBooking: React.FC = () => {
     loadBookings();
   }, [userId]);
 
-  const handleRetryPayment = async (bookingId: string, amount: number): Promise<void> => {
+  const handleRetryPayment = async (
+    bookingId: string,
+    amount: number
+  ): Promise<void> => {
     try {
       const response = await createPaymentQR({ orderId: bookingId, amount });
       if (response.qrCodeUrl) {
@@ -70,22 +96,35 @@ const MyBooking: React.FC = () => {
     }
   };
 
-  const startVideoCall = (bookingId: string): void => {
-    if (!livekitToken) {
-      message.error("Không tìm thấy token để bắt đầu video call!");
-      return;
-    }
-    navigate(`/video-call/${bookingId}`, { state: { livekitToken } }); // Truyền token qua state
+  const isWithinTimeRange = (start: string, end: string) => {
+    const now = dayjs();
+    return now.isAfter(dayjs(start)) && now.isBefore(dayjs(end));
   };
 
   const columns = [
     { title: "Booking ID", dataIndex: ["booking", "id"], key: "id" },
     { title: "Tarot Reader", dataIndex: "userName", key: "userName" },
     {
-      title: "Thời gian",
-      dataIndex: ["booking", "timeStart"],
-      key: "timeStart",
-      render: (text: string) => new Date(text).toLocaleString(),
+      title: "Thời gian bắt đầu - kết thúc",
+      key: "time",
+      render: (_: any, record: Booking) =>
+        `${dayjs(record.booking.timeStart).format("HH:mm")} - ${dayjs(
+          record.booking.timeEnd
+        ).format("HH:mm")} | ${dayjs(record.booking.timeStart).format(
+          "DD/MM/YYYY"
+        )}`,
+    },
+    {
+      title: "Thời gian đặt lịch",
+      dataIndex: ["booking", "createAt"],
+      key: "createAt",
+      render: (text: string) => dayjs(text).format("DD/MM/YYYY HH:mm"),
+    },
+    {
+      title: "Tổng tiền",
+      dataIndex: ["booking", "total"],
+      key: "total",
+      render: (val: number) => `${val.toLocaleString()} VND`,
     },
     {
       title: "Trạng thái",
@@ -98,26 +137,57 @@ const MyBooking: React.FC = () => {
       key: "actions",
       render: (_: any, record: Booking) => {
         const status = record.booking.status;
+        const { id, total, timeStart, timeEnd } = record.booking;
+        const now = dayjs();
+        const start = dayjs(timeStart);
+        const end = dayjs(timeEnd);
+        const minutesToStart = start.diff(now, "minute");
 
         if (status === 1) {
-          return (
-            <Button
-              type="primary"
-              onClick={() => startVideoCall(record.booking.id)}
-            >
-              📹 Video Call
-            </Button>
-          );
+          if (minutesToStart <= 3 && now.isBefore(start)) {
+            return (
+              <Button
+                type="primary"
+                onClick={() => navigate(`/video-call/${id}`)}
+              >
+                📹 Bắt đầu sớm
+              </Button>
+            );
+          }
+
+          if (minutesToStart <= 15 && minutesToStart > 3) {
+            return (
+              <Button
+                disabled
+                className="!bg-teal-100 !text-teal-700 !border-teal-400 animate-pulse cursor-not-allowed"
+                icon={<span>⏳</span>}
+              >
+                Cuộc gọi sắp bắt đầu
+              </Button>
+            );
+          }
+
+          if (now.isAfter(start) && now.isBefore(end)) {
+            return (
+              <Button
+                type="primary"
+                onClick={() => navigate(`/video-call/${id}`)}
+              >
+                📹 Video Call
+              </Button>
+            );
+          }
+
+          if (now.isAfter(end)) {
+            return <Button disabled>⏱ Cuộc gọi đã kết thúc</Button>;
+          }
+
+          return <Button disabled>⏳ Chưa tới thời gian gọi</Button>;
         }
 
         if (status === 0) {
           return (
-            <Button
-              type="default"
-              onClick={() =>
-                handleRetryPayment(record.booking.id, Math.abs(record.booking.total))
-              }
-            >
+            <Button onClick={() => handleRetryPayment(id, total)}>
               💳 Thanh toán lại
             </Button>
           );
@@ -139,7 +209,12 @@ const MyBooking: React.FC = () => {
             <Spin size="large" />
           </div>
         ) : (
-          <Table columns={columns} dataSource={bookings} rowKey={(record) => record.booking.id} />
+          <Table
+            columns={columns}
+            dataSource={bookings}
+            rowKey={(record) => record.booking.id}
+            pagination={{ pageSize: 6 }}
+          />
         )}
       </div>
     </div>

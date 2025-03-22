@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Modal, Typography, Button, Spin, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { fetchLiveKitToken } from "../../../../services/livekitService";
-
+import dayjs from "dayjs";
 
 const { Title, Text } = Typography;
 
@@ -21,6 +21,11 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
   const [status, setStatus] = useState<number | null>(booking?.booking?.status || null);
   const navigate = useNavigate();
 
+  const timeStart = dayjs(booking.booking.timeStart);
+  const timeEnd = dayjs(booking.booking.timeEnd);
+  const now = dayjs();
+  const minutesToStart = timeStart.diff(now, "minute");
+
   useEffect(() => {
     if (booking) {
       setStatus(booking.booking.status);
@@ -35,17 +40,14 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
     setLoading(true);
     try {
-      // Gọi API để lấy token và serverUrl
       const data = await fetchLiveKitToken(booking.booking.id, booking.userName);
 
       if (!data) {
         message.error("Không thể lấy token LiveKit từ server!");
-        setLoading(false);
         return;
       }
 
-      message.info("📞 Redirecting to video call...");
-      // Điều hướng đến trang VideoCall với token và serverUrl
+      message.info("📞 Đang chuyển đến phòng gọi...");
       navigate(`/video-call/${booking.booking.id}`, {
         state: { livekitToken: data.token, serverUrl: data.serverUrl },
       });
@@ -55,6 +57,44 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
     } finally {
       setLoading(false);
     }
+  };
+
+  const renderCallButton = () => {
+    if (status !== 1) return null;
+
+    if (now.isAfter(timeEnd)) {
+      return <Button disabled>⏱ Cuộc gọi đã kết thúc</Button>;
+    }
+
+    if (now.isBefore(timeStart)) {
+      if (minutesToStart <= 15 && minutesToStart > 3) {
+        return (
+          <Button disabled className="animate-pulse text-blue-600 font-semibold border border-blue-500 bg-blue-50">
+            ⏳ Cuộc gọi sắp bắt đầu
+          </Button>
+        );
+      }
+
+      if (minutesToStart <= 3) {
+        return (
+          <Button type="primary" onClick={handleCallVideo} loading={loading}>
+            📹 Video Call
+          </Button>
+        );
+      }
+
+      return <Button disabled>⏳ Chưa tới giờ gọi</Button>;
+    }
+
+    if (now.isAfter(timeStart) && now.isBefore(timeEnd)) {
+      return (
+        <Button type="primary" onClick={handleCallVideo} loading={loading}>
+          📹 Video Call
+        </Button>
+      );
+    }
+
+    return null;
   };
 
   return (
@@ -72,17 +112,12 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
         <div className="p-4 space-y-3">
           <Title level={4}>{booking.userName}</Title>
           <Text className="block text-gray-600">
-            🕒 {new Date(booking.booking.timeStart).toLocaleString()} -{" "}
-            {new Date(booking.booking.timeEnd).toLocaleString()}
+            🕒 {timeStart.format("HH:mm DD/MM/YYYY")} - {timeEnd.format("HH:mm")}
           </Text>
           <Text className="block">📝 {booking.booking.note || "Không có ghi chú"}</Text>
 
           <div className="mt-4 flex justify-end space-x-2">
-            {status === 1 && (
-              <Button type="primary" onClick={handleCallVideo} loading={loading}>
-                📹 Video Call
-              </Button>
-            )}
+            {renderCallButton()}
           </div>
         </div>
       )}

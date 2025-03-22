@@ -96,6 +96,16 @@ const columns = [
       ),
   },
   {
+    title: "Thời gian đặt lịch",
+    dataIndex: "booking",
+    key: "createAt",
+    render: (booking: any) =>
+      booking?.createAt
+        ? new Date(booking.createAt).toLocaleString()
+        : "N/A",
+  },
+  
+  {
     title: "Status",
     dataIndex: "booking",
     key: "status",
@@ -111,25 +121,28 @@ const Order: React.FC = () => {
 
   useEffect(() => {
     if (!userId) return;
-
+  
     fetchBookingsByReaderId(userId)
       .then(async (data) => {
         if (!data) return;
-
+  
+        // 🔽 Sắp xếp theo thời gian đặt lịch mới nhất
+        data.sort((a: any, b: any) => new Date(b.booking.createAt).getTime() - new Date(a.booking.createAt).getTime());
+  
         // Gọi API lấy avatar của từng user
         const updatedData = await Promise.all(
           data.map(async (item: any) => {
             const userResponse = await fetchUserWithImages(item.booking.userId);
-            const avatar = userResponse?.url?.[0] || ""; // Lấy avatar đầu tiên nếu có
+            const avatar = userResponse?.url?.[0] || "";
             return { ...item, avatar };
           })
         );
-
+  
         setOrderData(updatedData);
       })
       .finally(() => setLoading(false));
   }, [userId]);
-
+  
   return (
     <div className="p-6 bg-white shadow-md rounded-lg">
       <Typography.Title level={3} className="text-center">

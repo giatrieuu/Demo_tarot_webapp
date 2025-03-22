@@ -31,7 +31,7 @@ const RevenueChart: React.FC = () => {
         const revenueByDate: Record<string, { revenue: number; bookings: number }> = {};
 
         readerBookings.forEach((booking: any) => {
-          const date = dayjs(booking.timeStart).format("YYYY-MM-DD");
+          const date = dayjs(booking.createAt).format("YYYY-MM-DD");
           if (!revenueByDate[date]) {
             revenueByDate[date] = { revenue: 0, bookings: 0 };
           }

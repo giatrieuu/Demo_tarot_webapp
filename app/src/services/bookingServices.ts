@@ -3,7 +3,7 @@ import {tokenAxiosInstance} from "../axios/axiosConfig";
 export const fetchBookingsByReaderId = async (
   readerId: string,
   pageNumber: number = 1,
-  pageSize: number = 10
+  pageSize: number = 100
 ) => {
   const response = await tokenAxiosInstance.get(
     `/api/BookingWeb/GetBookingsByReaderId/${readerId}`,
@@ -109,3 +109,29 @@ export const updateBookingStatus = async (bookingId: string, status: number) => 
     const response = await tokenAxiosInstance.get(`/api/BookingWeb/bookings-list`);
     return response.data;
   };
+
+  export const createFeedback = async ({
+    bookingId,
+    text,
+    rating,
+  }: {
+    bookingId: string;
+    text: string;
+    rating: number;
+  }) => {
+    const formData = new FormData();
+    formData.append("BookingId", bookingId);
+    formData.append("Text", text);
+    formData.append("Rating", rating.toString());
+  
+    const response = await tokenAxiosInstance.post(
+      "/api/BookingWeb/create-feedback",
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
+  
+    return response.data;
+  };
+  

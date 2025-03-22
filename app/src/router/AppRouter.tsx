@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate, useParams } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 
 import LayoutRoute from "../layout/LayoutRoute";
 import { ADMIN, PUBLIC, TAROT_READER, USER } from "../constants";
@@ -18,7 +18,6 @@ import VerifySuccess from "../pages/VerifySuccess";
 import CreateTimeToBook from "../pages/Tarot-reader-dashboard/pages/CreateTimeToBook/CreateTimeToBook";
 import MyBooking from "../pages/User-Booking/MyBooking";
 
-import VideoCall from "../pages/VideoCall";
 import Videocall from "../pages/VideoCall";
 
 
