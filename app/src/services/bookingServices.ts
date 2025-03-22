@@ -105,4 +105,7 @@ export const updateBookingStatus = async (bookingId: string, status: number) => 
     console.log("Fetch Bookings Response:", response.data); // Debug API response
     return response.data;
   };
-  
+  export const fetchAllBookings = async () => {
+    const response = await tokenAxiosInstance.get(`/api/BookingWeb/bookings-list`);
+    return response.data;
+  };

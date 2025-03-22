@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Typography, Button, Spin, message } from "antd";
+import { useNavigate } from "react-router-dom";
+import { fetchLiveKitToken } from "../../../../services/livekitService";
+
 
 const { Title, Text } = Typography;
 
@@ -14,8 +17,9 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
   booking,
   onClose,
 }) => {
-  const [loading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [status, setStatus] = useState<number | null>(booking?.booking?.status || null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (booking) {
@@ -23,9 +27,34 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
     }
   }, [booking]);
 
-  const handleCallVideo = () => {
-    message.info("📞 Redirecting to video call...");
-    window.open("https://meet.google.com/", "_blank"); // Mở Google Meet (hoặc nền tảng khác)
+  const handleCallVideo = async () => {
+    if (!booking?.booking?.id || !booking?.userName) {
+      message.error("Không đủ thông tin để bắt đầu video call!");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Gọi API để lấy token và serverUrl
+      const data = await fetchLiveKitToken(booking.booking.id, booking.userName);
+
+      if (!data) {
+        message.error("Không thể lấy token LiveKit từ server!");
+        setLoading(false);
+        return;
+      }
+
+      message.info("📞 Redirecting to video call...");
+      // Điều hướng đến trang VideoCall với token và serverUrl
+      navigate(`/video-call/${booking.booking.id}`, {
+        state: { livekitToken: data.token, serverUrl: data.serverUrl },
+      });
+    } catch (error) {
+      message.error("Lỗi khi bắt đầu video call!");
+      console.error("Error starting video call:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -50,7 +79,7 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
           <div className="mt-4 flex justify-end space-x-2">
             {status === 1 && (
-              <Button type="primary" onClick={handleCallVideo}>
+              <Button type="primary" onClick={handleCallVideo} loading={loading}>
                 📹 Video Call
               </Button>
             )}

@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Table, Typography, Spin, Button, message } from "antd";
 import { useSelector } from "react-redux";
-
+import { useNavigate } from "react-router-dom";
 import { fetchBookingsByUserId, createPaymentQR } from "../../services/bookingServices";
-import { useNavigate } from "react-router-dom"; // Thêm useNavigate
 import { RootState } from "../../redux/store";
-
 
 const { Title } = Typography;
 
-// Định nghĩa kiểu cho booking
 interface Booking {
   booking: {
     id: string;
@@ -22,13 +19,16 @@ interface Booking {
 
 const MyBooking: React.FC = () => {
   const userId = useSelector((state: RootState) => state.auth.userId);
-  const livekitToken = useSelector((state: RootState) => state.auth.token);
+  const livekitToken = useSelector((state: RootState) => state.auth.token); // Token LiveKit
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const navigate = useNavigate(); // Thêm navigate
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (!userId) return;
+    if (!userId) {
+      message.error("Vui lòng đăng nhập để xem danh sách booking!");
+      return;
+    }
 
     const loadBookings = async (): Promise<void> => {
       setLoading(true);
@@ -37,8 +37,10 @@ const MyBooking: React.FC = () => {
         setBookings(data);
       } catch (error) {
         console.error("Lỗi khi tải danh sách booking!", error);
+        message.error("Không thể tải danh sách booking!");
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     loadBookings();
@@ -73,8 +75,7 @@ const MyBooking: React.FC = () => {
       message.error("Không tìm thấy token để bắt đầu video call!");
       return;
     }
-    // Điều hướng đến trang VideoCall thay vì mở modal
-    navigate(`/video-call/${bookingId}`);
+    navigate(`/video-call/${bookingId}`, { state: { livekitToken } }); // Truyền token qua state
   };
 
   const columns = [

@@ -12,7 +12,7 @@ export const PUBLIC = {
     CARD_DRAW: '/card-draw',
     CARD_MEANING: '/card-meaning',
     BLOG_DETAIL: '/post-detail/:id',
-    VIDEO_CALL: '/video-call/:id'
+    VIDEO_CALL: '/video-call/:bookingId'
 };
 export const USER = {
     MYBOOKING: '/mybooking',
