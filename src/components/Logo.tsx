@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-
+import logo from "../../public/assets/logo.png"
 const Logo: React.FC = () => {
   return (
     <Link to="/" className="flex items-center space-x-2">
       <img
-        src="/public/assets/logo.png"
+        src={logo}
         alt="Logo"
         className="w-12 h-12 rounded-full object-cover"
       />
