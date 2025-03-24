@@ -11,6 +11,9 @@ import {
   fetchReaderReviews,
 } from "../../services/tarotReaderServices";
 
+// Import the background image
+import BgTarotImage from '../../../public/assets/bgTarot.jpg';
+
 const ReaderDetail: React.FC = () => {
   const { readerId } = useParams<{ readerId: string }>();
   const [readerData, setReaderData] = useState<any>(null);
@@ -83,33 +86,33 @@ const ReaderDetail: React.FC = () => {
 
   return (
     <div
-    className="relative flex flex-col items-center min-h-screen bg-cover bg-center bg-no-repeat px-6 py-12 md:px-24 lg:px-40 xl:px-60"
-    style={{ backgroundImage: "url('/public/assets/bgTarot.jpg')" }} 
-  >
-    <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+      className="relative flex flex-col items-center min-h-screen bg-cover bg-center bg-no-repeat px-6 py-12 md:px-24 lg:px-40 xl:px-60"
+      style={{ backgroundImage: `url(${BgTarotImage})` }} // Use imported image here
+    >
+      <div className="absolute inset-0 bg-black bg-opacity-30"></div>
   
-    {/* Thẻ chứa nội dung, tăng max-width */}
-    <div className="relative z-10 w-full max-w-7xl bg-transparent shadow-lg rounded-lg p-10">
-      <ReaderProfile
-        readerData={readerData}
-        imageUrl={imageUrl}
-        topics={topics}
-        isFollowed={false}
-        onFollow={() => console.log("Follow reader")}
-        onBookNow={handleBookNow} 
-      />
-      <ReaderAbout description={readerData.description} />
-      <ReaderReviews reviews={reviews} />
-      <BookingPopup
-        visible={isBookingPopupVisible}
-        onClose={handleCloseBookingPopup}
-        readerData={readerData}
-        avatarUrl={imageUrl}
-        topics={topics}
-        userId={"USER_ID"} 
-      />
+      {/* Thẻ chứa nội dung, tăng max-width */}
+      <div className="relative z-10 w-full max-w-7xl bg-transparent shadow-lg rounded-lg p-10">
+        <ReaderProfile
+          readerData={readerData}
+          imageUrl={imageUrl}
+          topics={topics}
+          isFollowed={false}
+          onFollow={() => console.log("Follow reader")}
+          onBookNow={handleBookNow} 
+        />
+        <ReaderAbout description={readerData.description} />
+        <ReaderReviews reviews={reviews} />
+        <BookingPopup
+          visible={isBookingPopupVisible}
+          onClose={handleCloseBookingPopup}
+          readerData={readerData}
+          avatarUrl={imageUrl}
+          topics={topics}
+          userId={"USER_ID"} 
+        />
+      </div>
     </div>
-  </div>
   );
 };
 
