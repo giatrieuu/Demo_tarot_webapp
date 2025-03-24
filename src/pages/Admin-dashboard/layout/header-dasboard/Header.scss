@@ -1,0 +1,21 @@
+.header-dashboard {
+    height: 14vh;
+    padding: 0 2em;
+    &__header-control {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        &__sidebar-toggler {
+        }
+    }
+    .dash-info {
+        justify-content: end;
+    }
+}
+
+@media only screen and (max-width: 1280px) {
+    .header-control {
+        &__sidebar-toggler {
+        }
+    }
+}
