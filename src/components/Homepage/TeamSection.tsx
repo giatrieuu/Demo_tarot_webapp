@@ -1,21 +1,28 @@
-// TeamSection.tsx
 import React from 'react';
+
+// Import all images
+import ThaoImg from '/assets/Thảo.jpg';
+import TrieuImg from '/assets/Triều.jpg';
+import HuyImg from '/assets/Huy.jpg';
+import PhongImg from '/assets/Phong.jpg';
+import HoangAnhImg from '/assets/Hoàng Anh.jpg';
+import HoaImg from '/assets/Hòa.jpg';
 
 interface TeamMember {
     name: string;
     role: string;
-    image: string;
+    image: string; // This will now reference the imported image
     facebook: string;
 }
 
 const TeamSection: React.FC = () => {
     const teamMembers: TeamMember[] = [
-        { name: 'Yến Thảo', role: 'FE Dev', image: '/assets/Thảo.jpg', facebook: 'https://www.facebook.com/yenthao.phan.7?mibextid=LQQJ4d' },
-        { name: 'Gia Triều', role: 'FE Dev', image: '/assets/Triều.jpg', facebook: 'https://www.facebook.com/trieu.gia.9469' },
-        { name: 'Quang Huy', role: 'FE Dev - Leader', image: '/assets/Huy.jpg', facebook: 'https://www.facebook.com/vilad.huy/' },
-        { name: 'Gia Phong', role: 'BE Dev', image: '/assets/Phong.jpg', facebook: 'https://www.facebook.com/thus.gios.3' },
-        { name: 'Hoàng Anh', role: 'MB Dev', image: '/assets/Hoàng Anh.jpg', facebook: 'https://www.facebook.com/profile.php?id=100010488452873' },
-        { name: 'Kiến Hòa', role: 'Designer', image: '/assets/Hòa.jpg', facebook: 'https://www.facebook.com/hoa.dong.31945243' },
+        { name: 'Yến Thảo', role: 'FE Dev', image: ThaoImg, facebook: 'https://www.facebook.com/yenthao.phan.7?mibextid=LQQJ4d' },
+        { name: 'Gia Triều', role: 'FE Dev', image: TrieuImg, facebook: 'https://www.facebook.com/trieu.gia.9469' },
+        { name: 'Quang Huy', role: 'FE Dev - Leader', image: HuyImg, facebook: 'https://www.facebook.com/vilad.huy/' },
+        { name: 'Gia Phong', role: 'BE Dev', image: PhongImg, facebook: 'https://www.facebook.com/thus.gios.3' },
+        { name: 'Hoàng Anh', role: 'MB Dev', image: HoangAnhImg, facebook: 'https://www.facebook.com/profile.php?id=100010488452873' },
+        { name: 'Kiến Hòa', role: 'Designer', image: HoaImg, facebook: 'https://www.facebook.com/hoa.dong.31945243' },
     ];
 
     return (
