@@ -1,17 +1,31 @@
+// RevenueChart.tsx
 import React, { useEffect, useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { Button } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-
 import { useSelector } from "react-redux";
-
 import dayjs from "dayjs";
 import { RootState } from "../../../../redux/store";
 import { fetchAllBookings } from "../../../../services/bookingServices";
 
+// Định nghĩa interface cho booking
+interface Booking {
+  id: string;
+  userId: string;
+  readerId: string;
+  timeStart: string;
+  timeEnd: string;
+  createAt: string;
+  total: number;
+  rating: number | null;
+  feedback: string | null;
+  status: number;
+  note: string | null;
+}
+
 const RevenueChart: React.FC = () => {
   const readerId = useSelector((state: RootState) => state.auth.userId);
-  const [bookingData, setBookingData] = useState<any[]>([]);
+  const [bookingData, setBookingData] = useState<{ date: string; revenue: number; bookings: number }[]>([]);
   const [startDate, setStartDate] = useState(dayjs()); // Ngày bắt đầu của tuần hiển thị
   const [chartData, setChartData] = useState<{ date: string; revenue: number; bookings: number }[]>([]);
 
@@ -25,12 +39,12 @@ const RevenueChart: React.FC = () => {
         }
 
         // 🔹 Lọc danh sách Booking theo Reader ID
-        const readerBookings = data.filter((booking: any) => booking.readerId === readerId);
+        const readerBookings = data.filter((booking: Booking) => booking.readerId === readerId);
 
         // 🔹 Nhóm Booking theo từng ngày và tính tổng doanh thu mỗi ngày
         const revenueByDate: Record<string, { revenue: number; bookings: number }> = {};
 
-        readerBookings.forEach((booking: any) => {
+        readerBookings.forEach((booking: Booking) => {
           const date = dayjs(booking.createAt).format("YYYY-MM-DD");
           if (!revenueByDate[date]) {
             revenueByDate[date] = { revenue: 0, bookings: 0 };
@@ -58,8 +72,7 @@ const RevenueChart: React.FC = () => {
   }, [readerId]);
 
   // 🔹 Cập nhật dữ liệu biểu đồ theo 7 ngày
-  const updateChartData = (data: any[], date: dayjs.Dayjs) => {
-    const endDate = date.add(6, "day"); // Hiển thị 7 ngày
+  const updateChartData = (data: { date: string; revenue: number; bookings: number }[], date: dayjs.Dayjs) => {
     const filteredData = [];
 
     for (let i = 0; i < 7; i++) {
@@ -94,7 +107,7 @@ const RevenueChart: React.FC = () => {
         <BarChart data={chartData}>
           <XAxis dataKey="date" tickFormatter={(date) => dayjs(date).format("DD/MM")} />
           <YAxis />
-          <Tooltip formatter={(value, name, props) => [`${value} VND`, `Bookings: ${props.payload.bookings}`]} />
+          <Tooltip formatter={(value, _, props) => [`${value} VND`, `Bookings: ${props.payload.bookings}`]} />
           <Bar dataKey="revenue" fill="#4CAF50" />
         </BarChart>
       </ResponsiveContainer>

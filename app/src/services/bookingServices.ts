@@ -105,11 +105,25 @@ export const updateBookingStatus = async (bookingId: string, status: number) => 
     console.log("Fetch Bookings Response:", response.data); // Debug API response
     return response.data;
   };
-  export const fetchAllBookings = async () => {
+  interface Booking {
+    id: string;
+    userId: string;
+    readerId: string;
+    timeStart: string;
+    timeEnd: string;
+    createAt: string;
+    total: number;
+    rating: number | null;
+    feedback: string | null;
+    status: number;
+    note: string | null;
+  }
+  
+  // Hàm fetchAllBookings với type trả về rõ ràng
+  export const fetchAllBookings = async (): Promise<Booking[]> => {
     const response = await tokenAxiosInstance.get(`/api/BookingWeb/bookings-list`);
     return response.data;
   };
-
   export const createFeedback = async ({
     bookingId,
     text,

@@ -1,3 +1,4 @@
+// VideoCall.tsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
@@ -9,7 +10,7 @@ import {
   useTracks,
 } from "@livekit/components-react";
 import "@livekit/components-styles";
-import { Track } from "livekit-client";
+import { Track, DisconnectReason } from "livekit-client"; // Import DisconnectReason
 import { Typography, Spin, Button, message } from "antd";
 import { useSelector } from "react-redux";
 import { fetchLiveKitToken } from "../services/livekitService";
@@ -63,8 +64,9 @@ const VideoCall: React.FC = () => {
     loadToken();
   }, [bookingId, formattedUserName, navigate]);
 
-  const handleDisconnected = (reason: string) => {
-    if (reason.includes("invalid token")) {
+  const handleDisconnected = (reason?: DisconnectReason) => {
+    // Kiểm tra lý do ngắt kết nối là "invalid token" (giá trị cụ thể là 4 theo LiveKit)
+    if (reason === 4) { // DisconnectReason.INVALID_TOKEN tương ứng với giá trị 4
       message.error("Token không hợp lệ! Vui lòng kiểm tra lại.");
       navigate("/mybooking");
       return;

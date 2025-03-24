@@ -39,4 +39,5 @@ export const ADMIN = {
     TAROTREADER_MANAGEMENT: '/admin/manage-tarot-reader',
     TOPIC_MANAGEMENT: '/admin/manage-topic',
     BLOG_MANAGEMENT: '/admin/manage-blogs',
+    TRANSACTION: '/admin/transactions',
 }

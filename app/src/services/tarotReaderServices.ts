@@ -92,6 +92,10 @@ export const fetchAllReaders = async () => {
   const response = await tokenAxiosInstance.get("/api/ReaderWeb/readers-list");
   return response.data;
 };
+export const fetchAllUsers = async () => {
+  const response = await tokenAxiosInstance.get("/api/UserWeb/users-list");
+  return response.data;
+};
 export const changeReaderStatus = async (readerId: string): Promise<any> => {
   const response = await tokenAxiosInstance.post(
     `/api/ReaderWeb/change-reader-status`,

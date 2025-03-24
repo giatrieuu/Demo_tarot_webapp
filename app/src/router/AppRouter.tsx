@@ -19,6 +19,8 @@ import CreateTimeToBook from "../pages/Tarot-reader-dashboard/pages/CreateTimeTo
 import MyBooking from "../pages/User-Booking/MyBooking";
 
 import Videocall from "../pages/VideoCall";
+import Transaction from "../pages/Admin-dashboard/pages/transaction/Transaction";
+
 
 
 const BlogDetail = lazy(() => import("../pages/Blog/BlogDetail"));
@@ -63,6 +65,7 @@ const AppRouter: React.FC = () => {
           <Route element={<AdminMain />}>
             <Route path={ADMIN.ADMIN_DASHBOARD} element={<AdminOverview />} />
             <Route path={ADMIN.TAROTREADER_MANAGEMENT} element={<TarotReadersList />} />
+            <Route path={ADMIN.TRANSACTION} element={<Transaction />} />
           </Route>
 
           {/* Authentication */}

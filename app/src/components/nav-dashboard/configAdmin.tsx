@@ -1,13 +1,11 @@
 import { StockOutlined } from '@ant-design/icons'
 import { PiStudent } from 'react-icons/pi'
-import { FaChalkboardTeacher } from 'react-icons/fa'
+
 import { GrTransaction } from 'react-icons/gr'
-import { BiSolidFlag } from 'react-icons/bi'
+
 import { AiOutlineLogout } from 'react-icons/ai'
 
 import { FiUsers } from 'react-icons/fi'
-import { MdOutlineAdminPanelSettings } from 'react-icons/md'
-import { FaBell } from 'react-icons/fa'
 
 export const navDashboardConfigAdmin = [
     {
@@ -25,20 +23,6 @@ export const navDashboardConfigAdmin = [
                 icon: <PiStudent style={{ fontSize: '1.4em' }} />,
                 label: 'Tarot reader',
             },
-            {
-                key: '22',
-                icon: <FaChalkboardTeacher style={{ fontSize: '1.4em' }} />,
-                label: 'Blog',
-            },
-            {
-                key: '23',
-                icon: (
-                    <MdOutlineAdminPanelSettings
-                        style={{ fontSize: '1.4em' }}
-                    />
-                ),
-                label: 'Admin',
-            },
         ],
     },
 
@@ -50,17 +34,7 @@ export const navDashboardConfigAdmin = [
     {
         key: '9',
         icon: <GrTransaction style={{ fontSize: '1.4em' }} />,
-        label: 'Orders',
-    },
-    {
-        key: '6',
-        icon: <BiSolidFlag style={{ fontSize: '1.4em' }} />,
-        label: 'Report',
-    },
-    {
-        key: '8',
-        icon: <FaBell style={{ fontSize: '1.3em' }} />,
-        label: 'Notifications',
+        label: 'Transactions',
     },
     {
         key: '7',
@@ -101,7 +75,7 @@ export const navpathAdmin = {
     },
     
     9: {
-        path: '/admin/orders',
+        path: '/admin/transactions',
     },
 }
 

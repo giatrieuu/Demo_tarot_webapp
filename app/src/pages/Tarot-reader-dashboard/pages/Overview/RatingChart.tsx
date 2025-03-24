@@ -1,10 +1,24 @@
+// RatingChart.tsx
 import React, { useEffect, useState } from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
-
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { fetchAllBookings } from "../../../../services/bookingServices";
 
+// Định nghĩa interface cho booking
+interface Booking {
+  id: string;
+  userId: string;
+  readerId: string;
+  timeStart: string;
+  timeEnd: string;
+  createAt: string;
+  total: number;
+  rating: number | null;
+  feedback: string | null;
+  status: number;
+  note: string | null;
+}
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#FF0000"];
 
@@ -22,14 +36,16 @@ const RatingChart: React.FC = () => {
         }
 
         // 🔹 Lọc danh sách booking có rating dành cho reader này
-        const readerBookings = data.filter((booking: any) => booking.readerId === readerId && booking.rating !== null);
+        const readerBookings = data.filter(
+          (booking: Booking) => booking.readerId === readerId && booking.rating !== null
+        );
 
         // 🔹 Đếm số lượng rating theo từng mức điểm (1 sao -> 5 sao)
         const ratingCounts: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
 
-        readerBookings.forEach((booking: any) => {
+        readerBookings.forEach((booking: Booking) => {
           const rating = booking.rating;
-          if (ratingCounts[rating] !== undefined) {
+          if (rating !== null && ratingCounts[rating] !== undefined) {
             ratingCounts[rating] += 1;
           }
         });
@@ -53,7 +69,7 @@ const RatingChart: React.FC = () => {
       <ResponsiveContainer width="100%" height={300}>
         <PieChart>
           <Pie data={ratingData} cx="50%" cy="50%" outerRadius={100} fill="#8884d8" dataKey="value">
-            {ratingData.map((entry, index) => (
+            {ratingData.map((_, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index]} />
             ))}
           </Pie>

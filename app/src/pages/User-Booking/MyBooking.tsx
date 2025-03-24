@@ -1,3 +1,4 @@
+// MyBooking.tsx
 import React, { useEffect, useState } from "react";
 import { Table, Typography, Spin, Button, message } from "antd";
 import { useSelector } from "react-redux";
@@ -25,7 +26,6 @@ interface Booking {
 
 const MyBooking: React.FC = () => {
   const userId = useSelector((state: RootState) => state.auth.userId);
-  const livekitToken = useSelector((state: RootState) => state.auth.token); // Token LiveKit
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
@@ -52,7 +52,7 @@ const MyBooking: React.FC = () => {
 
         // 🔽 Sắp xếp theo thời gian đặt lịch giảm dần (mới nhất lên đầu)
         const sorted = filtered.sort(
-          (a, b) =>
+          (a: Booking, b: Booking) =>
             dayjs(b.booking.createAt).valueOf() -
             dayjs(a.booking.createAt).valueOf()
         );
@@ -94,11 +94,6 @@ const MyBooking: React.FC = () => {
       default:
         return "❓ Không xác định";
     }
-  };
-
-  const isWithinTimeRange = (start: string, end: string) => {
-    const now = dayjs();
-    return now.isAfter(dayjs(start)) && now.isBefore(dayjs(end));
   };
 
   const columns = [
