@@ -4,6 +4,9 @@ import { SearchOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { getPagedPost } from "../../services/blogServices";
 
+// Import the background image
+import BlogImage from '../../../public/assets/blog.jpg';
+
 const { Title, Paragraph } = Typography;
 const { Search } = Input;
 
@@ -83,7 +86,7 @@ const BlogPage: React.FC = () => {
       {/* Header Section */}
       <header
         className="relative flex items-center justify-between px-16 py-20 h-screen bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('src/assets/blog.jpg')" }}
+        style={{ backgroundImage: `url(${BlogImage})` }} // Use imported image here
       >
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
         <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center">

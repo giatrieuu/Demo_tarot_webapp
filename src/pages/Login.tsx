@@ -3,7 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Input, message, Modal } from "antd";
 import { forgotPassword, loginTarotReader, loginUser } from "../services/userServices";
-import bgVideo from "../../public/assets/home.mp4";
+import bgVideo from "/assets/home.mp4";
 import CustomButton from "../components/CustomButton";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
