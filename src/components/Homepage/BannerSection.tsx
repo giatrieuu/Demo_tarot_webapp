@@ -11,7 +11,7 @@ const BannerSection: React.FC = () => {
                 muted
                 className="absolute inset-0 w-full h-full object-cover z-0"
             >
-                <source src="public/assets/home.mp4" type="video/mp4" />
+                <source src="/src/assets/home.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
             </video>
             <div className="relative z-10 flex-1 pr-12">
