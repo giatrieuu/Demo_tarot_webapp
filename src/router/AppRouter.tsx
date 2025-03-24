@@ -21,6 +21,7 @@ import MyBooking from "../pages/User-Booking/MyBooking";
 import Videocall from "../pages/VideoCall";
 import Transaction from "../pages/Admin-dashboard/pages/transaction/Transaction";
 import TopicList from "../pages/Admin-dashboard/pages/services/Topic/TopicList";
+import UserProfile from "../pages/User-Booking/Profile/UserProfile";
 
 
 
@@ -48,8 +49,8 @@ const AppRouter: React.FC = () => {
             <Route path={PUBLIC.BLOG_DETAIL} element={<BlogDetail />} />
             <Route path={PUBLIC.LIST_READERS} element={<ListTarotReader />} />
             <Route path={PUBLIC.READER_DETAIL} element={<ReaderDetail />} />
-            <Route path={USER.MYBOOKING} element={<MyBooking />} />
-
+            <Route path={USER.MYBOOKING} element={<MyBooking />} />UserProfile
+            <Route path={USER.PROFILE} element={<UserProfile />} />
           </Route>
 
           {/* Tarot Reader Dashboard */}

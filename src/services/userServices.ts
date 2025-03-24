@@ -59,3 +59,54 @@ export const fetchUserWithImages = async (userId: string) => {
   );
   return response.data;
 };
+// Existing updateUserProfile function
+export const updateUserProfile = async (userData: {
+  id: string;
+  name: string;
+  email: string;
+  description: string | null;
+  dob: string | null;
+  avatar?: File;
+}) => {
+  const formData = new FormData();
+  formData.append("id", userData.id);
+  formData.append("name", userData.name);
+  formData.append("email", userData.email);
+  if (userData.description) formData.append("description", userData.description);
+  if (userData.dob) formData.append("dob", userData.dob);
+  if (userData.avatar) formData.append("avatar", userData.avatar);
+
+  const response = await defaultAxiosInstance.post(
+    `/api/UserWeb/update-user`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+  return response.data;
+};
+
+// New updateUserImage function
+export const updateUserImage = async (userId: string, imageFile: File) => {
+  const formData = new FormData();
+  formData.append("File", imageFile);
+  formData.append("UserId", userId);
+  // Optional fields (can be empty)
+  formData.append("CardId", "");
+  formData.append("PostId", "");
+  formData.append("GroupId", "");
+  formData.append("ReaderId", "");
+
+  const response = await defaultAxiosInstance.post(
+    `/api/Images/UpdateImage`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+  return response.data;
+};

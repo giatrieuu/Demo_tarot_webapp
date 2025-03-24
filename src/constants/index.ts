@@ -16,6 +16,7 @@ export const PUBLIC = {
 };
 export const USER = {
   MYBOOKING: "/mybooking",
+  PROFILE:"/profile"
 };
 export const TAROT_READER = {
   TAROT_READER_DASHBOARD_OVERVIEW: "/tarot-reader/overview",
