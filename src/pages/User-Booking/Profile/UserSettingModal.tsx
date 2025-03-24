@@ -58,8 +58,10 @@ const UserSettingModal: React.FC<UserSettingModalProps> = ({
   };
 
   // Handle date change
-  const handleDateChange = (_date: Dayjs | null, dateString: string) => {
-    setFormData({ ...formData, dob: dateString });
+  const handleDateChange = (_date: Dayjs | null, dateString: string | string[]) => {
+    // Since we're using a single date picker, dateString will always be a string
+    const formattedDate = typeof dateString === "string" ? dateString : null;
+    setFormData({ ...formData, dob: formattedDate });
   };
 
   // Handle avatar upload
