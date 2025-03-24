@@ -20,6 +20,8 @@ import MyBooking from "../pages/User-Booking/MyBooking";
 
 import Videocall from "../pages/VideoCall";
 import Transaction from "../pages/Admin-dashboard/pages/transaction/Transaction";
+import TopicList from "../pages/Admin-dashboard/pages/services/Topic/TopicList";
+
 
 
 
@@ -58,6 +60,7 @@ const AppRouter: React.FC = () => {
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_ORDERS} element={<Order />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_OVERVIEW} element={<Overview />} />
             <Route path={TAROT_READER.TAROT_READER_DASHBOARD_BLOG} element={<PostList />} />
+
        
           </Route>
 
@@ -65,6 +68,7 @@ const AppRouter: React.FC = () => {
           <Route element={<AdminMain />}>
             <Route path={ADMIN.ADMIN_DASHBOARD} element={<AdminOverview />} />
             <Route path={ADMIN.TAROTREADER_MANAGEMENT} element={<TarotReadersList />} />
+            <Route path={ADMIN.TOPIC_MANAGEMENT} element={<TopicList />} />
             <Route path={ADMIN.TRANSACTION} element={<Transaction />} />
           </Route>
 

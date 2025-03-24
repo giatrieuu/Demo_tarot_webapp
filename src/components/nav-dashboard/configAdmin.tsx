@@ -1,11 +1,9 @@
-import { StockOutlined } from '@ant-design/icons'
-import { PiStudent } from 'react-icons/pi'
-
-import { GrTransaction } from 'react-icons/gr'
-
-import { AiOutlineLogout } from 'react-icons/ai'
-
-import { FiUsers } from 'react-icons/fi'
+import { StockOutlined } from '@ant-design/icons';
+import { PiStudent } from 'react-icons/pi';
+import { GrTransaction } from 'react-icons/gr';
+import { AiOutlineLogout } from 'react-icons/ai';
+import { FiUsers } from 'react-icons/fi';
+import { GiCrystalBall } from 'react-icons/gi'; // Import the new icon for Topic
 
 export const navDashboardConfigAdmin = [
     {
@@ -23,14 +21,13 @@ export const navDashboardConfigAdmin = [
                 icon: <PiStudent style={{ fontSize: '1.4em' }} />,
                 label: 'Tarot reader',
             },
+            {
+                key: '22',
+                icon: <GiCrystalBall style={{ fontSize: '1.4em' }} />,
+                label: 'Topic',
+            },
         ],
     },
-
-    // {
-    //     key: '5',
-    //     icon: <GrTransaction style={{ fontSize: '1.4em' }} />,
-    //     label: 'Transaction',
-    // },
     {
         key: '9',
         icon: <GrTransaction style={{ fontSize: '1.4em' }} />,
@@ -41,7 +38,7 @@ export const navDashboardConfigAdmin = [
         icon: <AiOutlineLogout style={{ fontSize: '1.4em' }} />,
         label: 'Logout',
     },
-]
+];
 
 export const navpathAdmin = {
     1: {
@@ -51,13 +48,11 @@ export const navpathAdmin = {
         path: '/admin/manage-tarot-reader',
     },
     22: {
-        path: '/admin/instructors',
+        path: '/admin/manage-topics', // New path for Topic
     },
     23: {
         path: '/admin/admin',
     },
-    
-   
     3: {
         path: '/admin/manage-bookings',
     },
@@ -73,11 +68,9 @@ export const navpathAdmin = {
     8: {
         path: '/admin/notification',
     },
-    
     9: {
         path: '/admin/transactions',
     },
-}
+};
 
-
-export default navDashboardConfigAdmin
+export default navDashboardConfigAdmin;

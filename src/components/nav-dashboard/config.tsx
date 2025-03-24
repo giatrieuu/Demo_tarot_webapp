@@ -1,15 +1,13 @@
 import { StockOutlined } from '@ant-design/icons'
 import { LuBox } from 'react-icons/lu'
-import { PiStudent } from 'react-icons/pi'
 import { FaChalkboardTeacher } from 'react-icons/fa'
 import { GrTransaction } from 'react-icons/gr'
-import { BiSolidFlag } from 'react-icons/bi'
+
 import { IoMdBook } from 'react-icons/io'
 import { AiOutlineLogout } from 'react-icons/ai'
 
 import { FiUsers } from 'react-icons/fi'
 import { MdOutlineAdminPanelSettings } from 'react-icons/md'
-import { FaBell } from 'react-icons/fa'
 
 export const navDashboardConfig = [
     {
@@ -22,11 +20,7 @@ export const navDashboardConfig = [
         icon: <FiUsers style={{ fontSize: '1.4em' }} />,
         label: 'Services',
         children: [
-            {
-                key: '21',
-                icon: <PiStudent style={{ fontSize: '1.4em' }} />,
-                label: 'Topic',
-            },
+        
             {
                 key: '22',
                 icon: <FaChalkboardTeacher style={{ fontSize: '1.4em' }} />,
@@ -64,16 +58,8 @@ export const navDashboardConfig = [
         icon: <GrTransaction style={{ fontSize: '1.4em' }} />,
         label: 'Orders',
     },
-    {
-        key: '6',
-        icon: <BiSolidFlag style={{ fontSize: '1.4em' }} />,
-        label: 'Report',
-    },
-    {
-        key: '8',
-        icon: <FaBell style={{ fontSize: '1.3em' }} />,
-        label: 'Notifications',
-    },
+
+
     {
         key: '7',
         icon: <AiOutlineLogout style={{ fontSize: '1.4em' }} />,
@@ -86,7 +72,7 @@ export const navpath = {
         path: '/tarot-reader/overview',
     },
     21: {
-        path: '/tarot-reader/students',
+        path: '/tarot-reader/topics',
     },
     22: {
         path: '/tarot-reader/manage-blog',

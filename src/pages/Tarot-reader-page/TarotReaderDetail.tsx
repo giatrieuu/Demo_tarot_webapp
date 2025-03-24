@@ -34,21 +34,31 @@ const ReaderDetail: React.FC = () => {
       setLoading(true);
       setError(null);
 
-      const [readerResponse, topicsResponse, reviewsResponse] = await Promise.all([
+      // Fetch reader data and topics, but handle reviews separately
+      const [readerResponse, topicsResponse] = await Promise.all([
         fetchReaderById(readerId),
         fetchReaderTopics(readerId, 1, 10),
-        fetchReaderReviews(readerId),
       ]);
 
+      // Check if reader data is valid
       if (!readerResponse || !readerResponse.reader) {
         setError("Reader not found!");
         return;
       }
 
+      // Set reader data and topics
       setReaderData(readerResponse.reader);
       setImageUrl(readerResponse.url?.[0] || "");
       setTopics(topicsResponse || []);
-      setReviews(reviewsResponse || []);
+
+      // Fetch reviews separately and handle failure gracefully
+      try {
+        const reviewsResponse = await fetchReaderReviews(readerId);
+        setReviews(reviewsResponse || []);
+      } catch (reviewError) {
+        console.error("Failed to fetch reviews:", reviewError);
+        setReviews([]); // Set reviews to empty array if the call fails
+      }
     } catch (err) {
       setError("Failed to fetch reader details. Please try again later.");
     } finally {
@@ -87,7 +97,7 @@ const ReaderDetail: React.FC = () => {
   return (
     <div
       className="relative flex flex-col items-center min-h-screen bg-cover bg-center bg-no-repeat px-6 py-12 md:px-24 lg:px-40 xl:px-60"
-      style={{ backgroundImage: `url(${BgTarotImage})` }} // Use imported image here
+      style={{ backgroundImage: `url(${BgTarotImage})` }}
     >
       <div className="absolute inset-0 bg-black bg-opacity-30"></div>
   
