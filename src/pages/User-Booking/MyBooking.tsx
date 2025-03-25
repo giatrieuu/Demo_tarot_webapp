@@ -1,4 +1,4 @@
-// MyBooking.tsx
+// src/pages/User-Booking/MyBooking.tsx
 import React, { useEffect, useState } from "react";
 import { Table, Typography, Spin, Button, message } from "antd";
 import { useSelector } from "react-redux";
@@ -43,7 +43,7 @@ const MyBooking: React.FC = () => {
 
         const filtered = data.filter((item: Booking) => {
           const { status, timeEnd } = item.booking;
-          // ❌ Nếu status là 0 và đã qua thời gian end thì bỏ qua
+          // ❌ Nếu status là 0 (chưa thanh toán) và đã qua thời gian end thì bỏ qua
           if (status === 0 && dayjs().isAfter(dayjs(timeEnd))) {
             return false;
           }
@@ -88,9 +88,11 @@ const MyBooking: React.FC = () => {
   const getStatusText = (status: number): string => {
     switch (status) {
       case 0:
-        return "❌ Thanh toán thất bại - Cần thanh toán lại";
+        return "❌ Chưa thanh toán - Cần thanh toán";
       case 1:
         return "✅ Đã thanh toán - Sẵn sàng Video Call";
+      case 4:
+        return "🎉 Đã hoàn thành và feedback";
       default:
         return "❓ Không xác định";
     }
@@ -139,6 +141,7 @@ const MyBooking: React.FC = () => {
         const minutesToStart = start.diff(now, "minute");
 
         if (status === 1) {
+          // Đã thanh toán, sẵn sàng cho video call
           if (minutesToStart <= 3 && now.isBefore(start)) {
             return (
               <Button
@@ -181,11 +184,17 @@ const MyBooking: React.FC = () => {
         }
 
         if (status === 0) {
+          // Chưa thanh toán, cho phép thanh toán lại
           return (
             <Button onClick={() => handleRetryPayment(id, total)}>
               💳 Thanh toán lại
             </Button>
           );
+        }
+
+        if (status === 4) {
+          // Đã hoàn thành và feedback
+          return <Button disabled>✅ Đã hoàn thành</Button>;
         }
 
         return <Button disabled>❓ Không xác định</Button>;
