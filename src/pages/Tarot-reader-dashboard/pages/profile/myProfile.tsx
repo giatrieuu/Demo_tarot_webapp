@@ -1,13 +1,32 @@
+// src/pages/User-Booking/Profile/Profile.tsx
 import React, { useEffect, useState } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
 import { useSelector } from "react-redux";
-import { Skeleton, Avatar, Dropdown, Menu, Modal, List, Checkbox, message, Spin, Tag, Button } from "antd";
+import {
+  Skeleton,
+  Avatar,
+  Dropdown,
+  Menu,
+  Modal,
+  List,
+  Checkbox,
+  message,
+  Spin,
+  Tag,
+  Button,
+} from "antd";
 
 import SettingModal from "./SettingModal";
 import ChangePasswordModal from "./ChangePasswordModal";
-import { fetchReaderById, fetchReaderTopics } from "../../../../services/tarotReaderServices";
+import {
+  fetchReaderById,
+  fetchReaderTopics,
+} from "../../../../services/tarotReaderServices";
 import { RootState } from "../../../../redux/store";
-import { createReaderTopic, fetchTopicsList } from "../../../../services/topicServices";
+import {
+  createReaderTopic,
+  fetchTopicsList,
+} from "../../../../services/topicServices";
 
 interface Topic {
   id: string;
@@ -31,18 +50,18 @@ const Profile: React.FC = () => {
 
   // Fetch Profile
   useEffect(() => {
-    if (!userId) return;
-    fetchReaderById(userId)
-      .then((data) => {
-        setReaderData({
-          ...data.reader,
-          avatar:
-            data.url?.length > 0
-              ? data.url[0]
-              : "https://source.unsplash.com/100x100/?portrait",
-        });
-      })
-      .finally(() => setLoading(false));
+    if (!userId) return; // Guard against null userId
+
+    // TypeScript now knows userId is a string due to the guard above
+    fetchReaderById(userId as string).then((data) => {
+      setReaderData({
+        ...data.reader,
+        avatar:
+          data.url?.length > 0
+            ? data.url[0]
+            : "https://source.unsplash.com/100x100/?portrait",
+      });
+    }).finally(() => setLoading(false));
   }, [userId]);
 
   // Fetch all topics and reader's topics
@@ -57,7 +76,7 @@ const Profile: React.FC = () => {
       setTopicsLoading(true);
       const [allTopicsData, readerTopicsData] = await Promise.all([
         fetchTopicsList(),
-        fetchReaderTopics(userId),
+        fetchReaderTopics(userId), // userId is guaranteed to be a string here
       ]);
       setAllTopics(allTopicsData);
       setReaderTopics(readerTopicsData);
@@ -95,12 +114,12 @@ const Profile: React.FC = () => {
         (id) => !readerTopics.some((topic) => topic.id === id)
       );
       for (const topicId of newTopics) {
-        await createReaderTopic(userId, topicId); // userId is now guaranteed to be a string
+        await createReaderTopic(userId, topicId); // userId is guaranteed to be a string
       }
       message.success("Cập nhật chủ đề thành công!");
       setIsTopicModalOpen(false);
       // Refresh reader's topics
-      const updatedReaderTopics = await fetchReaderTopics(userId); // userId is now guaranteed to be a string
+      const updatedReaderTopics = await fetchReaderTopics(userId); // userId is guaranteed to be a string
       setReaderTopics(updatedReaderTopics);
       setSelectedTopicIds(updatedReaderTopics.map((topic: Topic) => topic.id));
     } catch (error) {
@@ -112,7 +131,26 @@ const Profile: React.FC = () => {
 
   // Handle Update
   const handleUpdate = (updatedData: any) => {
-    setReaderData(updatedData);
+    if (updatedData) {
+      setReaderData({
+        ...readerData,
+        ...updatedData,
+        avatar: updatedData.avatar || readerData.avatar, // Preserve avatar if not updated
+      });
+    } else {
+      // If update fails, refetch the data
+      if (userId) {
+        fetchReaderById(userId).then((data) => {
+          setReaderData({
+            ...data.reader,
+            avatar:
+              data.url?.length > 0
+                ? data.url[0]
+                : "https://source.unsplash.com/100x100/?portrait",
+          });
+        });
+      }
+    }
   };
 
   // Menu Dropdown
@@ -141,7 +179,7 @@ const Profile: React.FC = () => {
             : "url('/assets/background.jpg')",
         }}
       >
-        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+        <div className="absolute inset-0 bg-black bg-opacity-20"></div>
       </div>
 
       {/* Profile Card */}
@@ -157,10 +195,10 @@ const Profile: React.FC = () => {
               className="w-28 h-28 rounded-full border-4 border-white shadow-md"
             />
             <div>
-              <h1 className="text-2xl font-semibold">
+              <h1 className="text-2xl font-semibold text-black">
                 {readerData?.name || "Unknown Reader"}
               </h1>
-              <p className="text-gray-500">
+              <p className="text-gray-800">
                 {readerData?.profession || "Professional Tarot Reader"}
               </p>
             </div>
@@ -179,34 +217,40 @@ const Profile: React.FC = () => {
         {/* Profile Information and Topics */}
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h2 className="text-lg font-semibold">Profile Information</h2>
+            <h2 className="text-lg font-semibold text-black">Profile Information</h2>
             <p className="text-gray-600 mt-2">
               {readerData?.description || "No description available."}
             </p>
             <p className="mt-3 text-gray-700">
-              <span className="font-semibold">Full Name:</span>{" "}
-              {readerData?.name || "N/A"}
+              <span className="font-semibold text-black">Full Name:</span>{" "}
+              <span className="text-black">{readerData?.name || "N/A"}</span>
             </p>
             <p className="text-gray-700">
-              <span className="font-semibold">Phone:</span>{" "}
-              {readerData?.phone || "N/A"}
+              <span className="font-semibold text-black">Phone:</span>{" "}
+              <span className="text-black">{readerData?.phone || "N/A"}</span>
             </p>
             <p className="text-gray-700">
-              <span className="font-semibold">Experience:</span>{" "}
-              {readerData?.experience || "N/A"} years
+              <span className="font-semibold text-black">Experience:</span>{" "}
+              <span className="text-black">{readerData?.experience || "N/A"} years</span>
+            </p>
+            <p className="text-gray-700">
+              <span className="font-semibold text-black">Price (per hour):</span>{" "}
+              <span className="text-black">
+                {readerData?.price ? `$${readerData.price.toFixed(2)}` : "N/A"}
+              </span>
             </p>
           </div>
 
           {/* Topics Section */}
           <div>
-            <h2 className="text-lg font-semibold">Your Topics</h2>
+            <h2 className="text-lg font-semibold text-black">Your Topics</h2>
             {topicsLoading ? (
               <div className="flex justify-center mt-4">
                 <Spin />
               </div>
             ) : readerTopics.length > 0 ? (
               <div className="mt-4 flex flex-wrap gap-2">
-                {readerTopics.map((topic) => (
+                {readerTopics.map((topic: Topic) => (
                   <Tag
                     key={topic.id}
                     color="blue"

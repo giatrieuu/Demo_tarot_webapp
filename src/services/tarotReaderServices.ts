@@ -62,12 +62,14 @@ export const updateReaderProfile = async ({
   phone,
   description,
   dob,
+  price, // Add price field
 }: {
   id: string;
   name?: string;
   phone?: string;
   description?: string;
   dob?: string;
+  price?: number; // Add price as a number
 }) => {
   const formData = new FormData();
   formData.append("id", id);
@@ -75,6 +77,7 @@ export const updateReaderProfile = async ({
   if (phone) formData.append("phone", phone);
   if (description) formData.append("description", description);
   if (dob) formData.append("dob", dob);
+  if (price !== undefined) formData.append("price", price.toString()); // Convert number to string for FormData
 
   const response = await tokenAxiosInstance.post(
     "/api/ReaderWeb/update-reader",
@@ -87,7 +90,6 @@ export const updateReaderProfile = async ({
   );
   return response.data;
 };
-
 export const fetchAllReaders = async () => {
   const response = await tokenAxiosInstance.get("/api/ReaderWeb/readers-list");
   return response.data;
@@ -167,7 +169,7 @@ export const createWorkSchedule = async ({
   status,
   description,
 }: {
-  readerId: string;  // ✅ Đảm bảo `readerId` luôn là `string`
+  readerId: string; // ✅ Đảm bảo `readerId` luôn là `string`
   workDate: string;
   startTime: string;
   endTime: string;
