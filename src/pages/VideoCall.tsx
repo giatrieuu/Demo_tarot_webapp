@@ -1,4 +1,4 @@
-// VideoCall.tsx
+// src/pages/VideoCall.tsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
@@ -10,12 +10,12 @@ import {
   useTracks,
 } from "@livekit/components-react";
 import "@livekit/components-styles";
-import { Track, DisconnectReason } from "livekit-client"; // Import DisconnectReason
+import { Track, DisconnectReason } from "livekit-client";
 import { Typography, Spin, Button, message } from "antd";
 import { useSelector } from "react-redux";
 import { fetchLiveKitToken } from "../services/livekitService";
 import { RootState } from "../redux/store";
-import FeedbackModal from "../components/FeedbackModal"; // component popup
+import FeedbackModal from "../components/FeedbackModal";
 
 const { Title } = Typography;
 
@@ -26,8 +26,8 @@ const VideoCall: React.FC = () => {
   const [serverUrl, setServerUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [showFeedback, setShowFeedback] = useState(false); // hiển thị modal
-  const [hasDisconnected, setHasDisconnected] = useState(false); // tránh gọi nhiều lần
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [hasDisconnected, setHasDisconnected] = useState(false);
 
   const role = useSelector((state: RootState) => state.auth.role);
   const userId = useSelector((state: RootState) => state.auth.userId);
@@ -66,13 +66,19 @@ const VideoCall: React.FC = () => {
 
   const handleDisconnected = (reason?: DisconnectReason) => {
     // Kiểm tra lý do ngắt kết nối là "invalid token" (giá trị cụ thể là 4 theo LiveKit)
-    if (reason === 4) { // DisconnectReason.INVALID_TOKEN tương ứng với giá trị 4
+    if (reason === 4) {
       message.error("Token không hợp lệ! Vui lòng kiểm tra lại.");
-      navigate("/mybooking");
+      navigate(role === "3" ? "/tarot-reader/manage-bookings" : "/mybooking");
       return;
     }
 
-    // 👉 Nếu là user role 1 thì show modal feedback
+    // Nếu là role 3 (tarot reader), chuyển hướng đến /tarot-reader/manage-bookings
+    if (role === "3") {
+      navigate("/tarot-reader/manage-bookings");
+      return;
+    }
+
+    // Nếu là role 1 (user) thì hiển thị modal feedback
     if (role === "1" && !hasDisconnected) {
       setShowFeedback(true);
       setHasDisconnected(true);
@@ -132,7 +138,9 @@ const VideoCall: React.FC = () => {
             if (role === "1") {
               setShowFeedback(true);
             } else {
-              navigate("/mybooking");
+              navigate(
+                role === "3" ? "/tarot-reader/manage-bookings" : "/mybooking"
+              );
             }
           }}
           style={{ position: "absolute", bottom: "20px", left: "20px" }}
