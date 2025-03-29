@@ -58,7 +58,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
   // 📌 Khi chọn ngày, lấy dữ liệu lịch làm việc & booking từ API
   const handleDateChange = async (date: string) => {
     if (!safeReaderId) {
-      message.error("Không tìm thấy Reader ID!");
+    
       return;
     }
 

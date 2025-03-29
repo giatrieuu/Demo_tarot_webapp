@@ -46,6 +46,12 @@ const BookingPopup: React.FC<BookingPopupProps> = ({
   };
 
   const handleConfirmClick = async () => {
+    if (!userId) {
+      message.warning("Vui lòng đăng nhập để đặt lịch!");
+      window.location.href = "/login"; // 🔹 Điều hướng về trang đăng nhập
+      return;
+    }
+  
     if (
       !formValues.date ||
       !formValues.startTime ||
@@ -55,14 +61,13 @@ const BookingPopup: React.FC<BookingPopupProps> = ({
       message.warning("Vui lòng điền đầy đủ thông tin!");
       return;
     }
-
+  
     setLoading(true);
-
+  
     try {
-      // ✅ Tạo thời gian bắt đầu & kết thúc đúng định dạng ISO
       const timeStart = `${formValues.date}T${formValues.startTime}:00`;
       const timeEnd = `${formValues.date}T${formValues.endTime}:00`;
-
+  
       // 🔹 Gọi API tạo booking
       const bookingResponse = await createBooking({
         userId,
@@ -72,37 +77,32 @@ const BookingPopup: React.FC<BookingPopupProps> = ({
         listTopicId: formValues.topics,
         note: formValues.note,
       });
-
+  
       if (!bookingResponse || !bookingResponse.id) {
         throw new Error("Không thể tạo booking.");
       }
-
+  
       const bookingId = bookingResponse.id;
-
-      console.log("Booking ID:", bookingId);
-      console.log("Amount (Total Price from state):", totalPrice); // ✅ Debug totalPrice từ state
-
       message.success("Đặt lịch thành công!");
-
+  
       // 🔹 Gọi API tạo QR thanh toán
       const paymentQRResponse = await createPaymentQR({
-        amount: totalPrice, // ✅ Lấy số tiền trực tiếp từ `state`
+        amount: totalPrice,
         orderId: bookingId,
       });
-
+  
       if (!paymentQRResponse || !paymentQRResponse.qrCodeUrl) {
         throw new Error("Không thể tạo QR thanh toán.");
       }
-
-      // 🔹 Mở trang QR thanh toán
+  
       window.open(paymentQRResponse.qrCodeUrl, "_blank");
     } catch (error: any) {
       message.error(error.message || "Có lỗi xảy ra, vui lòng thử lại!");
     }
-
+  
     setLoading(false);
   };
-
+  
   return (
     <Modal
       open={visible} // Thay vì `visible={visible}`
