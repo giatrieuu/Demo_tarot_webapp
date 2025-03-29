@@ -30,7 +30,8 @@ const OverviewStats: React.FC = () => {
         }
 
         // 🔹 Lọc danh sách Booking theo Reader ID
-        const readerBookings = data.filter((booking: any) => booking.readerId === readerId);
+        const readerBookings = data.filter((booking: any) => booking.readerId === readerId && booking.status === 1);
+
 
         // 🔹 Tính tổng doanh thu
         const totalRevenueCalc = readerBookings.reduce((sum: number, booking: any) => sum + (booking.total || 0), 0);
