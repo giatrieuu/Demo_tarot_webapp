@@ -1,9 +1,9 @@
 // src/components/AppHeader.tsx
 import { useEffect, useState } from "react";
-import { Layout, Dropdown, Badge, Avatar, Menu, message } from "antd";
+import { Layout, Dropdown, Avatar, Menu,  } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  BellOutlined,
+
   UserOutlined,
   LogoutOutlined,
   CalendarOutlined,
@@ -40,7 +40,7 @@ const AppHeader = () => {
           setAvatarUrl(imageUrl);
         } catch (error) {
           console.error("Failed to fetch user image:", error);
-          message.error("Failed to load user image.");
+     
           setAvatarUrl("https://joeschmoe.io/api/v1/random"); // Fallback URL nếu có lỗi
         }
       }
@@ -102,11 +102,11 @@ const AppHeader = () => {
           Blog
         </Link>
 
-        <Dropdown trigger={["click"]} placement="bottomRight">
+        {/* <Dropdown trigger={["click"]} placement="bottomRight">
           <Badge count={0} offset={[10, 0]}>
             <BellOutlined className="text-[#4a044e] text-2xl cursor-pointer" />
           </Badge>
-        </Dropdown>
+        </Dropdown> */}
 
         {isLoggedIn ? (
           <Dropdown overlay={userMenu} trigger={["click"]}>
